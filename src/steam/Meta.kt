@@ -6,6 +6,9 @@ object Meta {
     const val displayName = "SteamPowerRevival"
 }
 
+val String.steam:String
+    get() = "$Meta.name-$this"
+
 inline fun DebugOnly(func: () -> Unit) {
     if (Meta.debugMod) {
         func()
