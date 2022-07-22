@@ -119,17 +119,19 @@ class ItemBurner(name: String) : Block(name) {
         fun warmupTarget() = 1f
         override fun heat() = heat
         override fun heatFrac() = heat / maxVisualOutput
-
         override fun warmup() = warmup
     }
+
     override fun setBars() {
         super.setBars()
         addBar<BurnerBuild>("heat") {
             Bar("bar.heat", Pal.lightOrange, it::heatFrac)
         }
     }
+
     override fun setStats() {
         super.setStats()
+        stats.remove(Stat.input)
         stats.add(Stat.output) { stat ->
             stat.row()
             content.items().each(flammableFilter.filter) { i: Item ->
