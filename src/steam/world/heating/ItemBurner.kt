@@ -1,4 +1,4 @@
-package steam.blocks
+package steam.world.heating
 
 import arc.math.Mathf
 import mindustry.gen.Building
