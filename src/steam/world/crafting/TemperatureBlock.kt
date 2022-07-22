@@ -14,7 +14,7 @@ import steam.world.module.ITemperatureBlock
 class TemperatureBlock(name: String) : Block(name) {
     var heatRequirement = 10f
     var convertionRateMul = 25f
-    var convertSpeed = 0.05f
+    var convertSpeed = 0.01f
     var drawer: DrawBlock = DrawDefault()
 
     init {

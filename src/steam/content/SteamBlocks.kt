@@ -58,7 +58,7 @@ object SteamBlocks {
                 DrawHeatOutput().apply { heatColor = Color.valueOf("ff9b59") },
                 DrawWarmupRegion()
             )
-            heatConvertFactor = 4f
+            heatConvertFactor = 5f
             heatingTimeFactor = 90f
         }
     }
