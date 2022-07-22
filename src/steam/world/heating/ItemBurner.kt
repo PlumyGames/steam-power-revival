@@ -53,7 +53,7 @@ class ItemBurner(name: String) : Block(name) {
         buildType = Prov { BurnerBuild() }
     }
 
-    fun toHeatingTime(flammability: Float) = flammability * heatingTimeFactor
+    fun toHeatingTime(flammability: Float) =  heatingTimeFactor / flammability
     fun toHeat(flammability: Float) = flammability * heatConvertFactor
     override fun load() {
         super.load()
