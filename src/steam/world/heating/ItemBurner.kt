@@ -140,7 +140,7 @@ class ItemBurner(name: String) : Block(name) {
                     setColor(Pal.darkestGray)
                     addTable {
                         add(ItemDisplay(i, 1, toHeatingTime(i.flammability), false)).row()
-                        add("${autoFixed(toHeatingTime(i.flammability), 1)} ${bundle["unit.heatunits"]}")
+                        add("${autoFixed(toHeat(i.flammability), 1)} ${bundle["unit.heatunits"]}")
                     }.grow().pad(10f)
                 }.growX().pad(5f)
             }
