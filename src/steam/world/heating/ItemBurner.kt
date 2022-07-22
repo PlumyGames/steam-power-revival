@@ -20,8 +20,8 @@ class ItemBurner(name: String) : Block(name) {
     var minFlammabilityReq = 0.3f
     var warmupRate = 0.15f
     var warmupSpeed = 0.019f
-    var heatingTimeFactor = 60f
-    var heatConvertFactor = 60f
+    var heatingTimeFactor = 60f //base consume time
+    var heatConvertFactor = 60f //base heat generate
     lateinit var flammableFilter: ConsumeItemFlammable
     var drawer: DrawBlock = DrawDefault()
 
@@ -55,7 +55,7 @@ class ItemBurner(name: String) : Block(name) {
         drawer.getRegionsToOutline(this,out)
     }
 
-    override fun icons(): Array<TextureRegion> = drawer.finalIcons(this)
+    override fun icons() = drawer.finalIcons(this)
     inner class BurnerBuild : Building(), HeatBlock {
         /** Serialized*/
         var heat = 0f
@@ -81,6 +81,7 @@ class ItemBurner(name: String) : Block(name) {
                     // if the item is burnt out, try to consume next
                     consumeFuel()
                 }
+                warmup = Mathf.approachDelta(warmup, 1f, warmupSpeed)
                 heat = Mathf.approachDelta(heat, toHeat(curFlammability) * efficiency, warmupRate * delta())
             } else {
                 heatingTime = 0f
@@ -106,5 +107,7 @@ class ItemBurner(name: String) : Block(name) {
         fun warmupTarget() = 1f
         override fun heat() = heat
         override fun heatFrac() = heat / maxVisualOutput
+
+        override fun warmup() = warmup
     }
 }

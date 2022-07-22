@@ -5,16 +5,24 @@ import arc.util.Log
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatConsumer
+import mindustry.world.draw.DrawBlock
+import mindustry.world.draw.DrawDefault
 import steam.world.module.ITemperatureBlock
 
 class TemperatureBlock(name: String) : Block(name) {
     var heatRequirement = 10f
     var convertionRateMul = 25f
     var convertSpeed = 0.05f
+    var drawer: DrawBlock = DrawDefault()
 
     init {
         update = true
         solid = true
+    }
+
+    override fun load() {
+        super.load()
+        drawer.load(this)
     }
 
     inner class TemperatureBuild : Building(), ITemperatureBlock, HeatConsumer {
@@ -29,6 +37,10 @@ class TemperatureBlock(name: String) : Block(name) {
             heat = calculateHeat(sideHeat)
             temp = Mathf.lerpDelta(temp, heat * convertionRateMul, convertSpeed)
             Log.info(temp)
+        }
+
+        override fun draw() {
+            drawer.draw(this)
         }
     }
 }
