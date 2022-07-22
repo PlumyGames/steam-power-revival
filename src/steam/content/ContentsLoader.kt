@@ -1,5 +1,6 @@
-package steam
+package steam.content
 
+object ContentsLoader {
 import mindustry.content.Blocks
 import steam.content.SteamBlocks
 
