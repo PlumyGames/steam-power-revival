@@ -48,7 +48,7 @@ class ItemBurner(name: String) : Block(name) {
         buildType = Prov { BurnerBuild() }
     }
 
-    fun toHeatingTime(flammability: Float) = flammability * heatingTimeFactor
+    fun toHeatingTime(flammability: Float) = heatingTimeFactor / flammability
     fun toHeat(flammability: Float) = flammability * heatConvertFactor
     override fun load() {
         super.load()
@@ -139,8 +139,8 @@ class ItemBurner(name: String) : Block(name) {
                     background(Tex.whiteui)
                     setColor(Pal.darkestGray)
                     addTable {
-                        add(ItemDisplay(i, 1, heatingTimeFactor * i.flammability, false)).row()
-                        add("${autoFixed(heatConvertFactor * i.flammability, 1)} ${bundle["unit.heatunits"]}")
+                        add(ItemDisplay(i, 1, toHeatingTime(i.flammability), false)).row()
+                        add("${autoFixed(toHeatingTime(i.flammability), 1)} ${bundle["unit.heatunits"]}")
                     }.grow().pad(10f)
                 }.growX().pad(5f)
             }
