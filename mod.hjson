@@ -1,7 +1,7 @@
 displayName: "Steam Power Revival"
 name: "steam"
 author: "Liplum & Eclipse"
-main: "SteamPowerRevival.SteamPowerRevival"
+main: "steam.SteamPowerRevival"
 description: "Industrial Society and it future."
 version: 0.0.1
 minGameVersion: 136
