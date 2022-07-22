@@ -11,12 +11,14 @@ import steam.R
 import steam.UndebugOnly
 import steam.utils.plus
 import steam.world.crafting.TemperatureBlock
+import steam.world.effect.HeatAccumulator
 import steam.world.heating.ItemBurner
 
 object SteamBlocks {
     //should be listed all at once
     lateinit var boiler: Block
     lateinit var burner: ItemBurner
+    lateinit var accumulator: HeatAccumulator
     fun boiler() {
         boiler = TemperatureBlock("boiler").apply {
             category = Category.crafting
@@ -58,6 +60,13 @@ object SteamBlocks {
             )
             heatConvertFactor = 4f
             heatingTimeFactor = 90f
+        }
+    }
+    fun accumulator(){
+        accumulator = HeatAccumulator("accumulator").apply{
+            category = Category.effect
+            buildVisibility = BuildVisibility.sandboxOnly
+            size = 4
         }
     }
 }

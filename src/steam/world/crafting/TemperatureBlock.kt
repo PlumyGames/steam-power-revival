@@ -1,5 +1,6 @@
 package steam.world.crafting
 
+import arc.func.Prov
 import arc.math.Mathf
 import arc.util.Log
 import mindustry.gen.Building
@@ -7,8 +8,8 @@ import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatConsumer
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
+import steam.world.module.ISteamContainer.Companion.warmupImpl
 import steam.world.module.ITemperatureBlock
-import steam.world.module.ITemperatureBlock.Companion.warmupImpl
 
 class TemperatureBlock(name: String) : Block(name) {
     var heatRequirement = 10f
@@ -19,6 +20,7 @@ class TemperatureBlock(name: String) : Block(name) {
     init {
         update = true
         solid = true
+        buildType = Prov { TemperatureBuild() }
     }
 
     override fun load() {
