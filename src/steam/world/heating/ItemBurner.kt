@@ -9,7 +9,10 @@ import arc.struct.EnumSet
 import arc.struct.Seq
 import arc.util.Eachable
 import arc.util.Strings.autoFixed
+import mindustry.Vars
 import mindustry.Vars.content
+import mindustry.content.Fx
+import mindustry.entities.Effect
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.gen.Tex
@@ -35,9 +38,16 @@ class ItemBurner(name: String) : Block(name) {
     var minFlammabilityReq = 0.3f
     var warmupRate = 0.15f
     var warmupSpeed = 0.019f
-    var heatingTimeFactor = 60f //base consume time
-    var heatConvertFactor = 4f //base heat generate
-    lateinit var flammableFilter: ConsumeItemFlammable
+    var heatingTimeFactor = 60f // how long an item can output heat continuously
+    var heatConvertFactor = 4f // heat from flammability
+    var explosiveConvertingProportion = 0.4f //extra heat proportion from explosiveness
+    // Explosion
+    var explosivenessThreshold = 0.4f // if > this, it will explode
+    var explodeFactor = 60f //damage factor for explosion
+    var explodeChance = 0.1f //explosion chance
+    var explodeEffect: Effect = Fx.generatespark
+    // Function
+    lateinit var flammableFilter: BurnerItemConsume
     var drawer: DrawBlock = DrawDefault()
 
     init {
@@ -52,9 +62,11 @@ class ItemBurner(name: String) : Block(name) {
         drawArrow = true
         buildType = Prov { BurnerBuild() }
     }
-
-    fun toHeatingTime(flammability: Float) =  heatingTimeFactor / flammability
+    fun toHeatingTime(flammability: Float) = heatingTimeFactor * flammability
     fun toHeat(flammability: Float) = flammability * heatConvertFactor
+    fun toExplodeDamage(explosiveness: Float) = explosiveness * explodeFactor
+    fun toFinalFlammability(item: Item) = item.flammability + item.explosiveness * explosiveConvertingProportion
+    fun toFinalHeat(item: Item) = toHeat(toFinalFlammability(item))
     override fun load() {
         super.load()
         drawer.load(this)
@@ -66,9 +78,10 @@ class ItemBurner(name: String) : Block(name) {
                 visualMaxOutput = max(visualMaxOutput, toHeat(item.flammability))
             }
         }
-        flammableFilter = consume(ConsumeItemFlammable(minFlammabilityReq))
+        flammableFilter = consume(BurnerItemConsume(minFlammabilityReq))
         super.init()
     }
+
     inner class BurnerBuild : Building(), HeatBlock {
         /** Serialized*/
         var heat = 0f
@@ -76,7 +89,10 @@ class ItemBurner(name: String) : Block(name) {
         var warmup = 0f
         /** Serialized*/
         var heatingTime = 0f
-        /** Serialized*/
+        /**
+         * Serialized
+         * It will also take [Item.explosiveness] into account.
+         */
         var curFlammability = 0f
         /** Serialized*/
         var targetHeatingTime = 0f
@@ -94,7 +110,8 @@ class ItemBurner(name: String) : Block(name) {
                     heatingTime = 0f
                 }
                 warmup = Mathf.approachDelta(warmup, 1f, warmupSpeed)
-                heat = Mathf.approachDelta(heat, toHeat(curFlammability) * efficiency, warmupRate * delta())
+                val targetHeat = toHeat(curFlammability)
+                heat = Mathf.approachDelta(heat, targetHeat * efficiency, warmupRate * delta())
             } else {
                 heatingTime = 0f
                 // cool down
@@ -107,6 +124,10 @@ class ItemBurner(name: String) : Block(name) {
             consume()
         }
 
+        fun warmupTarget() = 1f
+        override fun heat() = heat
+        override fun heatFrac() = heat / visualMaxOutput
+        override fun warmup() = warmup
         override fun draw() {
             drawer.draw(this)
         }
@@ -115,11 +136,6 @@ class ItemBurner(name: String) : Block(name) {
             super.drawLight()
             drawer.drawLight(this)
         }
-
-        fun warmupTarget() = 1f
-        override fun heat() = heat
-        override fun heatFrac() = heat / visualMaxOutput
-        override fun warmup() = warmup
     }
 
     override fun setBars() {
@@ -140,7 +156,7 @@ class ItemBurner(name: String) : Block(name) {
                     setColor(Pal.darkestGray)
                     addTable {
                         add(ItemDisplay(i, 1, toHeatingTime(i.flammability), false)).row()
-                        add("${autoFixed(toHeat(i.flammability), 1)} ${bundle["unit.heatunits"]}").row()
+                        add("${autoFixed(toFinalHeat(i), 1)} ${bundle["unit.heatunits"]}").row()
                         add("${autoFixed(toHeatingTime(i.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray)
                     }.grow().pad(10f)
                 }.growX().pad(5f)
@@ -157,4 +173,33 @@ class ItemBurner(name: String) : Block(name) {
     }
 
     override fun icons(): Array<TextureRegion> = drawer.finalIcons(this)
+    inner class BurnerItemConsume : ConsumeItemFlammable {
+        constructor(minFlammability: Float) : super(minFlammability)
+        constructor() : super()
+
+        override fun efficiencyMultiplier(build: Building?): Float {
+            val item = getConsumed(build)
+            return if (item == null) 0f
+            else toFinalFlammability(item)
+        }
+
+        override fun trigger(build: Building) {
+            val item = getConsumed(build)
+            if (item != null) {
+                if (item.explosiveness > explosivenessThreshold) {
+                    if (Vars.state.rules.reactorExplosions &&
+                        Mathf.chance((explodeChance * item.explosiveness).toDouble())
+                    ) {
+                        val damage = toExplodeDamage(item.explosiveness)
+                        build.damage(damage)
+                        explodeEffect.at(
+                            build.x + Mathf.range(build.block.size * Vars.tilesize / 2f),
+                            build.y + Mathf.range(build.block.size * Vars.tilesize / 2f)
+                        )
+                    }
+                }
+                build.items.remove(item, 1)
+            }
+        }
+    }
 }

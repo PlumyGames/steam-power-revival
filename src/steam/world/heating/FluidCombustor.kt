@@ -56,8 +56,20 @@ class FluidCombustor(name: String) : Block(name) {
     inner class CombustorBuild : Building(), HeatBlock {
         /** Serialized*/
         var heat = 0f
+        /** Serialized*/
+        var warmup = 0f
         override fun heat() = heat
         override fun heatFrac() = heat / visualMaxOutput
+        override fun warmup() = warmup
+
+        override fun draw() {
+            drawer.draw(this)
+        }
+
+        override fun drawLight() {
+            super.drawLight()
+            drawer.drawLight(this)
+        }
     }
 
     override fun setBars() {

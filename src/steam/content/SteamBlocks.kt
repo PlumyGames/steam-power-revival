@@ -57,7 +57,7 @@ object SteamBlocks {
                 DrawHeatOutput().apply { heatColor = R.C.burnerFlame },
                 DrawWarmupRegion()
             )
-            heatConvertFactor = 5f
+            heatConvertFactor = 4f
             heatingTimeFactor = 90f
         }
     }

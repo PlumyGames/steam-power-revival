@@ -11,7 +11,7 @@ import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatConsumer
 
 class HeatAccumulator(name: String) : Block(name) {
-    var measuringRange = 2.5E4f
+    var measuringRange = 3.5E4f
 
     init {
         update = true
