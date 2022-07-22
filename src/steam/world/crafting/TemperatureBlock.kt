@@ -14,7 +14,7 @@ import steam.world.module.ITemperatureBlock
 class TemperatureBlock(name: String) : Block(name) {
     var heatRequirement = 10f
     var convertionRateMul = 25f
-    var convertSpeed = 0.01f
+    var convertSpeed = 0.01f //lose 1% each second
     var drawer: DrawBlock = DrawDefault()
 
     init {
@@ -36,7 +36,8 @@ class TemperatureBlock(name: String) : Block(name) {
         override fun heatRequirement() = heatRequirement
         override fun updateTile() {
             heat = calculateHeat(sideHeat)
-            temp = Mathf.lerpDelta(temp, heat * convertionRateMul, convertSpeed)
+            temp += heat * convertionRateMul * delta()
+            temp = Mathf.lerpDelta(temp, 0f, convertSpeed / 60)
             Log.info(temp)
         }
 

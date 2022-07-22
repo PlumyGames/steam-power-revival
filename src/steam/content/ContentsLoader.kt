@@ -4,6 +4,9 @@ import mindustry.content.Blocks
 
 object ContentsLoader {
     fun load() {
+        SteamItems.apply {
+            stone()
+        }
         SteamBlocks.apply {
             boiler()
             burner()
