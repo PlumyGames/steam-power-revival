@@ -1,15 +1,21 @@
 package steam.world.heating
 
+import arc.Core.bundle
 import arc.func.Prov
 import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.struct.EnumSet
 import arc.struct.Seq
 import arc.util.Eachable
+import arc.util.Strings.autoFixed
+import mindustry.Vars.content
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
+import mindustry.gen.Tex
 import mindustry.graphics.Pal
+import mindustry.type.Item
 import mindustry.ui.Bar
+import mindustry.ui.ItemDisplay
 import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.consumers.ConsumeItemFlammable
@@ -17,7 +23,7 @@ import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.Stat
-import mindustry.world.meta.StatUnit
+import steam.utils.addTable
 
 class ItemBurner(name: String) : Block(name) {
     var maxVisualOutput = 10f
@@ -35,6 +41,7 @@ class ItemBurner(name: String) : Block(name) {
         sync = true
         flags = EnumSet.of(BlockFlag.factory)
         rotate = true
+        rotateDraw = false
         canOverdrive = false
         drawArrow = true
         buildType = Prov { BurnerBuild() }
@@ -122,7 +129,17 @@ class ItemBurner(name: String) : Block(name) {
     override fun setStats() {
         super.setStats()
         stats.add(Stat.output) { stat ->
-            stat.add("${Stat.flammability.localized()} x $heatConvertFactor ${StatUnit.heatUnits.localized()}")
+            stat.row()
+            content.items().each(flammableFilter.filter) { i: Item ->
+                stat.addTable {
+                    background(Tex.whiteui)
+                    setColor(Pal.darkestGray)
+                    addTable {
+                        add(ItemDisplay(i, 1, heatingTimeFactor * i.flammability, false)).row()
+                        add("${autoFixed(heatConvertFactor * i.flammability, 1)} ${bundle["unit.heatunits"]}")
+                    }.grow().pad(10f)
+                }.growX().pad(5f)
+            }
         }
     }
 }
