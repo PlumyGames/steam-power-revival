@@ -1,8 +1,12 @@
 package steam.world.heating
 
 import arc.func.Prov
+import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.struct.EnumSet
+import arc.struct.Seq
+import arc.util.Eachable
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatBlock
@@ -33,11 +37,25 @@ class ItemBurner(name: String) : Block(name) {
         buildType = Prov { BurnerBuild() }
     }
 
+    override fun load() {
+        super.load()
+        drawer.load(this)
+    }
+
     override fun init() {
         flammableFilter = consume(ConsumeItemFlammable(minFlammabilityReq))
         super.init()
     }
 
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        drawer.drawPlan(this,plan, list)
+    }
+
+    override fun getRegionsToOutline(out: Seq<TextureRegion>) {
+        drawer.getRegionsToOutline(this,out)
+    }
+
+    override fun icons(): Array<TextureRegion> = drawer.finalIcons(this)
     inner class BurnerBuild : Building(), HeatBlock {
         /** Serialized*/
         var heat = 0f
@@ -56,10 +74,9 @@ class ItemBurner(name: String) : Block(name) {
 
         fun toHeatingTime(flammability: Float) = flammability * heatingTimeFactor
         fun toHeat(flammability: Float) = flammability * heatConvertFactor
-        override fun update() {
+        override fun updateTile() {
             if (efficiency > 0f) {
                 heatingTime += delta()
-                warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed)
                 if (targetHeatingTime > 0f && heatingTime >= targetHeatingTime) {
                     // if the item is burnt out, try to consume next
                     consumeFuel()
@@ -75,6 +92,15 @@ class ItemBurner(name: String) : Block(name) {
 
         fun consumeFuel() {
             consume()
+        }
+
+        override fun draw() {
+            drawer.draw(this)
+        }
+
+        override fun drawLight() {
+            super.drawLight()
+            drawer.drawLight(this)
         }
 
         fun warmupTarget() = 1f
