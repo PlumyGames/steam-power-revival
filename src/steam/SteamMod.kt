@@ -11,7 +11,7 @@ class SteamMod : Mod() {
     override fun loadContent() {
         ContentsLoader.load()
         DebugOnly {
-            Contents.unlockForDebug()
+            ContentsLoader.unlockForDebug()
         }
     }
 }

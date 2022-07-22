@@ -1,10 +1,8 @@
 package steam.content
 
-object ContentsLoader {
 import mindustry.content.Blocks
-import steam.content.SteamBlocks
 
-object Contents {
+object ContentsLoader {
     fun load() {
         SteamBlocks.apply {
             boiler()
