@@ -2,6 +2,7 @@ package steam.world.heating
 
 import arc.Core.bundle
 import arc.func.Prov
+import arc.graphics.Color
 import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.struct.EnumSet
@@ -132,7 +133,7 @@ class ItemBurner(name: String) : Block(name) {
     override fun setStats() {
         super.setStats()
         stats.remove(Stat.input)
-        stats.add(Stat.output) { stat ->
+        stats.add(Stat.input) { stat ->
             stat.row()
             content.items().each(flammableFilter.filter) { i: Item ->
                 stat.addTable {
@@ -140,7 +141,8 @@ class ItemBurner(name: String) : Block(name) {
                     setColor(Pal.darkestGray)
                     addTable {
                         add(ItemDisplay(i, 1, toHeatingTime(i.flammability), false)).row()
-                        add("${autoFixed(toHeat(i.flammability), 1)} ${bundle["unit.heatunits"]}")
+                        add("${autoFixed(toHeat(i.flammability), 1)} ${bundle["unit.heatunits"]}").row()
+                        add("${autoFixed(toHeatingTime(i.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray)
                     }.grow().pad(10f)
                 }.growX().pad(5f)
             }
