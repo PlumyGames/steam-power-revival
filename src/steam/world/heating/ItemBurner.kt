@@ -40,6 +40,7 @@ class ItemBurner(name: String) : Block(name) {
         hasItems = true
         sync = true
         flags = EnumSet.of(BlockFlag.factory)
+        rotateDraw = false
         rotate = true
         rotateDraw = false
         canOverdrive = false
@@ -90,6 +91,7 @@ class ItemBurner(name: String) : Block(name) {
                 if (targetHeatingTime > 0f && heatingTime >= targetHeatingTime) {
                     // if the item is burnt out, try to consume next
                     consumeFuel()
+                    heatingTime = 0f
                 }
                 warmup = Mathf.approachDelta(warmup, 1f, warmupSpeed)
                 heat = Mathf.approachDelta(heat, toHeat(curFlammability) * efficiency, warmupRate * delta())

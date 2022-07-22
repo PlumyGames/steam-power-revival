@@ -8,6 +8,7 @@ import mindustry.world.blocks.heat.HeatConsumer
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
 import steam.world.module.ITemperatureBlock
+import steam.world.module.ITemperatureBlock.Companion.warmupImpl
 
 class TemperatureBlock(name: String) : Block(name) {
     var heatRequirement = 10f
@@ -29,16 +30,15 @@ class TemperatureBlock(name: String) : Block(name) {
         override var temp = 0f
         var sideHeat = FloatArray(4)
         var heat = 0f
-
         override fun sideHeat() = sideHeat
         override fun heatRequirement() = heatRequirement
-
         override fun updateTile() {
             heat = calculateHeat(sideHeat)
             temp = Mathf.lerpDelta(temp, heat * convertionRateMul, convertSpeed)
             Log.info(temp)
         }
 
+        override fun warmup() = warmupImpl()
         override fun draw() {
             drawer.draw(this)
         }
