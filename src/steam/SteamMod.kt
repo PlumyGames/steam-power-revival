@@ -1,6 +1,7 @@
 package steam
 
 import mindustry.mod.Mod
+import steam.content.ContentsLoader
 
 class SteamMod : Mod() {
 
@@ -8,6 +9,6 @@ class SteamMod : Mod() {
     }
 
     override fun loadContent() {
-        Contents.load()
+        ContentsLoader.load()
     }
 }

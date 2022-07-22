@@ -1,8 +1,6 @@
-package steam
+package steam.content
 
-import steam.content.SteamBlocks
-
-object Contents {
+object ContentsLoader {
     fun load() {
         SteamBlocks.apply {
             boiler()
