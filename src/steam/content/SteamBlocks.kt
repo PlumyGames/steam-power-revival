@@ -1,6 +1,5 @@
 package steam.content
 
-import arc.graphics.Color
 import mindustry.Vars
 import mindustry.content.Items
 import mindustry.type.Category
@@ -55,7 +54,7 @@ object SteamBlocks {
             size = 1
             drawer = DrawMulti(
                 DrawDefault(),
-                DrawHeatOutput().apply { heatColor = Color.valueOf("ff9b59") },
+                DrawHeatOutput().apply { heatColor = R.C.burnerFlame },
                 DrawWarmupRegion()
             )
             heatConvertFactor = 5f

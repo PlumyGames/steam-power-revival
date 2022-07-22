@@ -69,16 +69,6 @@ class ItemBurner(name: String) : Block(name) {
         flammableFilter = consume(ConsumeItemFlammable(minFlammabilityReq))
         super.init()
     }
-
-    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
-        drawer.drawPlan(this, plan, list)
-    }
-
-    override fun getRegionsToOutline(out: Seq<TextureRegion>) {
-        drawer.getRegionsToOutline(this, out)
-    }
-
-    override fun icons(): Array<TextureRegion> = drawer.finalIcons(this)
     inner class BurnerBuild : Building(), HeatBlock {
         /** Serialized*/
         var heat = 0f
@@ -157,4 +147,14 @@ class ItemBurner(name: String) : Block(name) {
             }
         }
     }
+
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        drawer.drawPlan(this, plan, list)
+    }
+
+    override fun getRegionsToOutline(out: Seq<TextureRegion>) {
+        drawer.getRegionsToOutline(this, out)
+    }
+
+    override fun icons(): Array<TextureRegion> = drawer.finalIcons(this)
 }

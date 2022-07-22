@@ -8,7 +8,7 @@ import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatConsumer
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
-import steam.world.module.ISteamContainer.Companion.warmupImpl
+import steam.world.module.ITemperatureBlock.Companion.warmupImpl
 import steam.world.module.ITemperatureBlock
 
 class TemperatureBlock(name: String) : Block(name) {
