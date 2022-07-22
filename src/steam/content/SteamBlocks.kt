@@ -18,7 +18,7 @@ object SteamBlocks {
     //should be listed all at once
     lateinit var boiler: Block
     lateinit var burner: ItemBurner
-    lateinit var accumulator: HeatAccumulator
+    lateinit var heatAccumulator: HeatAccumulator
     fun boiler() {
         boiler = TemperatureBlock("boiler").apply {
             category = Category.crafting
@@ -62,8 +62,9 @@ object SteamBlocks {
             heatingTimeFactor = 90f
         }
     }
-    fun accumulator(){
-        accumulator = HeatAccumulator("accumulator").apply{
+
+    fun heatAccumulator() {
+        heatAccumulator = HeatAccumulator("heat-accumulator").apply {
             category = Category.effect
             buildVisibility = BuildVisibility.sandboxOnly
             size = 4

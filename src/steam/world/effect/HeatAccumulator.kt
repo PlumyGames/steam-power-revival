@@ -26,7 +26,7 @@ class HeatAccumulator(name: String) : Block(name) {
         var total = 0f
         var sideHeat = FloatArray(4)
         override fun updateTile() {
-            total += calculateHeat(sideHeat)
+            total += calculateHeat(sideHeat) * delta()
         }
 
         override fun sideHeat() = sideHeat
