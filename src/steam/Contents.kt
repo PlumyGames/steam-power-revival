@@ -1,5 +1,6 @@
 package steam
 
+import mindustry.content.Blocks
 import steam.content.SteamBlocks
 
 object Contents {
@@ -8,5 +9,13 @@ object Contents {
             boiler()
             burner()
         }
+    }
+
+    fun unlockForDebug() {
+        Blocks.heatRedirector.requirements = emptyArray()
+        Blocks.electricHeater.requirements = emptyArray()
+        Blocks.phaseHeater.requirements = emptyArray()
+        Blocks.slagHeater.requirements = emptyArray()
+        Blocks.atmosphericConcentrator.requirements = emptyArray()
     }
 }

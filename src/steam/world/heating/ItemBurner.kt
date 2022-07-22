@@ -2,12 +2,14 @@ package steam.world.heating
 
 import arc.func.Prov
 import arc.math.Mathf
+import arc.struct.EnumSet
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.consumers.ConsumeItemFlammable
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
+import mindustry.world.meta.BlockFlag
 
 class ItemBurner(name: String) : Block(name) {
     var maxVisualOutput = 10f
@@ -22,6 +24,12 @@ class ItemBurner(name: String) : Block(name) {
     init {
         update = true
         hasItems = true
+        sync = true
+        flags = EnumSet.of(BlockFlag.factory)
+        rotateDraw = false
+        rotate = true
+        canOverdrive = false
+        drawArrow = true
         buildType = Prov { BurnerBuild() }
     }
 
