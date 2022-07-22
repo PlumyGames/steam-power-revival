@@ -7,7 +7,7 @@ import mindustry.type.Category
 import mindustry.world.Block
 import mindustry.world.draw.*
 import mindustry.world.meta.BuildVisibility
-import steam.R
+import steam.graphic.R
 import steam.UndebugOnly
 import steam.utils.plus
 import steam.world.crafting.TemperatureBlock
