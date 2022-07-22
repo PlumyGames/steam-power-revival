@@ -24,9 +24,13 @@ import mindustry.world.draw.DrawDefault
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.Stat
 import steam.utils.addTable
+import kotlin.math.max
 
 class ItemBurner(name: String) : Block(name) {
-    var maxVisualOutput = 10f
+    companion object {
+        var visualMaxOutput = -1f
+    }
+
     var minFlammabilityReq = 0.3f
     var warmupRate = 0.15f
     var warmupSpeed = 0.019f
@@ -48,7 +52,7 @@ class ItemBurner(name: String) : Block(name) {
         buildType = Prov { BurnerBuild() }
     }
 
-    fun toHeatingTime(flammability: Float) = heatingTimeFactor / flammability
+    fun toHeatingTime(flammability: Float) = flammability * heatingTimeFactor
     fun toHeat(flammability: Float) = flammability * heatConvertFactor
     override fun load() {
         super.load()
@@ -56,6 +60,11 @@ class ItemBurner(name: String) : Block(name) {
     }
 
     override fun init() {
+        if (visualMaxOutput < 0f && heatConvertFactor >= 0f) {
+            for (item in content.items()) {
+                visualMaxOutput = max(visualMaxOutput, toHeat(item.flammability))
+            }
+        }
         flammableFilter = consume(ConsumeItemFlammable(minFlammabilityReq))
         super.init()
     }
@@ -118,7 +127,7 @@ class ItemBurner(name: String) : Block(name) {
 
         fun warmupTarget() = 1f
         override fun heat() = heat
-        override fun heatFrac() = heat / maxVisualOutput
+        override fun heatFrac() = heat / visualMaxOutput
         override fun warmup() = warmup
     }
 
