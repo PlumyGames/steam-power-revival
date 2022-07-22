@@ -1,7 +1,7 @@
-package SteamPowerRevival
+package steam
 
-import avkott.content.*
 import mindustry.mod.*
+import steam.content.SteamBlocks
 
 class SteamPowerRevival : Mod(){
 
@@ -10,6 +10,6 @@ class SteamPowerRevival : Mod(){
     }
 
     override fun loadContent(){
-
+        SteamBlocks.load()
     }
 }
