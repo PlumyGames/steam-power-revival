@@ -1,7 +1,7 @@
 package steam.content
 
 import mindustry.type.Liquid
-import steam.graphic.R
+import steam.R
 
 object SteamFluids {
     lateinit var steam: Liquid

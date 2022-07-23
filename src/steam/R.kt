@@ -1,4 +1,4 @@
-package steam.graphic
+package steam
 
 import steam.utils.Color
 

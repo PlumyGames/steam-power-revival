@@ -9,6 +9,7 @@ import arc.math.Mathf
 import arc.util.Time
 import mindustry.gen.Building
 import mindustry.world.draw.DrawBlock
+import steam.R
 import steam.world.module.ISteamContainer
 
 class DrawSteam : DrawBlock() {
