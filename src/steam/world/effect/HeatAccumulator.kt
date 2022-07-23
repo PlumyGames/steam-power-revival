@@ -18,6 +18,11 @@ class HeatAccumulator(name: String) : Block(name) {
         solid = true
         configurable = true
         buildType = Prov { AccumulatorBuild() }
+
+        config(java.lang.Boolean::class.java) { build: AccumulatorBuild, bool ->
+            if (bool.booleanValue())
+                build.total = 0f
+        }
     }
 
     override fun setBars() {
@@ -36,7 +41,7 @@ class HeatAccumulator(name: String) : Block(name) {
 
         override fun buildConfiguration(table: Table) {
             table.button(Icon.trash) {
-                total = 0f
+                configure(true)
             }
         }
 

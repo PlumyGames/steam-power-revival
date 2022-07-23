@@ -40,8 +40,8 @@ class ItemBurner(name: String) : Block(name) {
     var warmupSpeed = 0.019f
     var heatingTimeFactor = 60f // how long an item can output heat continuously
     var heatConvertFactor = 4f // heat from flammability
-    var explosiveConvertingProportion = 0.4f //extra heat proportion from explosiveness
     // Explosion
+    var explosiveConvertingProportion = 0.4f //extra heat proportion from explosiveness
     var explosivenessThreshold = 0.4f // if > this, it will explode
     var explodeFactor = 60f //damage factor for explosion
     var explodeChance = 0.1f //explosion chance
@@ -150,14 +150,14 @@ class ItemBurner(name: String) : Block(name) {
         stats.remove(Stat.input)
         stats.add(Stat.input) { stat ->
             stat.row()
-            content.items().each(flammableFilter.filter) { i: Item ->
+            content.items().each<Item>(flammableFilter.filter) {
                 stat.addTable {
                     background(Tex.whiteui)
                     setColor(Pal.darkestGray)
                     addTable {
-                        add(ItemDisplay(i, 1, toHeatingTime(i.flammability), false)).row()
-                        add("${autoFixed(toFinalHeat(i), 1)} ${bundle["unit.heatunits"]}").row()
-                        add("${autoFixed(toHeatingTime(i.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray)
+                        add(ItemDisplay(it, 1, toHeatingTime(it.flammability), false)).row()
+                        add("${autoFixed(toFinalHeat(it), 1)} ${bundle["unit.heatunits"]}").row()
+                        add("${autoFixed(toHeatingTime(it.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray)
                     }.grow().pad(10f)
                 }.growX().pad(5f)
             }
