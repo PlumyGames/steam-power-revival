@@ -9,7 +9,7 @@ import arc.math.Mathf
 import arc.util.Time
 import mindustry.gen.Building
 import mindustry.world.draw.DrawBlock
-import steam.world.module.ISteamContainer
+import steam.world.module.IPressureContainer
 
 class DrawSteam : DrawBlock() {
     var color = R.C.steam
@@ -24,7 +24,7 @@ class DrawSteam : DrawBlock() {
     var particleSizeInterp: Interp = Interp.slope
     var blending: Blending = Blending.normal
     override fun draw(build: Building) {
-        if (build !is ISteamContainer) return
+        if (build !is IPressureContainer) return
         val steam = build.steamProportion
         if (steam > 0f) {
             val a = alpha * steam
