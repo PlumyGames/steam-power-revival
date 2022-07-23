@@ -59,7 +59,7 @@ class FluidCombustor(name: String) : Block(name) {
                 visualMaxOutput = max(visualMaxOutput, toHeat(liquid.flammability))
             }
         }
-        flammableFilter = consume(ConsumeLiquidFlammable(minFlammabilityReq))
+        flammableFilter = consume(ConsumeLiquidFlammable(minFlammabilityReq, amount))
         super.init()
     }
 
