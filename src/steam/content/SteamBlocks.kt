@@ -1,14 +1,13 @@
 package steam.content
 
-import arc.Core
 import mindustry.Vars
 import mindustry.content.Items
 import mindustry.type.Category
 import mindustry.world.Block
 import mindustry.world.draw.*
 import mindustry.world.meta.BuildVisibility
-import steam.graphic.R
 import steam.UndebugOnly
+import steam.graphic.R
 import steam.utils.plus
 import steam.world.crafting.TemperatureBlock
 import steam.world.effect.HeatAccumulator
@@ -69,23 +68,19 @@ object SteamBlocks {
             regionRotated1 = 1
         }
     }
+
     fun fluidBurner() {
         fluidBurner = FluidCombustor("liquid-burner").apply {
             category = Category.crafting
-            buildVisibility = BuildVisibility.shown
-            UndebugOnly {
-                requirements = arrayOf(
-                    SteamItems.stone + 60, Items.silicon + 35, Items.metaglass + 20
-                )
-            }
-            heatConvertFactor = 15f
+            buildVisibility = BuildVisibility.sandboxOnly
+            heatConvertFactor = 8f
             size = 2
             health = 350
             drawer = DrawMulti(
                 DrawLiquidRegion(),
                 DrawDefault(),
                 DrawHeatOutput().apply { heatColor = R.C.burnerFlame },
-                DrawWarmupRegion().apply { region = Core.atlas.find("$name-liquid") }
+                DrawWarmupRegion()
             )
         }
     }

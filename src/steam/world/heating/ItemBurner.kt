@@ -150,15 +150,15 @@ class ItemBurner(name: String) : Block(name) {
         stats.remove(Stat.input)
         stats.add(Stat.input) { stat ->
             stat.row()
-            content.items().each(flammableFilter.filter) { i: Item ->
+            content.items().each<Item>(flammableFilter.filter) {
                 stat.addTable {
                     background(Tex.whiteui)
                     setColor(Pal.darkestGray)
                     addTable {
-                        add(ItemDisplay(i, 1, toHeatingTime(i.flammability), false)).row()
-                        add("${autoFixed(toFinalHeat(i), 1)} ${bundle["unit.heatunits"]}").row()
-                        add("${autoFixed(toHeatingTime(i.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray).row()
-                        if(i.explosiveness >= explosivenessThreshold) add(bundle["stat.explode"]).color(Pal.redderDust)
+                        add(ItemDisplay(it, 1, toHeatingTime(it.flammability), false)).row()
+                        add("${autoFixed(toFinalHeat(it), 1)} ${bundle["unit.heatunits"]}").row()
+                        add("${autoFixed(toHeatingTime(it.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray).row()
+                        if(it.explosiveness >= explosivenessThreshold) add(bundle["stat.explode"]).color(Pal.redderDust)
                     }.grow().pad(10f)
                 }.grow().pad(5f)
             }
