@@ -32,7 +32,7 @@ class Boiler(name: String) : TemperatureBlock(name) {
      * How much water will be converted to steam per tick
      */
     var evaporationSpeed = 1f
-    val water: Liquid = Liquids.water
+    val water = Liquids.water
     val steam = SteamFluids.steam
 
     init {

@@ -8,7 +8,7 @@ import mindustry.world.Block
 import mindustry.world.draw.*
 import mindustry.world.meta.BuildVisibility
 import steam.UndebugOnly
-import steam.graphic.R
+import steam.R
 import steam.utils.plus
 import steam.world.crafting.Boiler
 import steam.world.effect.HeatAccumulator
@@ -47,7 +47,9 @@ object SteamBlocks {
                     particleLife = 80f
                     reverse = true
                     particleSizeInterp = Interp.one
-                }, DrawLiquidTile(SteamFluids.steam, 0f), DrawDefault())
+                }, DrawLiquidTile(SteamFluids.steam, 0f), DrawDefault(),
+                DrawHeatInput().apply { heatColor = R.C.burnerFlame }
+            )
         }
     }
 
