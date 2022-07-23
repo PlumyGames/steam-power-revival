@@ -54,7 +54,7 @@ object SteamBlocks {
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
                 requirements = arrayOf(
-                    Items.copper + 15, SteamItems.stone + 30
+                    SteamItems.stone + 30, Items.copper + 15
                 )
             }
             size = 1
@@ -63,14 +63,22 @@ object SteamBlocks {
                 DrawHeatOutput().apply { heatColor = R.C.burnerFlame },
                 DrawWarmupRegion()
             )
-            heatConvertFactor = 5f
+            heatConvertFactor = 8f
             heatingTimeFactor = 90f
             health = 90
+            regionRotated1 = 1
         }
     }
     fun fluidBurner() {
         fluidBurner = FluidCombustor("liquid-burner").apply {
-            heatConvertFactor = 8f
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 60, Items.silicon + 35, Items.metaglass + 20
+                )
+            }
+            heatConvertFactor = 15f
             size = 2
             health = 350
             drawer = DrawMulti(
