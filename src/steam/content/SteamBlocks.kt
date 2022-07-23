@@ -1,5 +1,6 @@
 package steam.content
 
+import arc.Core
 import mindustry.Vars
 import mindustry.content.Items
 import mindustry.type.Category
@@ -72,6 +73,12 @@ object SteamBlocks {
             heatConvertFactor = 8f
             size = 2
             health = 350
+            drawer = DrawMulti(
+                DrawLiquidRegion(),
+                DrawDefault(),
+                DrawHeatOutput().apply { heatColor = R.C.burnerFlame },
+                DrawWarmupRegion().apply { region = Core.atlas.find("$name-liquid") }
+            )
         }
     }
 
