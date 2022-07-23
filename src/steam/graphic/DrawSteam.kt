@@ -9,8 +9,8 @@ import arc.math.Mathf
 import arc.util.Time
 import mindustry.gen.Building
 import mindustry.world.draw.DrawBlock
-import steam.world.module.IPressureContainer
 
+import steam.world.module.IPressureContainer
 class DrawSteam : DrawBlock() {
     var color = R.C.steam
     var alpha = 0.4f
