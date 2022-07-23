@@ -7,9 +7,10 @@ import mindustry.world.Block
 import mindustry.world.draw.*
 import mindustry.world.meta.BuildVisibility
 import steam.UndebugOnly
-import steam.graphic.R
+import steam.graphic.DrawSteam
+import steam.R
 import steam.utils.plus
-import steam.world.crafting.TemperatureBlock
+import steam.world.crafting.Boiler
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
@@ -24,7 +25,7 @@ object SteamBlocks {
     //sandbox
     lateinit var heatAccumulator: HeatAccumulator
     fun boiler() {
-        boiler = TemperatureBlock("boiler").apply {
+        boiler = Boiler("boiler").apply {
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
@@ -32,17 +33,12 @@ object SteamBlocks {
                     Items.copper + 20
                 )
             }
+            liquidCapacity = 200f
             size = 2
             hasLiquids = true
             drawer = DrawMulti(DrawRegion("-bottom"), DrawLiquidRegion(), DrawDefault(),
-                DrawParticles().apply {
-                    color = R.C.steam
-                    alpha = 0.4f
-                    particleSize = 3f
-                    particles = 24
+                DrawSteam().apply {
                     particleRad = Vars.tilesize * size * 1.5f
-                    reverse = true
-                    particleLife = 140f
                 })
         }
     }
