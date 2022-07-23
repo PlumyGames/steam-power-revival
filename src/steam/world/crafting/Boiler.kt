@@ -11,7 +11,7 @@ import mindustry.gen.Building
 import mindustry.type.Liquid
 import mindustry.ui.Bar
 import steam.content.SteamFluids
-import steam.graphic.R
+import steam.R
 import steam.world.module.Celsius100
 import steam.world.module.IPressureContainer
 import steam.world.module.celsius
