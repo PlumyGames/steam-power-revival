@@ -1,14 +1,16 @@
 package steam.content
 
 import arc.math.Interp
+import mindustry.Vars
 import mindustry.content.Items
 import mindustry.content.Liquids
 import mindustry.type.Category
 import mindustry.world.Block
 import mindustry.world.draw.*
 import mindustry.world.meta.BuildVisibility
-import steam.UndebugOnly
 import steam.R
+import steam.UndebugOnly
+import steam.graphic.DrawSteam
 import steam.utils.plus
 import steam.world.crafting.Boiler
 import steam.world.effect.HeatAccumulator
@@ -37,7 +39,9 @@ object SteamBlocks {
             size = 2
             hasLiquids = true
             evaporationSpeed = 0.1f
-            drawer = DrawMulti(DrawRegion("-bottom"), DrawLiquidRegion(Liquids.water),
+            drawer = DrawMulti(
+                DrawRegion("-bottom"),
+                DrawLiquidRegion(Liquids.water),
                 DrawParticles().apply {
                     color = R.C.steam
                     alpha = 0.3f
@@ -47,8 +51,12 @@ object SteamBlocks {
                     particleLife = 80f
                     reverse = true
                     particleSizeInterp = Interp.one
-                }, DrawLiquidTile(SteamFluids.steam, 0f), DrawDefault(),
-                DrawHeatInput().apply { heatColor = R.C.burnerFlame }
+                },
+                DrawLiquidTile(SteamFluids.steam, 0f), DrawDefault(),
+                DrawHeatInput().apply { heatColor = R.C.burnerFlame },
+                DrawSteam().apply {
+                    particleRad = Vars.tilesize * size * 1.5f
+                },
             )
         }
     }
