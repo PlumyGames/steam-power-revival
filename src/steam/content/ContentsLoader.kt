@@ -7,6 +7,9 @@ object ContentsLoader {
         SteamItems.apply {
             stone()
         }
+        SteamFluids.apply {
+            steam()
+        }
         SteamBlocks.apply {
             boiler()
             burner()

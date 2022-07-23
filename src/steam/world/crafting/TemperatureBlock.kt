@@ -10,11 +10,13 @@ import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
 import steam.world.module.ITemperatureBlock.Companion.warmupImpl
 import steam.world.module.ITemperatureBlock
+import steam.world.module.celsius
 
-class TemperatureBlock(name: String) : Block(name) {
+open class TemperatureBlock(name: String) : Block(name) {
     var heatRequirement = 10f
+    var tempCap = 240f.celsius
     var convertionRateMul = 25f
-    var convertSpeed = 0.01f //lose 1% each second
+    var coolDownSpeed = 0.01f //lose 1% each second
     var drawer: DrawBlock = DrawDefault()
 
     init {
@@ -28,8 +30,8 @@ class TemperatureBlock(name: String) : Block(name) {
         drawer.load(this)
     }
 
-    inner class TemperatureBuild : Building(), ITemperatureBlock, HeatConsumer {
-        override var temp = 0f
+    open inner class TemperatureBuild : Building(), ITemperatureBlock, HeatConsumer {
+        override var temp = 0f.celsius
         var sideHeat = FloatArray(4)
         var heat = 0f
         override fun sideHeat() = sideHeat
@@ -37,7 +39,7 @@ class TemperatureBlock(name: String) : Block(name) {
         override fun updateTile() {
             heat = calculateHeat(sideHeat)
             temp += heat * convertionRateMul * delta()
-            temp = Mathf.lerpDelta(temp, 0f, convertSpeed / 60)
+            temp = Mathf.lerpDelta(temp, 0f, coolDownSpeed / 60)
             Log.info(temp)
         }
 
