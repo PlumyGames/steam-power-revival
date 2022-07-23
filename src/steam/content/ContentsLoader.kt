@@ -10,6 +10,7 @@ object ContentsLoader {
         SteamBlocks.apply {
             boiler()
             burner()
+            fluidBurner()
             heatAccumulator()
         }
     }

@@ -64,11 +64,14 @@ object SteamBlocks {
             )
             heatConvertFactor = 5f
             heatingTimeFactor = 90f
+            health = 90
         }
     }
     fun fluidBurner() {
         fluidBurner = FluidCombustor("liquid-burner").apply {
             heatConvertFactor = 8f
+            size = 2
+            health = 350
         }
     }
 
