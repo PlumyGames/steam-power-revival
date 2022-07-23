@@ -53,7 +53,7 @@ object SteamBlocks {
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
                 requirements = arrayOf(
-                    Items.copper + 15, SteamItems.stone + 30
+                    SteamItems.stone + 30, Items.copper + 15
                 )
             }
             size = 1
@@ -62,9 +62,10 @@ object SteamBlocks {
                 DrawHeatOutput().apply { heatColor = R.C.burnerFlame },
                 DrawWarmupRegion()
             )
-            heatConvertFactor = 5f
+            heatConvertFactor = 8f
             heatingTimeFactor = 90f
             health = 90
+            regionRotated1 = 1
         }
     }
 

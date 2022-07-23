@@ -40,11 +40,11 @@ class ItemBurner(name: String) : Block(name) {
     var warmupSpeed = 0.019f
     var heatingTimeFactor = 60f // how long an item can output heat continuously
     var heatConvertFactor = 4f // heat from flammability
-    // Explosion
     var explosiveConvertingProportion = 0.4f //extra heat proportion from explosiveness
-    var explosivenessThreshold = 0.4f // if > this, it will explode
-    var explodeFactor = 60f //damage factor for explosion
-    var explodeChance = 0.1f //explosion chance
+    // Explosion
+    var explosivenessThreshold = 0.5f // if >= this, it will explode
+    var explodeFactor = 20f //damage factor for explosion
+    var explodeChance = 0.5f //explosion chance
     var explodeEffect: Effect = Fx.generatespark
     // Function
     lateinit var flammableFilter: BurnerItemConsume
@@ -65,7 +65,7 @@ class ItemBurner(name: String) : Block(name) {
     fun toHeatingTime(flammability: Float) = heatingTimeFactor * flammability
     fun toHeat(flammability: Float) = flammability * heatConvertFactor
     fun toExplodeDamage(explosiveness: Float) = explosiveness * explodeFactor
-    fun toFinalFlammability(item: Item) = item.flammability + item.explosiveness * explosiveConvertingProportion
+    fun toFinalFlammability(item: Item) = item.flammability + if(item.explosiveness >= explosivenessThreshold) item.explosiveness * explosiveConvertingProportion else 0f
     fun toFinalHeat(item: Item) = toHeat(toFinalFlammability(item))
     override fun load() {
         super.load()
@@ -157,9 +157,10 @@ class ItemBurner(name: String) : Block(name) {
                     addTable {
                         add(ItemDisplay(it, 1, toHeatingTime(it.flammability), false)).row()
                         add("${autoFixed(toFinalHeat(it), 1)} ${bundle["unit.heatunits"]}").row()
-                        add("${autoFixed(toHeatingTime(it.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray)
+                        add("${autoFixed(toHeatingTime(it.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray).row()
+                        if(it.explosiveness >= explosivenessThreshold) add(bundle["stat.explode"]).color(Pal.redderDust)
                     }.grow().pad(10f)
-                }.growX().pad(5f)
+                }.grow().pad(5f)
             }
         }
     }
