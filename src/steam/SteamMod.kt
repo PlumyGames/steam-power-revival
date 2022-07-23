@@ -6,6 +6,7 @@ import steam.content.ContentsLoader
 class SteamMod : Mod() {
 
     init {
+
     }
 
     override fun loadContent() {

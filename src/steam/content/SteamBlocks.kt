@@ -11,12 +11,17 @@ import steam.UndebugOnly
 import steam.utils.plus
 import steam.world.crafting.TemperatureBlock
 import steam.world.effect.HeatAccumulator
+import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
 
 object SteamBlocks {
     //should be listed all at once
+    //crafting
     lateinit var boiler: Block
+    //crafting - heating
     lateinit var burner: ItemBurner
+    lateinit var fluidBurner: FluidCombustor
+    //sandbox
     lateinit var heatAccumulator: HeatAccumulator
     fun boiler() {
         boiler = TemperatureBlock("boiler").apply {
@@ -48,7 +53,7 @@ object SteamBlocks {
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
                 requirements = arrayOf(
-                    Items.copper + 20
+                    Items.copper + 15, SteamItems.stone + 30
                 )
             }
             size = 1
@@ -57,8 +62,13 @@ object SteamBlocks {
                 DrawHeatOutput().apply { heatColor = R.C.burnerFlame },
                 DrawWarmupRegion()
             )
-            heatConvertFactor = 4f
+            heatConvertFactor = 5f
             heatingTimeFactor = 90f
+        }
+    }
+    fun fluidBurner() {
+        fluidBurner = FluidCombustor("liquid-burner").apply {
+            heatConvertFactor = 8f
         }
     }
 
