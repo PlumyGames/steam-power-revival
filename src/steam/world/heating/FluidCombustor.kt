@@ -15,6 +15,7 @@ import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.type.Liquid
 import mindustry.ui.Bar
+import mindustry.ui.LiquidDisplay
 import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatBlock
 import mindustry.world.consumers.ConsumeLiquidFlammable
@@ -35,6 +36,7 @@ class FluidCombustor(name: String) : Block(name) {
     var warmupSpeed = 0.019f
     var drawer: DrawBlock = DrawDefault()
     var minFlammabilityReq = 0.3f
+    var amount = 0.1f //amount consumed per tick
     lateinit var flammableFilter: ConsumeLiquidFlammable
 
     init {
@@ -119,7 +121,8 @@ class FluidCombustor(name: String) : Block(name) {
                     background(Tex.whiteui)
                     setColor(Pal.darkestGray)
                     addTable {
-                        add("${Strings.autoFixed(toHeat(it.flammability), 1)} ${Core.bundle["unit.heatunits"]}").row()
+                        add(LiquidDisplay(it, amount * 60f, true)).row()
+                        add("${Strings.autoFixed(toHeat(it.flammability), 1)} ${Core.bundle["unit.heatunits"]}")
                     }.grow().pad(10f)
                 }.growX().pad(5f)
             }
