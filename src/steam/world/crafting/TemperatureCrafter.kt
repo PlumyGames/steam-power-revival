@@ -44,7 +44,10 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
                 } else warmup = Mathf.lerpDelta(warmup, 0f, warmupSpeed)
             }
         }
-
+        override fun placed() {
+            super.placed()
+            temp = 25f
+        }
         override fun efficiency(): Float {
             return Mathf.clamp(temp, minTemp, maxTemp) / minRequired
         }
