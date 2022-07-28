@@ -25,22 +25,22 @@ fun TextureRegion.sheet(
 ) = this.split(width, height).flatten().toTypedArray()
 
 fun String.sheetOneDirection(
-    count: Int,
+    number: Int,
     byRow: Boolean = true,
-) = Core.atlas.find(this).sheetOneDirection(count, byRow)
+) = Core.atlas.find(this).sheetOneDirection(number, byRow)
 
 fun TextureRegion.sheetOneDirection(
-    count: Int,
+    number: Int,
     byRow: Boolean = true,
 ) = run {
-    val width = if (byRow) width / count else width
-    val height = if (byRow) height / count else height
+    val width = if (byRow) width / number else width
+    val height = if (byRow) height else height / number
     if (byRow)
         this.split(width, height).run {
-            Array(count) { i -> this[i][0] }
+            Array(number) { i -> this[i][0] }
         }
     else
         this.split(width, height).run {
-            Array(count) { i -> this[0][i] }
+            Array(number) { i -> this[0][i] }
         }
 }
