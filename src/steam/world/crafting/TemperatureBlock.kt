@@ -21,12 +21,12 @@ import steam.world.module.celsius
 open class TemperatureBlock(name: String) : Block(name) {
     var heatRequirement = 10f
     var minRequired = Celsius100
-    var tempCap = 240f.celsius
+    var tempCap = 300f.celsius
         set(value) {
             field = value.coerceAtLeast(Celsius100 + 1f)
         }
-    var convertSpeed = 5f //convert speed x5
-    var coolDownSpeed = 0.05f / 60f //lose 5% each second
+    var convertSpeed = 2f //convert x2
+    var coolDownSpeed = 0.025f / 60f //lose 2.5% each second
     var drawer: DrawBlock = DrawDefault()
 
     init {

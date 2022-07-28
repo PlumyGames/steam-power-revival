@@ -8,6 +8,7 @@ object SteamFluids {
     fun steam() {
         steam = Liquid("steam").apply {
             color = R.C.steam
+            gas = true
         }
     }
 }

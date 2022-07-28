@@ -9,7 +9,7 @@ import steam.world.module.celsius
 
 class TemperatureCrafter(name: String) : TemperatureBlock(name) {
     //amount of temp lose per craft
-    val craftTemp = 0.1f.celsius
+    val craftTemp = 0.15f.celsius
     var warmupSpeed = 0.1f
     //in tick
     var craftTime = 1f
@@ -36,7 +36,7 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
             super.updateTile()
             if (efficiency > 0 && temp >= minRequired) {
                 val amount = craftTime * edelta()
-                if (amount > 0.0001f) {
+                if (amount > 0.001f) {
                     consume()
                     handleLiquid(this, outputFluid.liquid, amount * outputFluid.amount)
                     temp -= amount * craftTemp
@@ -48,6 +48,10 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
             super.placed()
             temp = 25f
         }
+
+        override fun shouldConsume(): Boolean {
+            return pressureProportion <= 1f && enabled
+        }
         override fun efficiency(): Float {
             return Mathf.clamp(temp, minTemp, maxTemp) / minRequired
         }
@@ -56,6 +60,6 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
 
     override fun setBars() {
         super.setBars()
-        removeBar("liquid")
+        addLiquidBar(outputFluid.liquid)
     }
 }
