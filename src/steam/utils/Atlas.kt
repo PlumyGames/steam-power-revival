@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package steam.utils
 
 import arc.Core
@@ -9,17 +7,11 @@ fun String.frames(number: Int, suffix: String = "-") =
     Array<TextureRegion>(number) {
         Core.atlas.find("$this$suffix$it")
     }
-/**
- * Slice sprites in order of
- * ```
- * 1 2 3 4
- * 5 6 7 8
- * ```
- */
-fun String.slice(
+
+fun String.sheet(
     width: Int,
     height: Int = width,
-) = Core.atlas.find(this).slice(width, height)
+) = Core.atlas.find(this).sheet(width, height)
 /**
  * Slice sprites in order of
  * ```
@@ -27,7 +19,7 @@ fun String.slice(
  * 5 6 7 8
  * ```
  */
-fun TextureRegion.slice(
+fun TextureRegion.sheet(
     width: Int,
     height: Int = width,
 ) = this.split(width, height).flatten().toTypedArray()
@@ -52,13 +44,3 @@ fun TextureRegion.sheetOneDirection(
             Array(count) { i -> this[0][i] }
         }
 }
-
-fun String.sheet(
-    count: Int,
-    byRow: Boolean = true,
-) = Core.atlas.find(this).sheet(count, byRow)
-
-fun TextureRegion.sheet(
-    count: Int,
-    byRow: Boolean = true,
-) = sheetOneDirection(count, byRow)
