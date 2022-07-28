@@ -3,7 +3,6 @@ package steam.world.crafting
 import arc.func.Prov
 import arc.math.Mathf
 import mindustry.type.LiquidStack
-import steam.world.module.Celsius100
 import steam.world.module.IPressureContainer
 import steam.world.module.celsius
 
@@ -15,7 +14,6 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
     var craftTime = 1f
     val pressureCapacity: Float
         get() = liquidCapacity
-    var minTemp = Celsius100
     var maxTemp = 400f.celsius
 
     lateinit var outputFluid: LiquidStack
@@ -43,6 +41,7 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
                     warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed)
                 } else warmup = Mathf.lerpDelta(warmup, 0f, warmupSpeed)
             }
+            dumpLiquid(outputFluid.liquid)
         }
         override fun placed() {
             super.placed()
@@ -50,10 +49,10 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
         }
 
         override fun shouldConsume(): Boolean {
-            return pressureProportion <= 1f && enabled
+            return pressureProportion <= 1f && enabled && temp >= minRequired
         }
         override fun efficiency(): Float {
-            return Mathf.clamp(temp, minTemp, maxTemp) / minRequired
+            return Mathf.clamp(temp - 25f, 0f, maxTemp) / minRequired
         }
         override fun warmup() = warmup
     }
