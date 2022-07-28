@@ -1,13 +1,18 @@
 package steam.world.crafting
 
+import arc.Core
 import arc.func.Prov
+import arc.graphics.Color
 import arc.math.Mathf
-import arc.util.Log
+import arc.util.Strings
+import arc.util.Tmp
 import mindustry.gen.Building
+import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatConsumer
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
+import steam.R
 import steam.world.module.Celsius100
 import steam.world.module.ITemperatureBlock
 import steam.world.module.ITemperatureBlock.Companion.warmupImpl
@@ -15,6 +20,7 @@ import steam.world.module.celsius
 
 open class TemperatureBlock(name: String) : Block(name) {
     var heatRequirement = 10f
+    var minRequired = Celsius100
     var tempCap = 240f.celsius
         set(value) {
             field = value.coerceAtLeast(Celsius100 + 1f)
@@ -42,14 +48,23 @@ open class TemperatureBlock(name: String) : Block(name) {
         override fun heatRequirement() = heatRequirement
         override fun updateTile() {
             heat = calculateHeat(sideHeat)
+            //25f is base temp
+            temp = Mathf.lerpDelta(temp, 25f, coolDownSpeed * convertSpeed)
             temp += (heat * convertSpeed * delta()) / 60
-            temp = Mathf.lerpDelta(temp, 0f, coolDownSpeed * convertSpeed)
-            Log.info(temp)
+            if(temp > tempCap) kill() //explode when overheat
         }
-
         override fun warmup() = warmupImpl()
         override fun draw() {
             drawer.draw(this)
+        }
+    }
+    override fun setBars() {
+        super.setBars()
+        addBar<TemperatureBuild>("temp") { Bar(
+            { Core.bundle.format("bar.temp", Strings.autoFixed(it.temp, 1)) },
+            { Tmp.c1.set(R.C.burnerFlame).lerp(Color.orange, it.temp / tempCap) },
+            { it.temp / minRequired }
+        )
         }
     }
 }

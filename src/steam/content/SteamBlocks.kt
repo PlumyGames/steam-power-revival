@@ -4,13 +4,14 @@ import arc.math.Interp
 import mindustry.content.Items
 import mindustry.content.Liquids
 import mindustry.type.Category
+import mindustry.type.LiquidStack
 import mindustry.world.Block
 import mindustry.world.draw.*
 import mindustry.world.meta.BuildVisibility
 import steam.UndebugOnly
 import steam.R
 import steam.utils.plus
-import steam.world.crafting.Boiler
+import steam.world.crafting.TemperatureCrafter
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
@@ -25,7 +26,7 @@ object SteamBlocks {
     //sandbox
     lateinit var heatAccumulator: HeatAccumulator
     fun boiler() {
-        boiler = Boiler("boiler").apply {
+        boiler = TemperatureCrafter("boiler").apply {
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
@@ -36,7 +37,8 @@ object SteamBlocks {
             liquidCapacity = 200f
             size = 2
             hasLiquids = true
-            evaporationSpeed = 0.1f
+            consumeLiquid(Liquids.water, 0.2f)
+            outputFluid = LiquidStack(SteamFluids.steam, 0.2f)
             drawer = DrawMulti(DrawRegion("-bottom"), DrawLiquidRegion(Liquids.water),
                 DrawParticles().apply {
                     color = R.C.steam

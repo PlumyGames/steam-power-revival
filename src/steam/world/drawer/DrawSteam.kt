@@ -1,4 +1,4 @@
-package steam.graphic
+package steam.world.drawer
 
 import arc.graphics.Blending
 import arc.graphics.g2d.Draw
@@ -26,7 +26,7 @@ class DrawSteam : DrawBlock() {
     var blending: Blending = Blending.normal
     override fun draw(build: Building) {
         if (build !is IPressureContainer) return
-        val steam = build.steamProportion
+        val steam = build.pressureProportion
         if (steam > 0f) {
             val a = alpha * steam
             Draw.blend(blending)

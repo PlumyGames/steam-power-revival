@@ -1,9 +1,7 @@
 package steam.world.module
 
 interface IPressureContainer {
-    val steamAmount: Float
-    /**
-     * The proportion of steam in this container
-     */
-    val steamProportion: Float
+    val pressureAmount: Float
+    //proportion 0-1f
+    val pressureProportion: Float
 }
