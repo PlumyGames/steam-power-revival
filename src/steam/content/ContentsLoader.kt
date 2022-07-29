@@ -16,6 +16,10 @@ object ContentsLoader {
             fluidBurner()
             heatAccumulator()
         }
+        ContentsOverrider.apply {
+            mechanicalDrill()
+            pneumaticDrill()
+        }
     }
 
     fun unlockForDebug() {

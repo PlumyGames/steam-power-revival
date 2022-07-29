@@ -20,6 +20,7 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
 
     init {
         hasLiquids = true
+        outputsLiquid = true
         buildType = Prov { TempCrafterBuild() }
     }
 
