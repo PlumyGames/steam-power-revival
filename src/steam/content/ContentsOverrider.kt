@@ -1,6 +1,8 @@
 package steam.content
 
 import mindustry.content.Blocks.*
+import mindustry.content.UnitTypes.*
+import mindustry.type.UnitType
 import mindustry.world.blocks.distribution.Conveyor
 import mindustry.world.blocks.production.Drill
 import mindustry.world.consumers.ConsumeLiquid
@@ -23,12 +25,23 @@ object ContentsOverrider {
         }
     }
 
-    fun conveyor(){
+    fun conveyor() {
         (conveyor as Conveyor).apply {
             hasPower = true
             consumesPower = true
             conductivePower = true
             consumePower(1f / 60f)
+        }
+    }
+
+    fun alpha() {
+        (alpha as UnitType).apply {
+            mineTier = 2
+        }
+    }
+    fun beta() {
+        (beta as UnitType).apply {
+            mineTier = 2
         }
     }
 }

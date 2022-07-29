@@ -20,6 +20,8 @@ object ContentsLoader {
             mechanicalDrill()
             pneumaticDrill()
             conveyor()
+            alpha()
+            beta()
         }
     }
 
