@@ -19,6 +19,7 @@ object ContentsLoader {
         ContentsOverrider.apply {
             mechanicalDrill()
             pneumaticDrill()
+            conveyor()
         }
     }
 

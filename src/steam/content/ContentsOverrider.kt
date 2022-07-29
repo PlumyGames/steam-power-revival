@@ -1,6 +1,7 @@
 package steam.content
 
 import mindustry.content.Blocks.*
+import mindustry.world.blocks.distribution.Conveyor
 import mindustry.world.blocks.production.Drill
 import mindustry.world.consumers.ConsumeLiquid
 
@@ -19,6 +20,15 @@ object ContentsOverrider {
             consumeLiquid(SteamFluids.steam, 0.05f)
             drillTime = 200f
             liquidBoostIntensity = 1f
+        }
+    }
+
+    fun conveyor(){
+        (conveyor as Conveyor).apply {
+            hasPower = true
+            consumesPower = true
+            conductivePower = true
+            consumePower(1f / 60f)
         }
     }
 }
