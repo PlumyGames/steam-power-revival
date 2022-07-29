@@ -16,6 +16,7 @@ import steam.R
 import steam.UndebugOnly
 import steam.utils.plus
 import steam.world.crafting.TemperatureCrafter
+import steam.world.drawer.DrawReservoir
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
@@ -64,6 +65,7 @@ object SteamBlocks {
 
     fun burner() {
         burner = ItemBurner("burner").apply {
+            squareSprite = false
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
@@ -108,6 +110,8 @@ object SteamBlocks {
     }
     fun reservoir() {
         reservoir = Pump("reservoir").apply {
+            liquidCapacity = 80f
+            squareSprite = false
             pumpAmount = 0.05f
             size = 2
             health = 350
@@ -118,14 +122,16 @@ object SteamBlocks {
                     SteamItems.stone + 80
                 )
             }
+            drawer = DrawMulti(DrawDefault(), DrawReservoir(null), DrawRegion("-top"))
         }
     }
     fun well() {
         well = SolidPump("well").apply {
+            liquidCapacity = 80f
             pumpAmount = 0.05f
             size = 2
             health = 220
-            category = Category.liquid
+            category = Category.production
             buildVisibility = BuildVisibility.shown
             attribute = Attribute.water
             envRequired = envRequired or Env.groundWater
