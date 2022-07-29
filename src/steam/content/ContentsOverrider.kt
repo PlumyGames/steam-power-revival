@@ -7,6 +7,7 @@ import mindustry.content.UnitTypes.beta
 import mindustry.type.Category
 import mindustry.type.ItemStack
 import mindustry.type.UnitType
+import mindustry.world.blocks.distribution.Conveyor
 import mindustry.world.blocks.production.Drill
 import mindustry.world.consumers.ConsumeLiquid
 import mindustry.world.meta.BuildVisibility
@@ -36,16 +37,18 @@ object ContentsOverrider {
             Vars.content.blocks().remove(conveyor)
             val allNameMap = Reflect.get<Array<ObjectMap<String, MappableContent>>>(Vars.content, "contentNameMap")
             allNameMap[ContentType.block.ordinal].remove("conveyor")*/
-        ElectricConveyor("conveyor").apply {
+        ElectricConveyor("electric-conveyor").apply {
             requirements(Category.distribution, ItemStack.with(Items.copper, 1), true)
             health = 45
-            speed = 0.03f
-            displayedSpeed = 4.2f
+            speed = 0.08f
+            displayedSpeed = 10.5f
             buildCostMultiplier = 2f
             hasPower = true
             consumesPower = true
             conductivePower = true
             consumePower(1f / 60f)
+            regions = (conveyor as Conveyor).regions
+            region = (conveyor as Conveyor).region
         }
         conveyor.apply {
             buildVisibility = BuildVisibility.hidden
