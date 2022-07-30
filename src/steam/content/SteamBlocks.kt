@@ -6,12 +6,17 @@ import mindustry.content.Liquids
 import mindustry.type.Category
 import mindustry.type.LiquidStack
 import mindustry.world.Block
+import mindustry.world.blocks.production.Pump
+import mindustry.world.blocks.production.SolidPump
 import mindustry.world.draw.*
+import mindustry.world.meta.Attribute
 import mindustry.world.meta.BuildVisibility
-import steam.UndebugOnly
+import mindustry.world.meta.Env
 import steam.R
+import steam.UndebugOnly
 import steam.utils.plus
 import steam.world.crafting.TemperatureCrafter
+import steam.world.drawer.DrawReservoir
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
@@ -23,6 +28,9 @@ object SteamBlocks {
     //crafting - heating
     lateinit var burner: ItemBurner
     lateinit var fluidBurner: FluidCombustor
+    //liquid
+    lateinit var reservoir: Block
+    lateinit var well: Block
     //sandbox
     lateinit var heatAccumulator: HeatAccumulator
     fun boiler() {
@@ -57,6 +65,7 @@ object SteamBlocks {
 
     fun burner() {
         burner = ItemBurner("burner").apply {
+            squareSprite = false
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
@@ -81,7 +90,12 @@ object SteamBlocks {
     fun fluidBurner() {
         fluidBurner = FluidCombustor("liquid-burner").apply {
             category = Category.crafting
-            buildVisibility = BuildVisibility.sandboxOnly
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 60, Items.copper + 30, Items.metaglass + 25
+                )
+            }
             heatConvertFactor = 8f
             size = 2
             health = 350
@@ -94,7 +108,40 @@ object SteamBlocks {
             )
         }
     }
-
+    fun reservoir() {
+        reservoir = Pump("reservoir").apply {
+            liquidCapacity = 80f
+            squareSprite = false
+            pumpAmount = 0.05f
+            size = 2
+            health = 350
+            category = Category.liquid
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 80
+                )
+            }
+            drawer = DrawMulti(DrawDefault(), DrawReservoir(null), DrawRegion("-top"))
+        }
+    }
+    fun well() {
+        well = SolidPump("well").apply {
+            liquidCapacity = 80f
+            pumpAmount = 0.05f
+            size = 2
+            health = 220
+            category = Category.production
+            buildVisibility = BuildVisibility.shown
+            attribute = Attribute.water
+            envRequired = envRequired or Env.groundWater
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 80
+                )
+            }
+        }
+    }
     fun heatAccumulator() {
         heatAccumulator = HeatAccumulator("heat-accumulator").apply {
             category = Category.effect

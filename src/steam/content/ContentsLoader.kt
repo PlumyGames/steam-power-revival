@@ -14,6 +14,8 @@ object ContentsLoader {
             boiler()
             burner()
             fluidBurner()
+            reservoir()
+            well()
             heatAccumulator()
         }
         ContentsOverrider.apply {
