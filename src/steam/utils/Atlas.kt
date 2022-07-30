@@ -20,9 +20,16 @@ fun String.sheet(
  * ```
  */
 fun TextureRegion.sheet(
-    width: Int,
-    height: Int = width,
-) = this.split(width, height).flatten().toTypedArray()
+    tileWidth: Int,
+    tileHeight: Int = tileWidth,
+): Array<TextureRegion> {
+    val row = width / tileWidth
+    val column = height / tileHeight
+    return Array(row * column) { i ->
+        val rowByColumn = split(tileWidth, tileHeight)
+        rowByColumn[i / column][i % column]
+    }
+}
 
 fun String.sheetOneDirection(
     number: Int,
