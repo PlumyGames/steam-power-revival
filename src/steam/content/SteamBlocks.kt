@@ -16,6 +16,7 @@ import steam.R
 import steam.UndebugOnly
 import steam.utils.plus
 import steam.world.crafting.TemperatureCrafter
+import steam.world.distribution.Node
 import steam.world.drawer.DrawReservoir
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
@@ -31,6 +32,8 @@ object SteamBlocks {
     //liquid
     lateinit var reservoir: Block
     lateinit var well: Block
+    //pressure
+    lateinit var pressureNode: Block
     //sandbox
     lateinit var heatAccumulator: HeatAccumulator
     fun boiler() {
@@ -138,6 +141,19 @@ object SteamBlocks {
             UndebugOnly {
                 requirements = arrayOf(
                     SteamItems.stone + 80
+                )
+            }
+        }
+    }
+    fun pressureNode() {
+        pressureNode = Node("pressure-pipe").apply {
+            health = 120
+            category = Category.distribution
+            buildVisibility = BuildVisibility.shown
+
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 10, Items.copper + 5, SteamItems.iron + 5
                 )
             }
         }

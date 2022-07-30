@@ -16,6 +16,7 @@ object ContentsLoader {
             fluidBurner()
             reservoir()
             well()
+            pressureNode()
             heatAccumulator()
         }
         ContentsOverrider.apply {
