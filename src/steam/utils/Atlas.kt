@@ -23,11 +23,11 @@ fun TextureRegion.sheet(
     tileWidth: Int,
     tileHeight: Int = tileWidth,
 ): Array<TextureRegion> {
-    val row = width / tileWidth
-    val column = height / tileHeight
+    val row = height / tileWidth
+    val column = width / tileHeight
     return Array(row * column) { i ->
         val rowByColumn = split(tileWidth, tileHeight)
-        rowByColumn[i / column][i % column]
+        rowByColumn[i % column][i / column]
     }
 }
 
