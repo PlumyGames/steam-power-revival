@@ -3,9 +3,17 @@ package steam.content
 import arc.math.Interp
 import mindustry.content.Items
 import mindustry.content.Liquids
+import mindustry.entities.bullet.BasicBulletType
+import mindustry.entities.part.DrawPart.PartProgress
+import mindustry.entities.part.RegionPart
+import mindustry.entities.pattern.ShootAlternate
+import mindustry.entities.pattern.ShootMulti
+import mindustry.entities.pattern.ShootSpread
+import mindustry.graphics.Pal
 import mindustry.type.Category
 import mindustry.type.LiquidStack
 import mindustry.world.Block
+import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.blocks.production.Pump
 import mindustry.world.blocks.production.SolidPump
 import mindustry.world.blocks.storage.CoreBlock
@@ -25,6 +33,8 @@ import steam.world.heating.ItemBurner
 
 object SteamBlocks {
     //should be listed all at once
+    //turret
+    lateinit var rifle: Block
     //crafting
     lateinit var boiler: Block
     //crafting - heating
@@ -39,6 +49,70 @@ object SteamBlocks {
     lateinit var coreFragment: Block
     //sandbox
     lateinit var heatAccumulator: HeatAccumulator
+
+    fun rifle() {
+        rifle = ItemTurret("rifle").apply {
+            reload = 30f
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 40, Items.copper + 35, SteamItems.iron + 20
+                )
+            }
+            shoot = ShootMulti(ShootAlternate(4f), ShootSpread(3, 8f))
+            velocityRnd = 0.1f
+            shootY = 6.75f
+            size = 2
+
+            drawer = DrawTurret().apply {
+                parts.addAll(
+                    RegionPart("-barrel-l").apply {
+                        moveY = -1.5f
+                        progress = PartProgress.recoil
+                        under = true
+                    },
+                    RegionPart("-barrel-r").apply {
+                        moveY = -1.5f
+                        progress = PartProgress.recoil.delay(0.5f)
+                        under = true
+                    }
+                )
+            }
+
+            ammo(
+                SteamItems.stone, BasicBulletType(2.5f, 4f).apply {
+                    width = 7f
+                    height = 9f
+                    lifetime = 60f
+                    ammoMultiplier = 1f
+                },
+                Items.copper, BasicBulletType(2.5f, 8f).apply {
+                    width = 7f
+                    height = 9f
+                    lifetime = 60f
+                    ammoMultiplier = 1.5f
+                },
+                Items.graphite, BasicBulletType(3.5f, 15f).apply {
+                    width = 9f
+                    height = 12f
+                    reloadMultiplier = 0.6f
+                    ammoMultiplier = 3.5f
+                    lifetime = 60f
+                },
+                Items.coal, BasicBulletType(2.5f, 10f).apply {
+                    width = 8f
+                    height = 12f
+                    lifetime = 60f
+                    ammoMultiplier = 1.5f
+                    makeFire = true
+                    backColor = Pal.lightOrange
+                    frontColor = Pal.lightishOrange
+                }
+            )
+            limitRange()
+        }
+    }
     fun boiler() {
         boiler = TemperatureCrafter("boiler").apply {
             category = Category.crafting

@@ -28,7 +28,7 @@ object SteamUnitTypes {
             buildSpeed = 1.2f
 
             weapons.add(Weapon("steam-phase-gun").apply {
-                reload = 20f
+                reload = 30f
                 shoot = ShootSpread(2, 5f)
                 baseRotation = -35f
                 shootCone = 360f
@@ -53,7 +53,7 @@ object SteamUnitTypes {
                     buildingDamageMultiplier = 0.01f
                     rangeOverride = 270f
 
-                    fragBullet = BasicBulletType(4.5f, 8f).apply {
+                    fragBullet = BasicBulletType(4.5f, 15f).apply {
                         keepVelocity = false
                         width = 9f
                         height = 12f

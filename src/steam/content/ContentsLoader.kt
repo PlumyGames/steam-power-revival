@@ -14,6 +14,7 @@ object ContentsLoader {
             epsilon()
         }
         SteamBlocks.apply {
+            rifle()
             boiler()
             burner()
             fluidBurner()

@@ -17,7 +17,7 @@ import steam.world.module.celsius
 
 class TemperatureCrafter(name: String) : TemperatureBlock(name) {
     //amount of temp lose per craft
-    val craftTemp = 0.15f.celsius
+    val craftTemp = 0.2f.celsius
     var warmupSpeed = 0.1f
     //in tick
     var craftTime = 1f
