@@ -53,14 +53,15 @@ object SteamBlocks {
     fun rifle() {
         rifle = ItemTurret("rifle").apply {
             reload = 30f
-            category = Category.crafting
+            health = 660
+            category = Category.turret
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
                 requirements = arrayOf(
                     SteamItems.stone + 40, Items.copper + 35, SteamItems.iron + 20
                 )
             }
-            shoot = ShootMulti(ShootAlternate(4f), ShootSpread(3, 8f))
+            shoot = ShootMulti(ShootSpread(3, 8f), ShootAlternate(4f))
             velocityRnd = 0.1f
             shootY = 6.75f
             size = 2
@@ -81,26 +82,30 @@ object SteamBlocks {
             }
 
             ammo(
-                SteamItems.stone, BasicBulletType(2.5f, 4f).apply {
+                SteamItems.stone, BasicBulletType(3.5f, 4f).apply {
                     width = 7f
                     height = 9f
                     lifetime = 60f
                     ammoMultiplier = 1f
                 },
-                Items.copper, BasicBulletType(2.5f, 8f).apply {
+                Items.copper, BasicBulletType(4.5f, 8f).apply {
                     width = 7f
                     height = 9f
                     lifetime = 60f
                     ammoMultiplier = 1.5f
+                    trailColor = backColor
+                    trailLength = 6
                 },
-                Items.graphite, BasicBulletType(3.5f, 15f).apply {
+                Items.graphite, BasicBulletType(5.5f, 15f).apply {
                     width = 9f
                     height = 12f
                     reloadMultiplier = 0.6f
                     ammoMultiplier = 3.5f
                     lifetime = 60f
+                    trailColor = backColor
+                    trailLength = 7
                 },
-                Items.coal, BasicBulletType(2.5f, 10f).apply {
+                Items.coal, BasicBulletType(4.5f, 10f).apply {
                     width = 8f
                     height = 12f
                     lifetime = 60f
@@ -108,6 +113,8 @@ object SteamBlocks {
                     makeFire = true
                     backColor = Pal.lightOrange
                     frontColor = Pal.lightishOrange
+                    trailColor = backColor
+                    trailLength = 6
                 }
             )
             limitRange()
