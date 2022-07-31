@@ -10,6 +10,9 @@ object ContentsLoader {
         SteamFluids.apply {
             steam()
         }
+        SteamUnitTypes.apply {
+            epsilon()
+        }
         SteamBlocks.apply {
             boiler()
             burner()
@@ -17,6 +20,7 @@ object ContentsLoader {
             reservoir()
             well()
             pressureNode()
+            coreFragment()
             heatAccumulator()
         }
         ContentsOverrider.apply {

@@ -8,6 +8,7 @@ import mindustry.type.LiquidStack
 import mindustry.world.Block
 import mindustry.world.blocks.production.Pump
 import mindustry.world.blocks.production.SolidPump
+import mindustry.world.blocks.storage.CoreBlock
 import mindustry.world.draw.*
 import mindustry.world.meta.Attribute
 import mindustry.world.meta.BuildVisibility
@@ -34,6 +35,8 @@ object SteamBlocks {
     lateinit var well: Block
     //pressure
     lateinit var pressureNode: Block
+    //core
+    lateinit var coreFragment: Block
     //sandbox
     lateinit var heatAccumulator: HeatAccumulator
     fun boiler() {
@@ -134,6 +137,7 @@ object SteamBlocks {
             pumpAmount = 0.05f
             size = 2
             health = 220
+            hasPower = false
             category = Category.production
             buildVisibility = BuildVisibility.shown
             attribute = Attribute.water
@@ -154,6 +158,23 @@ object SteamBlocks {
             UndebugOnly {
                 requirements = arrayOf(
                     SteamItems.stone + 10, Items.copper + 5, SteamItems.iron + 5
+                )
+            }
+        }
+    }
+    fun coreFragment() {
+        coreFragment = CoreBlock("core-fragment").apply {
+            size = 3
+            isFirstTier = true
+            itemCapacity = 3200
+            health = 900
+            armor = 5f
+            unitCapModifier = 12
+            unitType = SteamUnitTypes.epsilon
+
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 1200, Items.copper + 1200, Items.lead + 500
                 )
             }
         }
