@@ -1,6 +1,7 @@
 package steam.content
 
 import arc.math.Interp
+import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
 import mindustry.entities.bullet.BasicBulletType
@@ -14,6 +15,7 @@ import mindustry.type.Category
 import mindustry.type.LiquidStack
 import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.ItemTurret
+import mindustry.world.blocks.production.AttributeCrafter
 import mindustry.world.blocks.production.Pump
 import mindustry.world.blocks.production.SolidPump
 import mindustry.world.blocks.storage.CoreBlock
@@ -35,6 +37,9 @@ object SteamBlocks {
     //should be listed all at once
     //turret
     lateinit var rifle: Block
+    //drill - production
+    lateinit var well: Block
+    lateinit var quartzExtractor: Block
     //crafting
     lateinit var boiler: Block
     //crafting - heating
@@ -42,7 +47,6 @@ object SteamBlocks {
     lateinit var fluidBurner: FluidCombustor
     //liquid
     lateinit var reservoir: Block
-    lateinit var well: Block
     //pressure
     lateinit var pressureNode: Block
     //core
@@ -52,7 +56,7 @@ object SteamBlocks {
 
     fun rifle() {
         rifle = ItemTurret("rifle").apply {
-            reload = 30f
+            reload = 25f
             health = 660
             category = Category.turret
             buildVisibility = BuildVisibility.shown
@@ -61,6 +65,7 @@ object SteamBlocks {
                     SteamItems.stone + 40, Items.copper + 35, SteamItems.iron + 20
                 )
             }
+            consumeLiquid(SteamFluids.steam, 0.05f)
             shoot = ShootMulti(ShootSpread(3, 8f), ShootAlternate(4f))
             velocityRnd = 0.1f
             shootY = 6.75f
@@ -118,6 +123,30 @@ object SteamBlocks {
                 }
             )
             limitRange()
+        }
+    }
+    fun quartzExtractor() {
+        quartzExtractor = AttributeCrafter("quartz-extractor").apply {
+            category = Category.production
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 30, Items.copper + 20, SteamItems.iron + 25
+                )
+            }
+            minEfficiency = 0.01f
+            maxBoost = 4f
+            updateEffect = Fx.coalSmeltsmoke
+            updateEffectChance = 0.15f
+            craftEffect = Fx.smeltsmoke
+            size = 2
+            health = 340
+            attribute = Attribute.sand
+            baseEfficiency = 0f
+            consumeLiquid(SteamFluids.steam, 0.05f)
+            craftTime = 240f
+            outputItem = SteamItems.quartz + 3
+            drawer = DrawMulti(DrawDefault(), DrawRegion("-rotator").apply { rotateSpeed = 3f; spinSprite = true }, DrawRegion("-top"))
         }
     }
     fun boiler() {

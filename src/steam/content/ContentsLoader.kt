@@ -6,6 +6,8 @@ object ContentsLoader {
     fun load() {
         SteamItems.apply {
             stone()
+            iron()
+            quartz()
         }
         SteamFluids.apply {
             steam()
@@ -15,6 +17,7 @@ object ContentsLoader {
         }
         SteamBlocks.apply {
             rifle()
+            quartzExtractor()
             boiler()
             burner()
             fluidBurner()
@@ -28,8 +31,10 @@ object ContentsLoader {
             mechanicalDrill()
             pneumaticDrill()
             conveyor()
+            siliconSmelter()
             alpha()
             beta()
+            sand()
         }
     }
 

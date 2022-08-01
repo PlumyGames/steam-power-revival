@@ -6,6 +6,7 @@ import mindustry.type.Item
 object SteamItems {
     lateinit var stone: Item
     lateinit var iron: Item
+    lateinit var quartz: Item
 
     fun stone() {
         stone = Item("stone").apply {
@@ -16,6 +17,11 @@ object SteamItems {
         iron = Item("iron").apply {
             color = Color.valueOf("bfbfbf")
             hardness = 3
+        }
+    }
+    fun quartz() {
+        quartz = Item("quartz").apply {
+            color = Color.valueOf("c9b6ab")
         }
     }
 }

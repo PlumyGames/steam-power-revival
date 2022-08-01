@@ -49,6 +49,7 @@ class FluidCombustor(name: String) : Block(name) {
         rotateDraw = false
         canOverdrive = false
         drawArrow = true
+        solid = true
         buildType = Prov { CombustorBuild() }
     }
 

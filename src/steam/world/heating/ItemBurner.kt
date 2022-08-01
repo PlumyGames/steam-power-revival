@@ -38,7 +38,7 @@ class ItemBurner(name: String) : Block(name) {
     var minFlammabilityReq = 0.3f
     var warmupRate = 0.15f
     var warmupSpeed = 0.019f
-    var heatingTimeFactor = 60f // how long an item can output heat continuously
+    var heatingTimeFactor = 70f // how long an item can output heat continuously
     var heatConvertFactor = 4f // heat from flammability
     var explosiveConvertingProportion = 0.4f //extra heat proportion from explosiveness
     // Explosion
@@ -60,6 +60,7 @@ class ItemBurner(name: String) : Block(name) {
         rotateDraw = false
         canOverdrive = false
         drawArrow = true
+        solid = true
         buildType = Prov { BurnerBuild() }
     }
     fun toHeatingTime(flammability: Float) = heatingTimeFactor * flammability
@@ -124,7 +125,6 @@ class ItemBurner(name: String) : Block(name) {
             consume()
         }
 
-        fun warmupTarget() = 1f
         override fun heat() = heat
         override fun heatFrac() = heat / visualMaxOutput
         override fun warmup() = warmup

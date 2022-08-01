@@ -9,8 +9,12 @@ import mindustry.type.ItemStack
 import mindustry.type.UnitType
 import mindustry.world.blocks.distribution.Conveyor
 import mindustry.world.blocks.production.Drill
+import mindustry.world.blocks.production.GenericCrafter
+import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumeLiquid
+import mindustry.world.meta.Attribute
 import mindustry.world.meta.BuildVisibility
+import steam.utils.plus
 import steam.world.distribution.ElectricConveyor
 
 object ContentsOverrider {
@@ -55,6 +59,12 @@ object ContentsOverrider {
         }
         //}
     }
+    fun siliconSmelter() {
+        (siliconSmelter as GenericCrafter).apply {
+            removeConsumer(findConsumer { it is ConsumeItems })
+            consumeItems(Items.coal + 1, SteamItems.quartz + 1)
+        }
+    }
 
     fun alpha() {
         (alpha as UnitType).apply {
@@ -65,6 +75,21 @@ object ContentsOverrider {
     fun beta() {
         (beta as UnitType).apply {
             mineTier = 2
+        }
+    }
+
+    fun sand() {
+        sand.apply {
+            attributes.set(Attribute.sand, 0.3f)
+        }
+        darksand.apply {
+            attributes.set(Attribute.sand, 0.3f)
+        }
+        sandWater.apply {
+            attributes.set(Attribute.sand, 0.55f)
+        }
+        darksandTaintedWater.apply {
+            attributes.set(Attribute.sand, 0.55f)
         }
     }
 }
