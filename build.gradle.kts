@@ -1,4 +1,7 @@
-import io.github.liplum.mindustry.*
+import io.github.liplum.mindustry.importMindustry
+import io.github.liplum.mindustry.mindustry
+import io.github.liplum.mindustry.mindustryAssets
+import io.github.liplum.mindustry.mindustryRepo
 
 plugins {
     kotlin("jvm") version "1.7.0"
@@ -13,8 +16,8 @@ sourceSets {
         java.srcDir("test")
     }
 }
-group= "org.example"
-version= "1.0"
+group = "org.example"
+version = "1.0"
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -25,6 +28,15 @@ repositories {
 }
 dependencies {
     importMindustry()
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+}
+tasks.withType<Test> {
+    useJUnitPlatform()
+    testLogging {
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        showStandardStreams = true
+    }
 }
 mindustry {
     dependency {
