@@ -6,6 +6,4 @@ The generation have two phases:
 
 ## Item Generation
 ### Time
-**In Mod#init() method.**
-
-Other mods probably have yet to register them ore...
+**In Mod#loadContent() method.**
