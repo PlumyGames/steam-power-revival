@@ -4,6 +4,7 @@ import arc.math.Interp
 import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
+import mindustry.content.StatusEffects
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.entities.part.DrawPart.PartProgress
 import mindustry.entities.part.RegionPart
@@ -32,6 +33,7 @@ import steam.world.drawer.DrawReservoir
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
+import steam.world.mech.MechPad
 
 object SteamBlocks {
     //should be listed all at once
@@ -49,8 +51,9 @@ object SteamBlocks {
     lateinit var reservoir: Block
     //pressure
     lateinit var pressureNode: Block
-    //core
+    //effect
     lateinit var coreFragment: Block
+    lateinit var mechPad: Block
     //sandbox
     lateinit var heatAccumulator: HeatAccumulator
 
@@ -116,6 +119,8 @@ object SteamBlocks {
                     lifetime = 60f
                     ammoMultiplier = 1.5f
                     makeFire = true
+                    status = StatusEffects.burning
+                    statusDuration = 5 * 60f
                     backColor = Pal.lightOrange
                     frontColor = Pal.lightishOrange
                     trailColor = backColor
@@ -282,9 +287,27 @@ object SteamBlocks {
             unitCapModifier = 12
             unitType = SteamUnitTypes.epsilon
 
+            category = Category.effect
+            buildVisibility = BuildVisibility.shown
             UndebugOnly {
                 requirements = arrayOf(
                     SteamItems.stone + 1200, Items.copper + 1200, Items.lead + 500
+                )
+            }
+        }
+    }
+    fun mechPad() {
+        mechPad = MechPad("mech-pad").apply {
+            size = 2
+            health = 800
+
+            mech = SteamUnitTypes.epsilon
+            consumePower(1.2f)
+            category = Category.effect
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 120, Items.copper + 80, Items.lead + 50, Items.graphite + 35
                 )
             }
         }

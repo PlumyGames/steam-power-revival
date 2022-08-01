@@ -25,6 +25,7 @@ object ContentsLoader {
             well()
             pressureNode()
             coreFragment()
+            mechPad()
             heatAccumulator()
         }
         ContentsOverrider.apply {
