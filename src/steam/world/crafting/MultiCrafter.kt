@@ -2,6 +2,7 @@ package steam.world.crafting
 
 import arc.func.Prov
 import arc.math.Mathf
+import mindustry.content.Fx
 import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.type.ItemStack
@@ -15,7 +16,9 @@ import mindustry.type.ItemStack
 
 class MultiCrafter(name: String) : TemperatureBlock(name) {
     var recipes = ArrayList<Recipe>()
+    lateinit var recipeList: RecipeList
     var warmupSpeed = 0.1f
+    var craftEffect = Fx.smeltsmoke
 
     class Recipe(
         val craftTime: Float,
@@ -53,6 +56,11 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         }
     }
 
+    override fun init() {
+        super.init()
+        recipeList = RecipeList(recipes)
+    }
+
     inner class MultiCrafterBuild : TemperatureBuild() {
         var progress = 0f
         var totalProgress = 0f
@@ -85,27 +93,27 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean {
-            return this.items.get(item) < this.getMaximumAccepted(item)
+            return this.items.get(item) < this.getMaximumAccepted(item) &&
         }
 
         fun dumpOutputs() {
             if (!configurable) for (recipe in recipes) {
-                if (recipe.outItem != null) for (output in recipe.outItem!!) dump(output.item)
-            } else if (currentRecipe.inItem != null) for (output in currentRecipe.outItem!!) {
+                for (output in recipe.outItem) dump(output.item)
+            } else for (output in currentRecipe.outItem) {
                 dump(output.item)
             }
         }
 
         fun craft() {
-            if (currentRecipe.inItem != null) items.remove(currentRecipe.inItem)
+            items.remove(currentRecipe.inItem)
 
-            if (currentRecipe.outItem != null) {
-                for (output in currentRecipe.outItem!!) {
-                    for (i in 0 until output.amount) {
-                        offload(output.item)
-                    }
+            for (output in currentRecipe.outItem) {
+                for (i in 0 until output.amount) {
+                    offload(output.item)
                 }
             }
+
+            if(wasVisible) craftEffect.at(this)
 
             progress %= 1f
         }
