@@ -1,19 +1,33 @@
 package steam.gen
 
 import arc.Core.bundle
+import mindustry.Vars
 import mindustry.type.Item
+import mindustry.world.blocks.environment.OreBlock
 import steam.steam
 
 object OreGenerator {
-    var all = ArrayList<GeneratedOre>()
+    val all = HashMap<Item, GeneratedOre>()
+    val blacklist = HashSet<Item>()
     fun generateAll() {
         for (ore in Item.getAllOres().toList().distinctBy {
             it.name
         }.filter {
-            !it.isHidden && it.minfo.mod == null
+            !it.isHidden && it.minfo.mod == null && it !in blacklist
         }) {
             val generated = generate(ore)
-            all.add(generated)
+            all[ore] = generated
+        }
+    }
+
+    fun replaceAll(){
+        Vars.content.blocks().toList().filterIsInstance<OreBlock>().forEach {
+            val original: Item? = it.itemDrop
+            if (original != null) {
+                val ore = all[original]
+                if (ore != null)
+                    it.itemDrop = ore
+            }
         }
     }
 

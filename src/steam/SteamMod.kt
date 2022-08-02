@@ -4,6 +4,7 @@ import arc.Events
 import arc.graphics.Texture
 import arc.scene.ui.Image
 import mindustry.Vars
+import mindustry.content.Items
 import mindustry.game.EventType.ClientLoadEvent
 import mindustry.mod.Mod
 import mindustry.mod.Mods.LoadedMod
@@ -44,7 +45,13 @@ class SteamMod : Mod() {
     override fun loadContent() {
         mod = Vars.mods.getMod(Meta.name)
         ContentsLoader.load()
-        OreGenerator.generateAll()
+        OreGenerator.apply {
+            blacklist += Items.coal
+            blacklist += Items.scrap
+            blacklist += Items.sand
+            generateAll()
+            replaceAll()
+        }
         DebugOnly {
             ContentsLoader.unlockForDebug()
         }
