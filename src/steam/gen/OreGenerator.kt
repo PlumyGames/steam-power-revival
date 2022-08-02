@@ -1,6 +1,7 @@
 package steam.gen
 
 import arc.Core.bundle
+import arc.graphics.Texture
 import arc.math.Rand
 import mindustry.Vars
 import mindustry.type.Item
@@ -47,6 +48,10 @@ object OreIconGenerator {
     // only generate 32x32 at present
     val bakery: IBakery = IconMaker(32, 32)
     val rand = Rand()
+    var baseNumber = 1
+    var patchNumber = 1
+    var baseTexture  = ArrayList<Texture>()
+    var patchTexture  = ArrayList<Texture>()
     fun load(){
 
     }

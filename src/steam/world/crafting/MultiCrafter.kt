@@ -18,10 +18,22 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
     var warmupSpeed = 0.1f
 
     class Recipe(
-        var craftTime: Float,
-        var inItem: Array<ItemStack>?,
-        var outItem: Array<ItemStack>?
-    )
+        val craftTime: Float,
+        val inItem: Array<ItemStack> = emptyArray(),
+        val outItem: Array<ItemStack> = emptyArray(),
+    ) {
+        val allInItems = inItem.map { it.item }
+        val allOutItems = outItem.map { it.item }
+        val allItems = (allInItems + allOutItems).distinct()
+    }
+
+    class RecipeList(
+        vararg val recipes: Recipe,
+    ) {
+        val allInItems = recipes.flatMap { it.allInItems }
+        val allOutItems = recipes.flatMap { it.allOutItems }
+        val allItems = (allInItems + allOutItems).distinct()
+    }
 
     init {
         solid = true
@@ -31,7 +43,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         saveConfig = true
         buildType = Prov { MultiCrafterBuild() }
 
-        config(java.lang.Integer::class.java) { tile: MultiCrafterBuild, i: Integer ->
+        config(java.lang.Integer::class.java) { tile: MultiCrafterBuild, i ->
             if (!configurable) return@config
             val new = i.toInt()
             if (tile.curRecipeIdx != new) {
@@ -46,7 +58,6 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         var totalProgress = 0f
         var warmup = 0f
         var curRecipeIdx = -1
-
         val currentRecipe: Recipe
             get() = recipes[curRecipeIdx]
         val enabledRecipe: Boolean
@@ -60,8 +71,8 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         override fun updateTile() {
             super.updateTile()
 
-            if(!configurable) updateRecipe()
-            if(enabledRecipe) {
+            if (!configurable) updateRecipe()
+            if (enabledRecipe) {
                 if (canCraft()) {
                     if (progress >= 1f) {
                         craft()
@@ -76,15 +87,17 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         override fun acceptItem(source: Building, item: Item): Boolean {
             return this.items.get(item) < this.getMaximumAccepted(item)
         }
+
         fun dumpOutputs() {
-            if(!configurable) for (recipe in recipes) {
+            if (!configurable) for (recipe in recipes) {
                 if (recipe.outItem != null) for (output in recipe.outItem!!) dump(output.item)
             } else if (currentRecipe.inItem != null) for (output in currentRecipe.outItem!!) {
                 dump(output.item)
             }
         }
+
         fun craft() {
-            if(currentRecipe.inItem != null) items.remove(currentRecipe.inItem)
+            if (currentRecipe.inItem != null) items.remove(currentRecipe.inItem)
 
             if (currentRecipe.outItem != null) {
                 for (output in currentRecipe.outItem!!) {
@@ -96,6 +109,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
 
             progress %= 1f
         }
+
         fun canCraft(): Boolean {
             return items.has(currentRecipe.inItem)
         }
