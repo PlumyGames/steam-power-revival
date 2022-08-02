@@ -61,22 +61,30 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             super.updateTile()
 
             if(!configurable) updateRecipe()
-            if(enabledRecipe && canCraft()) {
-                if(progress >= 1f) {
-                    craft()
+            if(enabledRecipe) {
+                if (canCraft()) {
+                    if (progress >= 1f) {
+                        craft()
+                    } else progress += getProgressIncrease(currentRecipe.craftTime) * warmup
+                    totalProgress += edelta()
+                    warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed)
                 }
-                else progress += getProgressIncrease(currentRecipe.craftTime)
-                totalProgress += edelta()
-                warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed)
+                dumpOutputs()
             } else warmup = Mathf.lerpDelta(warmup, 0f, warmupSpeed)
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean {
             return this.items.get(item) < this.getMaximumAccepted(item)
         }
-
+        fun dumpOutputs() {
+            if(!configurable) for (recipe in recipes) {
+                if (recipe.outItem != null) for (output in recipe.outItem!!) dump(output.item)
+            } else if (currentRecipe.inItem != null) for (output in currentRecipe.outItem!!) {
+                dump(output.item)
+            }
+        }
         fun craft() {
-            consume()
+            if(currentRecipe.inItem != null) items.remove(currentRecipe.inItem)
 
             if (currentRecipe.outItem != null) {
                 for (output in currentRecipe.outItem!!) {
@@ -91,5 +99,9 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         fun canCraft(): Boolean {
             return items.has(currentRecipe.inItem)
         }
+
+        override fun progress() = progress
+        override fun warmup() = warmup
+        override fun totalProgress() = totalProgress
     }
 }

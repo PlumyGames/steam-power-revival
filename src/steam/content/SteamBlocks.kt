@@ -190,7 +190,7 @@ object SteamBlocks {
     }
     fun blastFurnace() {
         blastFurnace = MultiCrafter("blast-furnace").apply {
-            warmupSpeed = 0.03f
+            warmupSpeed = 0.02f
             size = 3
             health = 800
             hasTemp = false
@@ -200,6 +200,11 @@ object SteamBlocks {
                 if(ore.key.radioactivity <= 0f)
                 recipes.add(MultiCrafter.Recipe(80f, arrayOf(ore.value + 1), arrayOf(ore.key + 1)))
             }
+            drawer = DrawMulti(
+                DrawDefault(),
+                DrawGlowRegion().apply { color = R.C.burnerFlame },
+                DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
+            )
             squareSprite = false
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
