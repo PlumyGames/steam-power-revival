@@ -38,9 +38,16 @@ object OreGenerator {
 }
 
 class GeneratedOre(
-    val original: Item,
+    original: Item,
 ) : Item("ore-${original.name}") {
     init {
         localizedName = "${original.localizedName} ${bundle["ore".steam]}"
+        color = original.color
+        flammability = original.flammability
+        explosiveness = original.explosiveness
+        hardness = original.hardness
+        charge = original.charge
+        radioactivity = original.radioactivity
+        cost = original.cost
     }
 }
