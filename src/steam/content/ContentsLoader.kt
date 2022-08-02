@@ -19,6 +19,7 @@ object ContentsLoader {
             rifle()
             quartzExtractor()
             boiler()
+            blastFurnace()
             burner()
             fluidBurner()
             reservoir()
@@ -27,6 +28,7 @@ object ContentsLoader {
             coreFragment()
             mechPad()
             heatAccumulator()
+            ironOre()
         }
         ContentsOverrider.apply {
             mechanicalDrill()

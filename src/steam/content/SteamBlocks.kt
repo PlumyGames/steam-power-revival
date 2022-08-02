@@ -16,6 +16,7 @@ import mindustry.type.Category
 import mindustry.type.LiquidStack
 import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.ItemTurret
+import mindustry.world.blocks.environment.OreBlock
 import mindustry.world.blocks.production.AttributeCrafter
 import mindustry.world.blocks.production.Pump
 import mindustry.world.blocks.production.SolidPump
@@ -26,7 +27,9 @@ import mindustry.world.meta.BuildVisibility
 import mindustry.world.meta.Env
 import steam.R
 import steam.UndebugOnly
+import steam.gen.OreGenerator
 import steam.utils.plus
+import steam.world.crafting.MultiCrafter
 import steam.world.crafting.TemperatureCrafter
 import steam.world.distribution.Node
 import steam.world.drawer.DrawReservoir
@@ -44,6 +47,7 @@ object SteamBlocks {
     lateinit var quartzExtractor: Block
     //crafting
     lateinit var boiler: Block
+    lateinit var blastFurnace: Block
     //crafting - heating
     lateinit var burner: ItemBurner
     lateinit var fluidBurner: FluidCombustor
@@ -56,6 +60,8 @@ object SteamBlocks {
     lateinit var mechPad: Block
     //sandbox
     lateinit var heatAccumulator: HeatAccumulator
+    //env
+    lateinit var oreIron: OreBlock
 
     fun rifle() {
         rifle = ItemTurret("rifle").apply {
@@ -182,7 +188,27 @@ object SteamBlocks {
             )
         }
     }
-
+    fun blastFurnace() {
+        blastFurnace = MultiCrafter("blast-furnace").apply {
+            warmupSpeed = 0.03f
+            size = 3
+            health = 800
+            configurable = false
+            itemCapacity = 80
+            for (ore in OreGenerator.all) {
+                if(ore.key.radioactivity <= 0f)
+                recipes.add(MultiCrafter.Recipe(80f, arrayOf(ore.value + 1), arrayOf(ore.key + 1)))
+            }
+            squareSprite = false
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 90
+                )
+            }
+        }
+    }
     fun burner() {
         burner = ItemBurner("burner").apply {
             squareSprite = false
@@ -316,6 +342,14 @@ object SteamBlocks {
             category = Category.effect
             buildVisibility = BuildVisibility.sandboxOnly
             size = 4
+        }
+    }
+    //env
+    fun ironOre() {
+        oreIron = OreBlock(SteamItems.iron).apply {
+            oreDefault = true
+            oreThreshold = 0.864f
+            oreScale = 24.904762f
         }
     }
 }
