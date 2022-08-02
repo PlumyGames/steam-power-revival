@@ -5,12 +5,13 @@ import mindustry.type.Item
 import steam.steam
 
 object OreGenerator {
-    var all = ArrayList<GeneratedOre>()
+    val all = ArrayList<GeneratedOre>()
+    val blacklist = HashSet<Item>()
     fun generateAll() {
         for (ore in Item.getAllOres().toList().distinctBy {
             it.name
         }.filter {
-            !it.isHidden && it.minfo.mod == null
+            !it.isHidden && it.minfo.mod == null && it !in blacklist
         }) {
             val generated = generate(ore)
             all.add(generated)
