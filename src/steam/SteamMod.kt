@@ -11,6 +11,7 @@ import mindustry.mod.Mod
 import mindustry.mod.Mods.LoadedMod
 import mindustry.ui.dialogs.BaseDialog
 import steam.content.ContentsLoader
+import steam.content.SteamItems
 import steam.gen.*
 import java.io.File
 
@@ -48,7 +49,8 @@ class SteamMod : Mod() {
                     val texture = Texture(baked.texture)
                     cont.add(Image(texture)).size(Vars.iconXLarge)
                     addCloseButton()
-                }.show()
+                }
+                DebugDialog.show()
             }
         }
     }
@@ -60,6 +62,9 @@ class SteamMod : Mod() {
             blacklist += Items.coal
             blacklist += Items.scrap
             blacklist += Items.sand
+            // lol
+            extra += SteamItems.stone
+            extra += SteamItems.quartz
             generateAll()
             replaceAll()
         }

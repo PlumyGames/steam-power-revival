@@ -16,7 +16,6 @@ class PixmapModelLayer(override val texture: Pixmap) : IModelLayer {
         var cur = texture
         for (processor in processors) {
             val res = processor.process(cur)
-            if (res != cur) cur.dispose()
             cur = res
         }
         return cur

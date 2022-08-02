@@ -2,7 +2,6 @@ package steam.gen
 
 import arc.Core.bundle
 import arc.graphics.Pixmap
-import arc.graphics.Texture
 import arc.graphics.g2d.TextureRegion
 import arc.math.Rand
 import mindustry.Vars
@@ -17,6 +16,7 @@ private typealias RawItem = Item
 object OreGenerator {
     val all = HashMap<RawItem, GeneratedOre>()
     val blacklist = HashSet<RawItem>()
+    val extra = HashSet<RawItem>()
     fun generateAll() {
         val steamMod = SteamMod.mod
         for (ore in Item.getAllOres().toList().distinctBy {
@@ -24,7 +24,7 @@ object OreGenerator {
         }.filter {
             val mod = it.minfo.mod
             !it.isHidden && (mod == null || mod == steamMod) && it !in blacklist
-        }) {
+        } + extra) {
             val generated = generate(ore)
             all[ore] = generated
         }
@@ -76,7 +76,7 @@ object OreIconGenerator {
         val baseLayer = PixmapModelLayer(baseTextures[rand.random(0, baseTextures.size - 1)])
         val patchLayer = PixmapModelLayer(patchTextures[rand.random(0, patchTextures.size - 1)])
         baseLayer += baseLayerProcess
-        patchLayer += baseLayerProcess // for test purpose
+        patchLayer += TintLayerProcessor(ore.color) // for test purpose
         val baked = bakery.bake(baseLayer, patchLayer)
         return baked.toTextureRegion()
     }
