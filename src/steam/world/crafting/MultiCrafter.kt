@@ -31,8 +31,10 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
     }
 
     class RecipeList(
-        vararg val recipes: Recipe,
+        val recipes: List<Recipe>,
     ) {
+        constructor(vararg recipes: Recipe) : this(recipes.toList())
+
         val allInItems = recipes.flatMap { it.allInItems }
         val allOutItems = recipes.flatMap { it.allOutItems }
         val allItems = (allInItems + allOutItems).distinct()
@@ -113,7 +115,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                 }
             }
 
-            if(wasVisible) craftEffect.at(this)
+            if (wasVisible) craftEffect.at(this)
 
             progress %= 1f
         }
