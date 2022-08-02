@@ -19,7 +19,6 @@ object ContentsLoader {
             rifle()
             quartzExtractor()
             boiler()
-            blastFurnace()
             burner()
             fluidBurner()
             reservoir()
@@ -38,6 +37,12 @@ object ContentsLoader {
             alpha()
             beta()
             sand()
+        }
+    }
+
+    fun loadAfterOreGenerated() {
+        SteamBlocks.apply {
+            blastFurnace()
         }
     }
 

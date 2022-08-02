@@ -47,7 +47,7 @@ object SteamBlocks {
     lateinit var quartzExtractor: Block
     //crafting
     lateinit var boiler: Block
-    lateinit var blastFurnace: Block
+    lateinit var blastFurnace: MultiCrafter
     //crafting - heating
     lateinit var burner: ItemBurner
     lateinit var fluidBurner: FluidCombustor
