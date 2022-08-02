@@ -1,6 +1,8 @@
 package steam.gen
 
 import arc.graphics.Pixmap
+import arc.graphics.Texture
+import arc.graphics.g2d.TextureRegion
 import java.io.Closeable
 
 interface IModelLayer : Closeable {
@@ -29,6 +31,10 @@ interface IBakery {
     fun bake(layers: List<IModelLayer>): IBakedModel
 }
 
+fun IBakery.bake(vararg layers: IModelLayer) = bake(layers.toList())
 interface IBakedModel {
     val texture: Pixmap
 }
+
+fun IBakedModel.toTexture() = Texture(texture)
+fun IBakedModel.toTextureRegion() = TextureRegion(toTexture())

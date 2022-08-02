@@ -1,11 +1,14 @@
 package steam.gen
 
 import arc.Core.bundle
+import arc.graphics.Pixmap
 import arc.graphics.Texture
+import arc.graphics.g2d.TextureRegion
 import arc.math.Rand
 import mindustry.Vars
 import mindustry.type.Item
 import mindustry.world.blocks.environment.OreBlock
+import steam.Res
 import steam.SteamMod
 import steam.steam
 
@@ -50,14 +53,32 @@ object OreIconGenerator {
     val rand = Rand()
     var baseNumber = 1
     var patchNumber = 1
-    var baseTexture  = ArrayList<Texture>()
-    var patchTexture  = ArrayList<Texture>()
-    fun load(){
-
+    var baseTextures = ArrayList<Pixmap>()
+    var patchTextures = ArrayList<Pixmap>()
+    fun base(index: Int) = "/sprites/template/ore-base$index.png"
+    fun patch(index: Int) = "/sprites/template/ore-patch$index.png"
+    fun load() {
+        for (i in 0 until baseNumber) {
+            Res.load(name = base(i)).use {
+                baseTextures.add(it.toPixmap())
+            }
+        }
+        for (i in 0 until patchNumber) {
+            Res.load(name = patch(i)).use {
+                patchTextures.add(it.toPixmap())
+            }
+        }
     }
-    fun generate(ore: GeneratedOre) {
-        rand.setSeed(ore.name.hashCode().toLong())
 
+    val baseLayerProcess = PlainLayerProcessor()
+    fun generate(ore: GeneratedOre): TextureRegion {
+        rand.setSeed(ore.name.hashCode().toLong())
+        val baseLayer = PixmapModelLayer(baseTextures[rand.random(0, baseTextures.size - 1)])
+        val patchLayer = PixmapModelLayer(patchTextures[rand.random(0, patchTextures.size - 1)])
+        baseLayer += baseLayerProcess
+        patchLayer += baseLayerProcess // for test purpose
+        val baked = bakery.bake(baseLayer, patchLayer)
+        return baked.toTextureRegion()
     }
 }
 
@@ -74,8 +95,10 @@ class GeneratedOre(
         radioactivity = original.radioactivity
         cost = original.cost
     }
-/*
-    override fun loadIcon() {
 
-    }*/
+    override fun loadIcon() {
+        val icon = OreIconGenerator.generate(this)
+        fullIcon = icon
+        uiIcon = icon
+    }
 }
