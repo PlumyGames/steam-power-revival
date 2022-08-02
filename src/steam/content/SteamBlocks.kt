@@ -193,6 +193,7 @@ object SteamBlocks {
             warmupSpeed = 0.03f
             size = 3
             health = 800
+            hasTemp = false
             configurable = false
             itemCapacity = 80
             for (ore in OreGenerator.all) {

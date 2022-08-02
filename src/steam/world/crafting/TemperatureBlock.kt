@@ -25,6 +25,7 @@ open class TemperatureBlock(name: String) : Block(name) {
     var convertSpeed = 2f //convert x2
     var coolDownSpeed = 0.025f / 60f //lose 2.5% each second
     var drawer: DrawBlock = DrawDefault()
+    var hasTemp = true
 
     init {
         update = true
@@ -44,11 +45,13 @@ open class TemperatureBlock(name: String) : Block(name) {
         override fun sideHeat() = sideHeat
         override fun heatRequirement() = heatRequirement
         override fun updateTile() {
-            heat = calculateHeat(sideHeat)
-            //25f is base temp
-            temp = Mathf.lerpDelta(temp, 25f, coolDownSpeed * convertSpeed)
-            temp += (heat * convertSpeed * delta()) / 60
-            if(temp > tempCap) kill() //explode when overheat
+            if(hasTemp) {
+                heat = calculateHeat(sideHeat)
+                //25f is base temp
+                temp = Mathf.lerpDelta(temp, 25f, coolDownSpeed * convertSpeed)
+                temp += (heat * convertSpeed * delta()) / 60
+                if (temp > tempCap) kill() //explode when overheat}
+            }
         }
         override fun warmup() = warmupImpl()
         override fun draw() {
@@ -57,7 +60,7 @@ open class TemperatureBlock(name: String) : Block(name) {
     }
     override fun setBars() {
         super.setBars()
-        addBar<TemperatureBuild>("temp") { Bar(
+        if(hasTemp) addBar<TemperatureBuild>("temp") { Bar(
             { Core.bundle.format("bar.temp", Strings.autoFixed(it.temp, 1)) },
             { Tmp.c1.set(R.C.burnerFlame).lerp(Color.orange, it.temp / tempCap) },
             { it.temp / minRequired }
