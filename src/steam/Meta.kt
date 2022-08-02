@@ -7,7 +7,7 @@ object Meta {
 }
 
 val String.steam:String
-    get() = "$Meta.name-$this"
+    get() = "${Meta.name}-$this"
 
 inline fun DebugOnly(func: () -> Unit) {
     if (Meta.debugMod) {

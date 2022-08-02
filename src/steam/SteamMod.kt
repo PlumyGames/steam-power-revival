@@ -2,19 +2,14 @@ package steam
 
 import arc.Events
 import arc.graphics.Texture
-import arc.graphics.g2d.TextureRegion
 import arc.scene.ui.Image
-import arc.scene.utils.Elem
 import mindustry.Vars
 import mindustry.game.EventType.ClientLoadEvent
 import mindustry.mod.Mod
 import mindustry.mod.Mods.LoadedMod
 import mindustry.ui.dialogs.BaseDialog
 import steam.content.ContentsLoader
-import steam.gen.IconMaker
-import steam.gen.PixmapModelLayerForm
-import steam.gen.PlainLayerProcessor
-import steam.gen.plus
+import steam.gen.*
 import java.io.File
 
 class SteamMod : Mod() {
@@ -49,6 +44,7 @@ class SteamMod : Mod() {
     override fun loadContent() {
         mod = Vars.mods.getMod(Meta.name)
         ContentsLoader.load()
+        OreGenerator.generateAll()
         DebugOnly {
             ContentsLoader.unlockForDebug()
         }
