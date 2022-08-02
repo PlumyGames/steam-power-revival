@@ -19,7 +19,6 @@ object ContentsLoader {
             rifle()
             quartzExtractor()
             boiler()
-            blastFurnace()
             burner()
             fluidBurner()
             reservoir()
@@ -40,7 +39,11 @@ object ContentsLoader {
             sand()
         }
     }
-
+    fun loadAfterGen() {
+        SteamBlocks.apply {
+            blastFurnace()
+        }
+    }
     fun unlockForDebug() {
         Blocks.heatRedirector.requirements = emptyArray()
         Blocks.electricHeater.requirements = emptyArray()
