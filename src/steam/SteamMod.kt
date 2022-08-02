@@ -50,6 +50,7 @@ class SteamMod : Mod() {
             blacklist += Items.scrap
             blacklist += Items.sand
             generateAll()
+            replaceAll()
         }
         DebugOnly {
             ContentsLoader.unlockForDebug()
