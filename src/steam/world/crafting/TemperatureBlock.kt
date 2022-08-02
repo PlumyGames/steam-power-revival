@@ -38,7 +38,7 @@ open class TemperatureBlock(name: String) : Block(name) {
     }
 
     open inner class TemperatureBuild : Building(), ITemperatureBlock, HeatConsumer {
-        override var temp = 0f.celsius
+        override var temp = 25f.celsius
         var sideHeat = FloatArray(4)
         var heat = 0f
         override fun sideHeat() = sideHeat

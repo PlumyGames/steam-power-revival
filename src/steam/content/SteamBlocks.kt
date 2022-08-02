@@ -69,8 +69,8 @@ object SteamBlocks {
                 )
             }
             consumeLiquid(SteamFluids.steam, 0.05f)
-            shoot = ShootMulti(ShootSpread(3, 8f), ShootAlternate(4f))
-            velocityRnd = 0.1f
+            shoot = ShootMulti(ShootSpread(5, 8f), ShootAlternate(4f))
+            velocityRnd = 0.2f
             shootY = 6.75f
             size = 2
 
@@ -90,34 +90,33 @@ object SteamBlocks {
             }
 
             ammo(
-                SteamItems.stone, BasicBulletType(3.5f, 4f).apply {
+                SteamItems.stone, BasicBulletType(3.5f, 3f).apply {
                     width = 7f
                     height = 9f
                     lifetime = 60f
                     ammoMultiplier = 1f
                 },
-                Items.copper, BasicBulletType(4.5f, 8f).apply {
+                Items.copper, BasicBulletType(4.5f, 6f).apply {
                     width = 7f
                     height = 9f
                     lifetime = 60f
-                    ammoMultiplier = 1.5f
                     trailColor = backColor
                     trailLength = 6
                 },
-                Items.graphite, BasicBulletType(5.5f, 15f).apply {
+                Items.graphite, BasicBulletType(5.5f, 12f).apply {
                     width = 9f
                     height = 12f
                     reloadMultiplier = 0.6f
-                    ammoMultiplier = 3.5f
+                    ammoMultiplier = 3f
                     lifetime = 60f
                     trailColor = backColor
                     trailLength = 7
+                    rangeChange = 18f
                 },
-                Items.coal, BasicBulletType(4.5f, 10f).apply {
+                Items.coal, BasicBulletType(4.5f, 8f).apply {
                     width = 8f
                     height = 12f
                     lifetime = 60f
-                    ammoMultiplier = 1.5f
                     makeFire = true
                     status = StatusEffects.burning
                     statusDuration = 5 * 60f

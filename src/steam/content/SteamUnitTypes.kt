@@ -48,12 +48,12 @@ object SteamUnitTypes {
                     trailLength = 7
                     trailColor = backColor
                     homingDelay = 27f
-                    homingRange = 270f
-                    homingPower = 1f
+                    homingRange = 60 * 5.5f
+                    homingPower = 6f
                     buildingDamageMultiplier = 0.01f
-                    rangeOverride = 270f
+                    rangeOverride = 60 * 5.5f
 
-                    fragBullet = BasicBulletType(4.5f, 15f).apply {
+                    fragBullet = BasicBulletType(5.5f, 15f).apply {
                         keepVelocity = false
                         width = 9f
                         height = 12f

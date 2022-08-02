@@ -18,22 +18,14 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.world.Block
 import mindustry.world.blocks.ControlBlock
-import mindustry.world.draw.DrawBlock
-import mindustry.world.draw.DrawDefault
 
 class MechPad(name: String) : Block(name) {
     var constructTime = 240f
     var mech = UnitTypes.alpha
-    var drawer: DrawBlock = DrawDefault()
     var spawnFx = Fx.spawn
 
     init {
         update = true
-    }
-
-    override fun load() {
-        super.load()
-        drawer.load(this)
     }
 
     override fun init() {

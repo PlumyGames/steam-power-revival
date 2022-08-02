@@ -53,10 +53,6 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
             }
             dumpLiquid(outputFluid.liquid)
         }
-        override fun placed() {
-            super.placed()
-            temp = 25f
-        }
 
         override fun shouldConsume(): Boolean {
             return pressureProportion <= 1f && enabled && temp >= minRequired
