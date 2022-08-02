@@ -1,5 +1,6 @@
 package steam.world.crafting
 
+import arc.func.Prov
 import arc.math.Mathf
 import mindustry.gen.Building
 import mindustry.type.Item
@@ -28,6 +29,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         hasItems = true
         configurable = true
         saveConfig = true
+        buildType = Prov { MultiCrafterBuild() }
 
         config(java.lang.Integer::class.java) { tile: MultiCrafterBuild, i: Integer ->
             if (!configurable) return@config

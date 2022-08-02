@@ -5,10 +5,10 @@ import mindustry.Vars
 import mindustry.type.Item
 import mindustry.world.blocks.environment.OreBlock
 import steam.steam
-
+private typealias RawItem = Item
 object OreGenerator {
-    val all = HashMap<Item, GeneratedOre>()
-    val blacklist = HashSet<Item>()
+    val all = HashMap<RawItem, GeneratedOre>()
+    val blacklist = HashSet<RawItem>()
     fun generateAll() {
         for (ore in Item.getAllOres().toList().distinctBy {
             it.name
@@ -31,7 +31,7 @@ object OreGenerator {
         }
     }
 
-    fun generate(ore: Item): GeneratedOre {
+    fun generate(ore: RawItem): GeneratedOre {
         val generated = GeneratedOre(ore)
         return generated
     }
@@ -50,4 +50,8 @@ class GeneratedOre(
         radioactivity = original.radioactivity
         cost = original.cost
     }
+/*
+    override fun loadIcon() {
+
+    }*/
 }
