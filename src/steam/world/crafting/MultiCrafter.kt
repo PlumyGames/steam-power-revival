@@ -95,7 +95,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean {
-            return this.items.get(item) < this.getMaximumAccepted(item) &&
+            return this.items.get(item) < this.getMaximumAccepted(item) && recipeList.allInItems.contains(item)
         }
 
         fun dumpOutputs() {
