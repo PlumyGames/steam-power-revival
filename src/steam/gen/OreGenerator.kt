@@ -1,6 +1,7 @@
 package steam.gen
 
 import arc.Core.bundle
+import arc.math.Rand
 import mindustry.Vars
 import mindustry.type.Item
 import mindustry.world.blocks.environment.OreBlock
@@ -42,9 +43,22 @@ object OreGenerator {
     }
 }
 
+object OreIconGenerator {
+    // only generate 32x32 at present
+    val bakery: IBakery = IconMaker(32, 32)
+    val rand = Rand()
+    fun load(){
+
+    }
+    fun generate(ore: GeneratedOre) {
+        rand.setSeed(ore.name.hashCode().toLong())
+
+    }
+}
+
 class GeneratedOre(
     original: Item,
-) : Item("ore-${original.name}") {
+) : Item("oregen-${original.name}") {
     init {
         localizedName = "${original.localizedName} ${bundle["ore".steam]}"
         color = original.color
