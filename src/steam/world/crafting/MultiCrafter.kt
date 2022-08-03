@@ -6,12 +6,15 @@ import mindustry.content.Fx
 import mindustry.gen.Building
 import mindustry.type.Item
 import mindustry.type.ItemStack
+import mindustry.type.LiquidStack
+import kotlin.math.min
 
 /* todo
 *  add liquid support
 *  add temp support
 *  add stats
-*  better acceptItem
+*  better canCraft()
+*  add booster support
 */
 
 class MultiCrafter(name: String) : TemperatureBlock(name) {
@@ -24,19 +27,24 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         val craftTime: Float,
         val inItem: Array<ItemStack> = emptyArray(),
         val outItem: Array<ItemStack> = emptyArray(),
+        val inLiquid: LiquidStack? = null,
+        val outLiquid: Array<LiquidStack> = emptyArray()
     ) {
         val allInItems = inItem.map { it.item }
         val allOutItems = outItem.map { it.item }
+        val allOutLiquids = outLiquid.map { it.liquid }
         val allItems = (allInItems + allOutItems).distinct()
     }
 
     class RecipeList(
-        val recipes: List<Recipe>,
+        recipes: List<Recipe>,
     ) {
         constructor(vararg recipes: Recipe) : this(recipes.toList())
 
         val allInItems = recipes.flatMap { it.allInItems }
         val allOutItems = recipes.flatMap { it.allOutItems }
+        val allInLiquids = recipes.map { it.inLiquid }
+        val allOutLiquids = recipes.flatMap { it.allOutLiquids }
         val allItems = (allInItems + allOutItems).distinct()
     }
 
@@ -44,6 +52,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         solid = true
         update = true
         hasItems = true
+        hasLiquids = true
         configurable = true
         saveConfig = true
         buildType = Prov { MultiCrafterBuild() }
@@ -82,13 +91,25 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             super.updateTile()
 
             if (!configurable) updateRecipe()
-            if (enabledRecipe) {
+            if (enabledRecipe && efficiency >= 0f) {
                 if (canCraft()) {
                     if (progress >= 1f) {
                         craft()
                     } else progress += getProgressIncrease(currentRecipe.craftTime) * warmup
                     totalProgress += edelta()
                     warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed)
+
+                    //continuously output based on efficiency
+                    if (currentRecipe.outLiquid.isNotEmpty()) {
+                        val inc = getProgressIncrease(1f)
+                        for (output in currentRecipe.outLiquid) {
+                            handleLiquid(
+                                this,
+                                output.liquid,
+                                min(output.amount * inc, liquidCapacity - liquids[output.liquid])
+                            )
+                        }
+                    }
                 }
                 dumpOutputs()
             } else warmup = Mathf.lerpDelta(warmup, 0f, warmupSpeed)
@@ -99,11 +120,11 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         }
 
         fun dumpOutputs() {
-            if (!configurable) for (recipe in recipes) {
-                for (output in recipe.outItem) dump(output.item)
-            } else for (output in currentRecipe.outItem) {
-                dump(output.item)
-            }
+            if (!configurable) for (output in recipeList.allOutItems) dump(output)
+            else for (output in currentRecipe.outItem) dump(output.item)
+
+            if (!configurable) for (output in recipeList.allOutLiquids) dumpLiquid(output)
+            else for (output in currentRecipe.outLiquid) dumpLiquid(output.liquid)
         }
 
         fun craft() {

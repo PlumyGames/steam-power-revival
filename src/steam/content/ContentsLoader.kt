@@ -43,6 +43,7 @@ object ContentsLoader {
     fun loadAfterOreGenerated() {
         SteamBlocks.apply {
             blastFurnace()
+            crystalizer()
         }
     }
 

@@ -19,6 +19,7 @@ import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.blocks.environment.OreBlock
 import mindustry.world.blocks.production.AttributeCrafter
 import mindustry.world.blocks.production.Pump
+import mindustry.world.blocks.production.Separator
 import mindustry.world.blocks.production.SolidPump
 import mindustry.world.blocks.storage.CoreBlock
 import mindustry.world.draw.*
@@ -48,6 +49,7 @@ object SteamBlocks {
     //crafting
     lateinit var boiler: Block
     lateinit var blastFurnace: MultiCrafter
+    lateinit var crystalizer: Block
     //crafting - heating
     lateinit var burner: ItemBurner
     lateinit var fluidBurner: FluidCombustor
@@ -190,7 +192,7 @@ object SteamBlocks {
     }
     fun blastFurnace() {
         blastFurnace = MultiCrafter("blast-furnace").apply {
-            warmupSpeed = 0.02f
+            warmupSpeed = 0.012f
             size = 3
             health = 800
             hasTemp = false
@@ -198,7 +200,9 @@ object SteamBlocks {
             itemCapacity = 80
             for (ore in OreGenerator.all) {
                 if(ore.key.radioactivity <= 0f)
-                recipes.add(MultiCrafter.Recipe(80f, arrayOf(ore.value + 1), arrayOf(ore.key + 1)))
+                recipes.add(MultiCrafter.Recipe(60f, arrayOf(ore.value + 1), arrayOf(ore.key + 1), null, arrayOf(
+                    LiquidStack(Liquids.slag, 0.05f)
+                )))
             }
             drawer = DrawMulti(
                 DrawDefault(),
@@ -215,6 +219,26 @@ object SteamBlocks {
             }
         }
     }
+    fun crystalizer() {
+        crystalizer = Separator("crystalizer").apply {
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 20
+                )
+            }
+
+            health = 90
+            results = arrayOf(
+                Items.copper + 5,
+                Items.lead + 4,
+                SteamItems.iron + 3,
+            )
+            craftTime = 30f
+            consumeLiquid(Liquids.slag, 0.1f)
+        }
+    }
     fun burner() {
         burner = ItemBurner("burner").apply {
             squareSprite = false
@@ -225,7 +249,6 @@ object SteamBlocks {
                     SteamItems.stone + 30, Items.copper + 15
                 )
             }
-            size = 1
             drawer = DrawMulti(
                 DrawRegion("-bottom"),
                 DrawDefault(),
