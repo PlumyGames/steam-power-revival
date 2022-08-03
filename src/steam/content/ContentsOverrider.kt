@@ -59,6 +59,11 @@ object ContentsOverrider {
         }
         //}
     }
+    fun conduit() {
+        conduit.apply {
+            requirements = arrayOf(SteamItems.glass + 1)
+        }
+    }
     fun siliconSmelter() {
         (siliconSmelter as GenericCrafter).apply {
             removeConsumer(findConsumer { it is ConsumeItems })
@@ -90,6 +95,21 @@ object ContentsOverrider {
         }
         darksandTaintedWater.apply {
             attributes.set(Attribute.sand, 0.55f)
+        }
+    }
+
+    fun stone() {
+        stone.apply {
+            itemDrop = SteamItems.stone
+        }
+        basalt.apply {
+            itemDrop = SteamItems.stone
+        }
+        craters.apply {
+            itemDrop = SteamItems.stone
+        }
+        charr.apply {
+            itemDrop = SteamItems.stone
         }
     }
 }

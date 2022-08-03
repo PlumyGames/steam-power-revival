@@ -6,6 +6,7 @@ object ContentsLoader {
     fun load() {
         SteamItems.apply {
             stone()
+            glass()
             iron()
             quartz()
         }
@@ -34,9 +35,11 @@ object ContentsLoader {
             pneumaticDrill()
             conveyor()
             siliconSmelter()
+            conduit()
             alpha()
             beta()
             sand()
+            stone()
         }
     }
 

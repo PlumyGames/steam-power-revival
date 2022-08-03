@@ -167,7 +167,7 @@ object SteamBlocks {
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
                 requirements = arrayOf(
-                    Items.copper + 20
+                    SteamItems.stone + 50, Items.copper + 30, SteamItems.glass + 15
                 )
             }
             liquidCapacity = 200f
@@ -201,9 +201,11 @@ object SteamBlocks {
             for (ore in OreGenerator.all) {
                 if(ore.key.radioactivity <= 0f)
                 recipes.add(MultiCrafter.Recipe(60f, arrayOf(ore.value + 1), arrayOf(ore.key + 1), null, arrayOf(
-                    LiquidStack(Liquids.slag, 0.05f)
+                    Liquids.slag + 0.05f
                 )))
             }
+            recipes.add(MultiCrafter.Recipe(60f, arrayOf(Items.sand + 1), arrayOf(SteamItems.glass + 1)))
+            recipes.add(MultiCrafter.Recipe(60f, arrayOf(Items.scrap + 1), emptyArray(), null, arrayOf(Liquids.slag + 0.1f)))
             drawer = DrawMulti(
                 DrawDefault(),
                 DrawGlowRegion().apply { color = R.C.burnerFlame },
@@ -294,7 +296,7 @@ object SteamBlocks {
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
                 requirements = arrayOf(
-                    SteamItems.stone + 80
+                    SteamItems.stone + 80, SteamItems.glass + 10
                 )
             }
             drawer = DrawMulti(DrawDefault(), DrawReservoir(null), DrawRegion("-top"))

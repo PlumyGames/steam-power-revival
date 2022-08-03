@@ -55,7 +55,7 @@ object OreIconGenerator {
     var patchNumber = 1
     var baseTextures = ArrayList<Pixmap>()
     var patchTextures = ArrayList<Pixmap>()
-    var alpha = 150 / 255f
+    var alpha = 0.662f
     fun base(index: Int) = "/sprites/template/ore-base$index.png"
     fun patch(index: Int) = "/sprites/template/ore-patch$index.png"
     fun loadPixmap(internalName: String) = Res.load(name = internalName).use { it.toPixmap() }
