@@ -55,7 +55,7 @@ object OreIconGenerator {
     var patchNumber = 1
     var baseTextures = ArrayList<Pixmap>()
     var patchTextures = ArrayList<Pixmap>()
-    var alpha = 150 // it will be divided by 255
+    var alpha = 150 / 255f
     fun base(index: Int) = "/sprites/template/ore-base$index.png"
     fun patch(index: Int) = "/sprites/template/ore-patch$index.png"
     fun loadPixmap(internalName: String) = Res.load(name = internalName).use { it.toPixmap() }
@@ -74,7 +74,7 @@ object OreIconGenerator {
         val baseLayer = PixmapModelLayer(baseTextures[rand.random(0, baseTextures.size - 1)])
         val patchLayer = PixmapModelLayer(patchTextures[rand.random(0, patchTextures.size - 1)])
         baseLayer += baseLayerProcess
-        patchLayer += TintLayerProcessor(ore.color.cpy().a(alpha / 255f))
+        patchLayer += TintLayerProcessor(ore.color.cpy().a(alpha))
         val baked = bakery.bake(baseLayer, patchLayer)
         return baked.toTextureRegion()
     }
