@@ -8,11 +8,17 @@ value class Pixel(
     val rgba8888: Int,
 ) {
     constructor(r: Int, g: Int, b: Int, a: Int) : this(
-        (r shl 24) or (g shl 16) or (b shl 8) or a
+        (r shl 24) or
+                (g shl 16) or
+                (b shl 8) or
+                a
     )
 
     constructor(r: Float, g: Float, b: Float, a: Float) : this(
-        ((r * 255).toInt() shl 24) or ((g * 255).toInt() shl 16) or ((b * 255).toInt() shl 8) or (a * 255).toInt()
+        (r * 255).toInt(),
+        (g * 255).toInt(),
+        (b * 255).toInt(),
+        (a * 255).toInt()
     )
 
     val isEmpty get() = rgba8888 == Empty
@@ -20,7 +26,7 @@ value class Pixel(
     val g get() = rgba8888 and GREEN_MASK shr 16
     val b get() = rgba8888 and BLUE_MASK shr 8
     val a get() = rgba8888 and ALPHA_MASK
-    val rf get() = (rgba8888 and RED_MASK shr 24) / 255f
+    val rf get() = (rgba8888 and RED_MASK shr 24).to255 / 255f
     val gf get() = (rgba8888 and GREEN_MASK shr 16) / 255f
     val bf get() = (rgba8888 and BLUE_MASK shr 8) / 255f
     val af get() = (rgba8888 and ALPHA_MASK) / 255f
@@ -66,9 +72,9 @@ value class Pixel(
         private val Int.to255 get() = if (this < 0) this + 255 else this
         fun blend(bk: Pixel, fg: Pixel): Pixel {
             val fga = fg.af
-            val r = bk.rf * fga + fg.rf * (1f - fga)
-            val g = bk.gf * fga + fg.gf * (1f - fga)
-            val b = bk.bf * fga + fg.bf * (1f - fga)
+            val r = fg.rf * fga + bk.rf * (1f - fga)
+            val g = fg.gf * fga + bk.gf * (1f - fga)
+            val b = fg.bf * fga + bk.bf * (1f - fga)
             return Pixel(r, g, b, bk.af)
         }
 

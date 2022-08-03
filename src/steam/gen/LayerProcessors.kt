@@ -23,8 +23,7 @@ class TintLayerProcessor(
             for (y in 0 until height) {
                 val c = Pixel(raw[x, y])
                 if (c.isVisible) {
-                    val newC = c a 180
-                    res[x, y] = blend(dye, newC)
+                    res[x, y] = blend(c, dye)
                 }
             }
         }
