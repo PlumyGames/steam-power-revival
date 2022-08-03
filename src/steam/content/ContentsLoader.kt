@@ -35,6 +35,7 @@ object ContentsLoader {
             pneumaticDrill()
             conveyor()
             siliconSmelter()
+            kiln()
             conduit()
             alpha()
             beta()

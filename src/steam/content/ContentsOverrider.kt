@@ -71,6 +71,13 @@ object ContentsOverrider {
         }
     }
 
+    fun kiln() {
+        (kiln as GenericCrafter).apply {
+            removeConsumer(findConsumer { it is ConsumeItems })
+            consumeItems(Items.lead + 1, SteamItems.quartz + 1, SteamItems.glass + 1)
+        }
+    }
+
     fun alpha() {
         (alpha as UnitType).apply {
             mineTier = 2
