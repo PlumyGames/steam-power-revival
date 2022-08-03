@@ -19,7 +19,9 @@ object DebugDialog {
             }
             rebuild()
             cont.add(icons).grow().row()
+            val alpha255 = Label("${(OreIconGenerator.alpha * 255).toInt()}")
             val alpha = Label("${OreIconGenerator.alpha}")
+            cont.add(alpha255).row()
             cont.add(alpha).row()
             fun reload() {
                 OreGenerator.all.values.forEach {
@@ -30,6 +32,7 @@ object DebugDialog {
             cont.slider(0f, 1f, 0.0001f, OreIconGenerator.alpha) {
                 OreIconGenerator.alpha = it
                 alpha.setText("$it")
+                alpha255.setText("${(it * 255).toInt()}")
                 reload()
             }.width(1000f)
             addCloseButton()
