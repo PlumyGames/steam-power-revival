@@ -6,16 +6,15 @@ import steam.gen.Pixel.Companion.blend
 import steam.gen.Pixel.Companion.toPixel
 
 class PlainLayerProcessor : ILayerProcessor {
-    override fun process(raw: Pixmap): Pixmap {
-        return raw
-    }
+    override fun process(original: ITexture): ITexture = original
 }
 
 class TintLayerProcessor(
     val color: Color,
 ) : ILayerProcessor {
     val dye = color.toPixel()
-    override fun process(raw: Pixmap): Pixmap {
+    override fun process(original: ITexture): ITexture {
+        val raw = original.pixels
         val width = raw.width
         val height = raw.height
         val res = Pixmap(width, height)
@@ -27,6 +26,6 @@ class TintLayerProcessor(
                 }
             }
         }
-        return res
+        return ProcessedTexture(res)
     }
 }

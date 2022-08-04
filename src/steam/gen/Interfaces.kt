@@ -5,13 +5,20 @@ import arc.graphics.Texture
 import arc.graphics.g2d.TextureRegion
 import java.io.Closeable
 
-interface IModelLayer : Closeable {
-    fun addProcess(processor: ILayerProcessor)
-    fun process(): Pixmap
-    val texture: Pixmap
+interface ITexture : Closeable {
+    val pixels: Pixmap
+    val disposable: Boolean
+        get() = false
+
     override fun close() {
-        texture.dispose()
+        if (disposable) pixels.dispose()
     }
+}
+
+interface IModelLayer {
+    fun addProcess(processor: ILayerProcessor)
+    fun process(): ITexture
+    val texture: ITexture
 }
 
 operator fun IModelLayer.plusAssign(processor: ILayerProcessor) {
@@ -24,7 +31,7 @@ operator fun IModelLayer.plus(processor: ILayerProcessor): IModelLayer {
 }
 
 interface ILayerProcessor {
-    fun process(raw: Pixmap): Pixmap
+    fun process(original: ITexture): ITexture
 }
 
 interface IBakery {
@@ -33,8 +40,8 @@ interface IBakery {
 
 fun IBakery.bake(vararg layers: IModelLayer) = bake(layers.toList())
 interface IBakedModel {
-    val texture: Pixmap
+    val texture: ITexture
 }
 
-fun IBakedModel.toTexture() = Texture(texture)
+fun IBakedModel.toTexture() = Texture(texture.pixels)
 fun IBakedModel.toTextureRegion() = TextureRegion(toTexture())

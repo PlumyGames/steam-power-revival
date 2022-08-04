@@ -49,7 +49,7 @@ object OreGenerator {
 
 object OreIconGenerator {
     // only generate 32x32 at present
-    val bakery: IBakery = IconMaker(32, 32)
+    val bakery: IBakery = StackIconMaker(32, 32)
     val rand = Rand()
     var baseNumber = 1
     var patchNumber = 1
@@ -71,8 +71,8 @@ object OreIconGenerator {
     val baseLayerProcess = PlainLayerProcessor()
     fun generate(ore: GeneratedOre): TextureRegion {
         rand.setSeed(ore.name.hashCode().toLong())
-        val baseLayer = PixmapModelLayer(baseTextures[rand.random(0, baseTextures.size - 1)])
-        val patchLayer = PixmapModelLayer(patchTextures[rand.random(0, patchTextures.size - 1)])
+        val baseLayer = RawPixmapModelLayer(baseTextures[rand.random(0, baseTextures.size - 1)])
+        val patchLayer = RawPixmapModelLayer(patchTextures[rand.random(0, patchTextures.size - 1)])
         baseLayer += baseLayerProcess
         patchLayer += TintLayerProcessor(ore.color.cpy().a(alpha))
         val baked = bakery.bake(baseLayer, patchLayer)

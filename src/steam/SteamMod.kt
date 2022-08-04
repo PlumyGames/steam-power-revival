@@ -1,7 +1,6 @@
 package steam
 
 import arc.Events
-import arc.graphics.Texture
 import arc.scene.ui.Image
 import mindustry.Vars
 import mindustry.content.Items
@@ -39,14 +38,14 @@ class SteamMod : Mod() {
                 val templates = assets.resolve("sprites/template")
                 val `ore-base1` = templates.resolve("ore-base0.png")
                 val `ore-patch1` = templates.resolve("ore-patch0.png")
-                val maker = IconMaker(32, 32)
+                val maker = StackIconMaker(32, 32)
                 val layers = listOf(
                     PixmapModelLayerForm(`ore-base1`) + PlainLayerProcessor(),
                     PixmapModelLayerForm(`ore-patch1`) + PlainLayerProcessor()
                 )
                 val baked = maker.bake(layers)
                 BaseDialog("Test icon maker").apply {
-                    val texture = Texture(baked.texture)
+                    val texture = baked.toTexture()
                     cont.add(Image(texture)).size(Vars.iconXLarge)
                     addCloseButton()
                 }

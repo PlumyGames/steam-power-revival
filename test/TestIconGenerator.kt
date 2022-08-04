@@ -1,6 +1,6 @@
 import arc.graphics.Pixmap
 import org.junit.jupiter.api.Test
-import steam.gen.IconMaker
+import steam.gen.StackIconMaker
 import steam.gen.PixmapModelLayerForm
 import steam.gen.PlainLayerProcessor
 import steam.gen.plus
@@ -15,13 +15,13 @@ class TestIconGenerator {
     val `ore-base1` = templates.resolve("ore-base1.png")
     val `ore-patch1` = templates.resolve("ore-patch1.png")
     fun `gen icon`(): Pixmap {
-        val maker = IconMaker(32, 32)
+        val maker = StackIconMaker(32, 32)
         val layers = listOf(
             PixmapModelLayerForm(`ore-base1`) + PlainLayerProcessor(),
             PixmapModelLayerForm(`ore-patch1`) + PlainLayerProcessor()
         )
         val baked = maker.bake(layers)
-        return baked.texture
+        return baked.texture.pixels
     }
     @Test
     fun `test gen icon`() {

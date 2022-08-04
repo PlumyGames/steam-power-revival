@@ -2,18 +2,19 @@ package steam.gen
 
 import arc.graphics.Pixmap
 
-class Icon(override val texture: Pixmap) : IBakedModel
-class IconMaker(
+class Icon(override val texture: ITexture) : IBakedModel
+class StackIconMaker(
     val width: Int,
     val height: Int,
 ) : IBakery {
     override fun bake(layers: List<IModelLayer>): IBakedModel {
         val res = Pixmap(width, height)
         for (layer in layers) {
-            val processed = layer.process()
-            res.coverBy(processed)
+            layer.process().use {
+                res.coverBy(it.pixels)
+            }
         }
-        return Icon(res)
+        return Icon(BakedTexture(res))
     }
 }
 
