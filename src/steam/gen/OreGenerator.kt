@@ -81,6 +81,7 @@ object OreIconGenerator {
     }
 }
 
+
 class GeneratedOre(
     original: Item,
 ) : Item("oregen-${original.name}") {
