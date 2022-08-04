@@ -75,7 +75,7 @@ object OreIconGenerator {
         val baseLayer = RawPixmapModelLayer(baseTextures[rand.random(0, baseTextures.size - 1)])
         val patchLayer = RawPixmapModelLayer(patchTextures[rand.random(0, patchTextures.size - 1)])
         baseLayer += baseLayerProcess
-        patchLayer += TintLayerProcessor(ore.color.cpy().a(alpha))
+        patchLayer += TintBlendLayerProcessor(ore.color.cpy().a(alpha))
         val baked = bakery.bake(baseLayer, patchLayer)
         return baked.toTextureRegion()
     }
