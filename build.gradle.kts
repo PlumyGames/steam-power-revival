@@ -28,8 +28,10 @@ repositories {
 }
 dependencies {
     importMindustry()
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+    implementation("com.github.plumygame.mkutils:texture:494a662fac")
+    testImplementation("com.github.plumygame.mkutils:texture:494a662fac")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
 }
 tasks.withType<Test> {
     useJUnitPlatform()

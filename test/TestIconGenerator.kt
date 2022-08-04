@@ -1,10 +1,9 @@
+import arc.files.Fi
 import arc.graphics.Pixmap
+import mindustry.graphics.Pal
 import org.junit.jupiter.api.Test
-import steam.gen.StackIconMaker
-import steam.gen.PixmapModelLayerForm
-import steam.gen.PlainLayerProcessor
-import steam.gen.plus
-import java.awt.image.BufferedImage
+import plumy.texture.*
+import steam.gen.*
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -12,13 +11,13 @@ class TestIconGenerator {
     val rootDir = File("")
     val assets = rootDir.resolve("assets")
     val templates = assets.resolve("sprites/template")
-    val `ore-base1` = templates.resolve("ore-base1.png")
-    val `ore-patch1` = templates.resolve("ore-patch1.png")
+    val `ore-base0` = templates.resolve("ore-base0.png")
+    val `ore-patch0` = templates.resolve("ore-patch0.png")
     fun `gen icon`(): Pixmap {
         val maker = StackIconMaker(32, 32)
         val layers = listOf(
-            PixmapModelLayerForm(`ore-base1`) + PlainLayerProcessor(),
-            PixmapModelLayerForm(`ore-patch1`) + PlainLayerProcessor()
+            PixmapModelLayerForm(`ore-base0`) + PlainLayerProcessor(),
+            PixmapModelLayerForm(`ore-patch0`) + TintLayerProcessor(Pal.accent.cpy().a(0.7f))
         )
         val baked = maker.bake(layers)
         return baked.texture.pixels
@@ -28,23 +27,15 @@ class TestIconGenerator {
         `gen icon`()
     }
     @Test
-    fun `test show icon`() {
+    fun `test output icon`() {
         val icon = `gen icon`()
-        val img = icon.toBufferedImage()
+        val output = File.createTempFile("test-generated-icon", ".png")
+        Fi(output).writePng(icon)
     }
     @Test
     fun `test read buffered image form local file`() {
-        ImageIO.read(`ore-base1`)
+        ImageIO.read(`ore-base0`)
     }
 }
 
-fun Pixmap.toByteArray() =
-    ByteArray(pixels.remaining()).apply {
-        pixels.get(this)
-    }
 
-fun Pixmap.toBufferedImage(): BufferedImage {
-    val input = this.toByteArray().inputStream()
-    val img: BufferedImage? = ImageIO.read(input)
-    return img!!
-}
