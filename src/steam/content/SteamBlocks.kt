@@ -32,7 +32,7 @@ import steam.gen.OreGenerator
 import steam.utils.plus
 import steam.world.crafting.MultiCrafter
 import steam.world.crafting.TemperatureCrafter
-import steam.world.distribution.Node
+import steam.world.distribution.PressureNode
 import steam.world.drawer.DrawReservoir
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
@@ -321,7 +321,7 @@ object SteamBlocks {
         }
     }
     fun pressureNode() {
-        pressureNode = Node("pressure-pipe").apply {
+        pressureNode = PressureNode("pressure-pipe").apply {
             health = 120
             category = Category.distribution
             buildVisibility = BuildVisibility.shown

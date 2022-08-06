@@ -4,6 +4,8 @@ import arc.struct.IntSet
 import arc.struct.Seq
 import mindustry.gen.Building
 import steam.utils.sumOf
+import steam.world.pressure.IPressureNode.Companion.linkedVertices
+import steam.world.pressure.IPressureNode.Companion.linkedVertices2
 import java.util.*
 
 class PressureGraph {
@@ -45,13 +47,14 @@ class PressureGraph {
             all.add(node)
             entity.add()
 
-            when(node){
+            when (node) {
                 is IPressureProducer -> producers.add(node)
                 is IPressureConsumer -> consumers.add(node)
             }
         }
     }
-    private fun clear(){
+
+    private fun clear() {
         all.clear()
         producers.clear()
         consumers.clear()
@@ -92,6 +95,27 @@ class PressureGraph {
                 }
             }
         }
+    }
+
+    fun unlink(from: IPressureNode) {
+        for (link in from.linkedVertices) {
+            if (link.graph != this) continue
+            val newGraph = PressureGraph()
+            newGraph.add(link)
+            bfsQueue.clear()
+            bfsQueue.addLast(link)
+            while (bfsQueue.size > 0) {
+                val child = bfsQueue.removeFirst()
+                newGraph.add(child)
+                for (next in child.linkedVertices2) {
+                    if (next != from && next.graph != newGraph) {
+                        newGraph.add(next)
+                        bfsQueue.addLast(next)
+                    }
+                }
+            }
+        }
+        entity.remove()
     }
 
     override fun toString() =

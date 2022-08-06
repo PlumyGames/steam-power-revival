@@ -28,7 +28,9 @@ repositories {
 }
 dependencies {
     importMindustry()
+    implementation("com.github.plumygame.mkutils:core:c1a1b4fca1")
     implementation("com.github.plumygame.mkutils:texture:c1a1b4fca1")
+    testImplementation("com.github.plumygame.mkutils:core:c1a1b4fca1")
     testImplementation("com.github.plumygame.mkutils:texture:c1a1b4fca1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
