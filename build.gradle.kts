@@ -28,8 +28,8 @@ repositories {
 }
 dependencies {
     importMindustry()
-    implementation("com.github.plumygame.mkutils:texture:05d1b361d6")
-    testImplementation("com.github.plumygame.mkutils:texture:05d1b361d6")
+    implementation("com.github.plumygame.mkutils:texture:c1a1b4fca1")
+    testImplementation("com.github.plumygame.mkutils:texture:c1a1b4fca1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
 }
@@ -42,14 +42,14 @@ tasks.withType<Test> {
 }
 mindustry {
     dependency {
-        mindustry on "v136"
-        arc on "v136.1"
+        mindustry mirror "1a64344e5a"
+        arc on "v137"
     }
     client {
-        mindustry official "v136.1"
+        mindustry official "v137"
     }
     server {
-        mindustry official "v136.1"
+        mindustry official "v137"
     }
     deploy {
         baseName = project.name

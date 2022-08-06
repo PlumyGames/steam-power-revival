@@ -3,7 +3,6 @@ import arc.graphics.Pixmap
 import mindustry.graphics.Pal
 import org.junit.jupiter.api.Test
 import plumy.texture.*
-import steam.gen.*
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -17,7 +16,7 @@ class TestIconGenerator {
         val maker = StackIconMaker(32, 32)
         val layers = listOf(
             PixmapModelLayerForm(`ore-base0`) + PlainLayerProcessor(),
-            PixmapModelLayerForm(`ore-patch0`) + TintLayerProcessor(Pal.accent.cpy().a(0.7f))
+            PixmapModelLayerForm(`ore-patch0`) + TintLerpLayerProcessor(Pal.accent, 0.7f)
         )
         val baked = maker.bake(layers)
         return baked.texture.toPixmap()

@@ -4,4 +4,4 @@ author: "Liplum & Eclipse"
 main: "steam.SteamMod"
 description: "Industrial Society and it future."
 version: 0.0.1
-minGameVersion: 136
+minGameVersion: 137
