@@ -8,6 +8,8 @@ import mindustry.gen.Building
 import mindustry.gen.Buildingc
 import mindustry.ui.Bar
 import mindustry.world.Block
+import plumy.core.Serialized
+import plumy.core.math.Progress
 import steam.R
 import steam.world.pressure.IPressureNode.Companion.pressureFact
 
@@ -16,11 +18,11 @@ typealias Pressure = Float
 interface IPressureNode : Buildingc {
     var graph: PressureGraph
     var graphInitialized: Boolean
+    @Serialized
     val currentPressure: Pressure
-    val maxPressure: Pressure
-        get() = graph.currentPressure
-    val pressureCapacity: Pressure
+    @Serialized
     val links: IntSeq
+    val pressureCapacity: Pressure
     fun getNetworkConnections(out: MutableList<IPressureNode>):
             MutableList<IPressureNode> {
         out.clear()
@@ -58,16 +60,17 @@ interface IPressureNode : Buildingc {
         private val tempList2 = ArrayList<IPressureNode>()
         val IPressureNode.linkedVertices get() = getNetworkConnections(tempList)
         val IPressureNode.linkedVertices2 get() = getNetworkConnections(tempList2)
-        val IPressureNode.pressureFact get() = if (maxPressure != 0f) currentPressure / maxPressure else 0f
+        val IPressureNode.pressureFact: Progress get() = if (maxPressure != 0f) currentPressure / maxPressure else 0f
+        val IPressureNode.maxPressure: Pressure get() = graph.maxPressure
     }
 }
 
 interface IPressureProducer : IPressureNode {
-    val pressureProduced: Float
+    val pressureProduced: Pressure
 }
 
 interface IPressureConsumer : IPressureNode {
-    val pressureRequired: Float
+    val pressureRequired: Pressure
 }
 
 inline fun <reified T> Block.addPressureBar() where T : Building, T : IPressureNode {
@@ -78,6 +81,29 @@ inline fun <reified T> Block.addPressureBar() where T : Building, T : IPressureN
             Tmp.c1.set(R.C.pressureSafe).lerp(R.C.pressureWarning, it.pressureFact)
         }, {
             it.pressureFact
+        })
+    }
+}
+
+inline fun <reified T> Block.addPressureProducedBar(maxProduced: Pressure) where T : Building, T : IPressureProducer {
+    addBar<T>("pressure") {
+        Bar({
+            bundle.format("bar.pressure-procured", it.pressureProduced)
+        }, {
+            R.C.pressure
+        }, {
+            it.pressureProduced / maxProduced
+        })
+    }
+}
+inline fun <reified T> Block.addPressureRequiredBar(maxRequirement: Pressure) where T : Building, T : IPressureConsumer {
+    addBar<T>("pressure") {
+        Bar({
+            bundle.format("bar.pressure-required", it.pressureRequired)
+        }, {
+            R.C.pressure
+        }, {
+            it.pressureRequired / maxRequirement
         })
     }
 }

@@ -1,5 +1,7 @@
 package steam
 
+import arc.graphics.Color
+import mindustry.graphics.Pal
 import steam.utils.Color
 
 object R {
@@ -8,5 +10,6 @@ object R {
         val burnerFlame = Color("ff9b59")
         val pressureWarning = Color("ff0f0f")
         val pressureSafe = Color("00e676")
+        val pressure: Color = Pal.accent
     }
 }

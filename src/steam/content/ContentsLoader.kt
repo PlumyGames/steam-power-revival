@@ -30,6 +30,8 @@ object ContentsLoader {
             coreFragment()
             mechPad()
             heatAccumulator()
+            pressureSource()
+            pressureVoid()
             ironOre()
         }
         ContentsOverrider.apply {

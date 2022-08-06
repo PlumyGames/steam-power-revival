@@ -3,38 +3,20 @@ package steam.world.distribution
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.TextureRegion
 import arc.math.geom.Geometry
-import arc.struct.IntSeq
 import arc.util.Eachable
 import mindustry.Vars.tilesize
 import mindustry.Vars.world
 import mindustry.entities.units.BuildPlan
-import mindustry.gen.Building
 import mindustry.graphics.Drawf
-import mindustry.world.Block
 import steam.DebugOnly
 import steam.utils.sheet
-import steam.world.pressure.IPressureNode
-import steam.world.pressure.Pressure
-import steam.world.pressure.PressureGraph
-import steam.world.pressure.addPressureBar
+import steam.world.pressure.PressureBlock
 
-class PressureNode(name: String) : Block(name) {
+class PressurePipe(name: String) : PressureBlock(name) {
     lateinit var regions: Array<TextureRegion>
-    var pressureCapacity: Pressure = 0.5f
-
-    init {
-        solid = true
-        update = true
-    }
-
     override fun load() {
         super.load()
         regions = "$name-tile".sheet(size * 32, size * 32)
-    }
-
-    override fun setBars() {
-        super.setBars()
-        addPressureBar<PressureNodeBuild>()
     }
 
     override fun drawPlanConfig(plan: BuildPlan, list: Eachable<BuildPlan>) {
@@ -43,7 +25,7 @@ class PressureNode(name: String) : Block(name) {
 
         for (i in 0..3) {
             val pt = Geometry.d4((4 - i) % 4).cpy().add(plan.x, plan.y)
-            if (world.build(pt.x, pt.y) is PressureNodeBuild) {
+            if (world.build(pt.x, pt.y) is PressurePipeBuild) {
                 drawIndex += 1 shl i
             } else {
                 val f = booleanArrayOf(false)
@@ -60,30 +42,14 @@ class PressureNode(name: String) : Block(name) {
         Draw.rect(regions[drawIndex], plan.drawx(), plan.drawy(), scl, scl)
     }
 
-    inner class PressureNodeBuild : Building(), IPressureNode {
+    inner class PressurePipeBuild : PressureBuild() {
         var drawIndex = 0
-        override var graph: PressureGraph = PressureGraph()
-        override var graphInitialized = false
-        override var currentPressure: Pressure = 0f
-        override val pressureCapacity: Pressure = this@PressureNode.pressureCapacity
-        override val links = IntSeq()
-        override fun created() {
-            super.created()
-            graph.initNode(this)
-        }
-
         override fun onProximityUpdate() {
             super.onProximityUpdate()
-            updateProximateLink()
             drawIndex = 0
             for (i in 0 until 4) {
-                if (nearby((4 - i) % 4) is PressureNodeBuild) drawIndex += 1 shl i
+                if (nearby((4 - i) % 4) is PressurePipeBuild) drawIndex += 1 shl i
             }
-        }
-
-        override fun onProximityRemoved() {
-            super.onProximityRemoved()
-            removeFromGraph()
         }
 
         override fun drawSelect() {

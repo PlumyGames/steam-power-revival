@@ -32,12 +32,14 @@ import steam.gen.OreGenerator
 import steam.utils.plus
 import steam.world.crafting.MultiCrafter
 import steam.world.crafting.TemperatureCrafter
-import steam.world.distribution.PressureNode
+import steam.world.distribution.PressurePipe
 import steam.world.drawer.DrawReservoir
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
 import steam.world.mech.MechPad
+import steam.world.pressure.PressureSource
+import steam.world.pressure.PressureVoid
 
 object SteamBlocks {
     //should be listed all at once
@@ -64,7 +66,8 @@ object SteamBlocks {
     lateinit var heatAccumulator: HeatAccumulator
     //env
     lateinit var oreIron: OreBlock
-
+    lateinit var pressureSource: PressureSource
+    lateinit var pressureVoid: PressureVoid
     fun rifle() {
         rifle = ItemTurret("rifle").apply {
             reload = 25f
@@ -137,6 +140,7 @@ object SteamBlocks {
             limitRange()
         }
     }
+
     fun quartzExtractor() {
         quartzExtractor = AttributeCrafter("quartz-extractor").apply {
             category = Category.production
@@ -161,6 +165,7 @@ object SteamBlocks {
             drawer = DrawMulti(DrawDefault(), DrawRegion("-rotator").apply { rotateSpeed = 3f; spinSprite = true }, DrawRegion("-top"))
         }
     }
+
     fun boiler() {
         boiler = TemperatureCrafter("boiler").apply {
             category = Category.crafting
@@ -190,6 +195,7 @@ object SteamBlocks {
             )
         }
     }
+
     fun blastFurnace() {
         blastFurnace = MultiCrafter("blast-furnace").apply {
             warmupSpeed = 0.012f
@@ -199,10 +205,14 @@ object SteamBlocks {
             configurable = false
             itemCapacity = 80
             for (ore in OreGenerator.all) {
-                if(ore.key.radioactivity <= 0f)
-                recipes.add(MultiCrafter.Recipe(60f, arrayOf(ore.value + 1), arrayOf(ore.key + 1), null, arrayOf(
-                    Liquids.slag + 0.05f
-                )))
+                if (ore.key.radioactivity <= 0f)
+                    recipes.add(
+                        MultiCrafter.Recipe(
+                            60f, arrayOf(ore.value + 1), arrayOf(ore.key + 1), null, arrayOf(
+                                Liquids.slag + 0.05f
+                            )
+                        )
+                    )
             }
             recipes.add(MultiCrafter.Recipe(60f, arrayOf(Items.sand + 1), arrayOf(SteamItems.glass + 1)))
             recipes.add(MultiCrafter.Recipe(60f, arrayOf(Items.scrap + 1), emptyArray(), null, arrayOf(Liquids.slag + 0.1f)))
@@ -221,6 +231,7 @@ object SteamBlocks {
             }
         }
     }
+
     fun crystalizer() {
         crystalizer = Separator("crystalizer").apply {
             category = Category.crafting
@@ -241,6 +252,7 @@ object SteamBlocks {
             consumeLiquid(Liquids.slag, 0.1f)
         }
     }
+
     fun burner() {
         burner = ItemBurner("burner").apply {
             squareSprite = false
@@ -285,6 +297,7 @@ object SteamBlocks {
             )
         }
     }
+
     fun reservoir() {
         reservoir = Pump("reservoir").apply {
             liquidCapacity = 80f
@@ -302,6 +315,7 @@ object SteamBlocks {
             drawer = DrawMulti(DrawDefault(), DrawReservoir(null), DrawRegion("-top"))
         }
     }
+
     fun well() {
         well = SolidPump("well").apply {
             liquidCapacity = 80f
@@ -320,8 +334,9 @@ object SteamBlocks {
             }
         }
     }
+
     fun pressureNode() {
-        pressureNode = PressureNode("pressure-pipe").apply {
+        pressureNode = PressurePipe("pressure-pipe").apply {
             health = 120
             category = Category.distribution
             buildVisibility = BuildVisibility.shown
@@ -333,6 +348,7 @@ object SteamBlocks {
             }
         }
     }
+
     fun coreFragment() {
         coreFragment = CoreBlock("core-fragment").apply {
             size = 3
@@ -352,6 +368,7 @@ object SteamBlocks {
             }
         }
     }
+
     fun mechPad() {
         mechPad = MechPad("mech-pad").apply {
             size = 2
@@ -368,6 +385,7 @@ object SteamBlocks {
             }
         }
     }
+
     fun heatAccumulator() {
         heatAccumulator = HeatAccumulator("heat-accumulator").apply {
             category = Category.effect
@@ -375,6 +393,23 @@ object SteamBlocks {
             size = 4
         }
     }
+
+    fun pressureSource(){
+        pressureSource = PressureSource("pressure-source").apply {
+            category = Category.effect
+            buildVisibility = BuildVisibility.sandboxOnly
+            size = 1
+        }
+    }
+
+    fun pressureVoid(){
+        pressureVoid = PressureVoid("pressure-void").apply {
+            category = Category.effect
+            buildVisibility = BuildVisibility.sandboxOnly
+            size = 1
+        }
+    }
+
     //env
     fun ironOre() {
         oreIron = OreBlock(SteamItems.iron).apply {
