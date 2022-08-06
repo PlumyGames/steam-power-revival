@@ -11,12 +11,12 @@ import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.world.Block
-import plumy.core.arc.forEach
 import steam.DebugOnly
 import steam.utils.sheet
 import steam.world.pressure.IPressureNode
 import steam.world.pressure.Pressure
 import steam.world.pressure.PressureGraph
+import steam.world.pressure.addPressureBar
 
 class PressureNode(name: String) : Block(name) {
     lateinit var regions: Array<TextureRegion>
@@ -30,6 +30,11 @@ class PressureNode(name: String) : Block(name) {
     override fun load() {
         super.load()
         regions = "$name-tile".sheet(size * 32, size * 32)
+    }
+
+    override fun setBars() {
+        super.setBars()
+        addPressureBar<PressureNodeBuild>()
     }
 
     override fun drawPlanConfig(plan: BuildPlan, list: Eachable<BuildPlan>) {
@@ -66,6 +71,7 @@ class PressureNode(name: String) : Block(name) {
             super.created()
             graph.initNode(this)
         }
+
         override fun onProximityUpdate() {
             super.onProximityUpdate()
             updateProximateLink()
@@ -79,6 +85,7 @@ class PressureNode(name: String) : Block(name) {
             super.onProximityRemoved()
             removeFromGraph()
         }
+
         override fun drawSelect() {
             super.drawSelect()
             DebugOnly {

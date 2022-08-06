@@ -9,7 +9,7 @@ import steam.world.pressure.IPressureNode.Companion.linkedVertices2
 import java.util.*
 
 class PressureGraph {
-    val entity = PressureNetworkUpdater.create().apply {
+    val entity = PressureGraphUpdater.create().apply {
         graph = this@PressureGraph
     }
     var id = lastNetworkID++
@@ -20,6 +20,7 @@ class PressureGraph {
     val size: Int
         get() = all.size
     var currentPressure = 0f
+    var maxPressure = 2f
     fun update() {
         currentPressure = if (consumers.isEmpty) {
             0f

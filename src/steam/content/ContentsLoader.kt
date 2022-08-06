@@ -1,6 +1,8 @@
 package steam.content
 
 import mindustry.content.Blocks
+import plumy.world.EntityRegistry
+import steam.world.pressure.PressureGraphUpdater
 
 object ContentsLoader {
     fun load() {
@@ -41,6 +43,9 @@ object ContentsLoader {
             beta()
             sand()
             stone()
+        }
+        EntityRegistry.apply {
+            register<PressureGraphUpdater>(::PressureGraphUpdater)
         }
     }
 

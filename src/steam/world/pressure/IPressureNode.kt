@@ -1,8 +1,15 @@
 package steam.world.pressure
 
+import arc.Core.bundle
 import arc.struct.IntSeq
+import arc.util.Tmp
 import mindustry.Vars
+import mindustry.gen.Building
 import mindustry.gen.Buildingc
+import mindustry.ui.Bar
+import mindustry.world.Block
+import steam.R
+import steam.world.pressure.IPressureNode.Companion.pressureFact
 
 typealias Pressure = Float
 
@@ -10,6 +17,8 @@ interface IPressureNode : Buildingc {
     var graph: PressureGraph
     var graphInitialized: Boolean
     val currentPressure: Pressure
+    val maxPressure: Pressure
+        get() = graph.currentPressure
     val pressureCapacity: Pressure
     val links: IntSeq
     fun getNetworkConnections(out: MutableList<IPressureNode>):
@@ -47,10 +56,9 @@ interface IPressureNode : Buildingc {
     companion object {
         private val tempList = ArrayList<IPressureNode>()
         private val tempList2 = ArrayList<IPressureNode>()
-        val IPressureNode.linkedVertices: Iterable<IPressureNode>
-            get() = getNetworkConnections(tempList)
-        val IPressureNode.linkedVertices2: Iterable<IPressureNode>
-            get() = getNetworkConnections(tempList2)
+        val IPressureNode.linkedVertices get() = getNetworkConnections(tempList)
+        val IPressureNode.linkedVertices2 get() = getNetworkConnections(tempList2)
+        val IPressureNode.pressureFact get() = if (maxPressure != 0f) currentPressure / maxPressure else 0f
     }
 }
 
@@ -60,4 +68,16 @@ interface IPressureProducer : IPressureNode {
 
 interface IPressureConsumer : IPressureNode {
     val pressureRequired: Float
+}
+
+inline fun <reified T> Block.addPressureBar() where T : Building, T : IPressureNode {
+    addBar<T>("pressure") {
+        Bar({
+            bundle.format("bar.pressure", it.currentPressure)
+        }, {
+            Tmp.c1.set(R.C.pressureSafe).lerp(R.C.pressureWarning, it.pressureFact)
+        }, {
+            it.pressureFact
+        })
+    }
 }

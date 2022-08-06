@@ -3,7 +3,7 @@ package steam.world.pressure
 import mindustry.gen.Groups
 import steam.utils.EntityMixin
 
-class PressureNetworkUpdater: EntityMixin() {
+class PressureGraphUpdater: EntityMixin() {
     var graph: PressureGraph? = null
     override fun update() {
         graph?.update()
@@ -24,6 +24,6 @@ class PressureNetworkUpdater: EntityMixin() {
     }
 
     companion object{
-        fun create() = PressureNetworkUpdater()
+        fun create() = PressureGraphUpdater()
     }
 }
