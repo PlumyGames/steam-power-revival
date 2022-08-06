@@ -4,7 +4,7 @@ import arc.math.Mathf
 import arc.struct.IntSeq
 import mindustry.gen.Building
 import mindustry.world.Block
-import plumy.core.Serialized
+import steam.world.pressure.IPressureNode.Companion.pressureFact
 
 open class PressureBlock(name: String) : Block(name) {
     var pressureCapacity: Pressure = 0.5f
@@ -26,8 +26,6 @@ open class PressureBlock(name: String) : Block(name) {
         override var currentPressure: Pressure = 0f
         override val links = IntSeq()
         override val pressureCapacity: Pressure = this@PressureBlock.pressureCapacity
-        @Serialized
-        var warmup = 0f
         override fun updateTile() {
             val targetPressure = graph.currentPressure
             currentPressure = (if (targetPressure > 0f)
@@ -51,6 +49,6 @@ open class PressureBlock(name: String) : Block(name) {
             removeFromGraph()
         }
 
-        override fun warmup() = warmup
+        override fun warmup() = pressureFact
     }
 }
