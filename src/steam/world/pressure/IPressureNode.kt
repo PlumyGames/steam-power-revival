@@ -6,10 +6,12 @@ import arc.util.Tmp
 import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.gen.Buildingc
-import mindustry.ui.Bar
 import mindustry.world.Block
 import plumy.core.Serialized
+import plumy.core.arc.hsvLerp
 import plumy.core.math.Progress
+import plumy.core.math.clamp
+import plumy.world.AddBar
 import steam.R
 import steam.world.pressure.IPressureNode.Companion.pressureFact
 
@@ -60,7 +62,7 @@ interface IPressureNode : Buildingc {
         private val tempList2 = ArrayList<IPressureNode>()
         val IPressureNode.linkedVertices get() = getNetworkConnections(tempList)
         val IPressureNode.linkedVertices2 get() = getNetworkConnections(tempList2)
-        val IPressureNode.pressureFact: Progress get() = if (maxPressure != 0f) currentPressure / maxPressure else 0f
+        val IPressureNode.pressureFact: Progress get() = if (maxPressure != 0f) (currentPressure / maxPressure).clamp else 0f
         val IPressureNode.maxPressure: Pressure get() = graph.maxPressure
     }
 }
@@ -74,36 +76,35 @@ interface IPressureConsumer : IPressureNode {
 }
 
 inline fun <reified T> Block.addPressureBar() where T : Building, T : IPressureNode {
-    addBar<T>("pressure") {
-        Bar({
-            bundle.format("bar.pressure", it.currentPressure)
+    AddBar<T>("pressure",
+        {
+            bundle.format("bar.pressure", currentPressure)
         }, {
-            Tmp.c1.set(R.C.pressureSafe).lerp(R.C.pressureWarning, it.pressureFact)
+            Tmp.c1.set(R.C.pressureSafe).hsvLerp(R.C.pressureWarning, pressureFact)
         }, {
-            it.pressureFact
-        })
+            pressureFact
+        }) {
     }
 }
 
 inline fun <reified T> Block.addPressureProducedBar(maxProduced: Pressure) where T : Building, T : IPressureProducer {
-    addBar<T>("pressure") {
-        Bar({
-            bundle.format("bar.pressure-procured", it.pressureProduced)
+    AddBar<T>("pressure",
+        {
+            bundle.format("bar.pressure-procured", pressureProduced)
         }, {
             R.C.pressure
         }, {
-            it.pressureProduced / maxProduced
+            pressureProduced / maxProduced
         })
-    }
 }
+
 inline fun <reified T> Block.addPressureRequiredBar(maxRequirement: Pressure) where T : Building, T : IPressureConsumer {
-    addBar<T>("pressure") {
-        Bar({
-            bundle.format("bar.pressure-required", it.pressureRequired)
+    AddBar<T>("pressure",
+        {
+            bundle.format("bar.pressure-required", pressureRequired)
         }, {
             R.C.pressure
         }, {
-            it.pressureRequired / maxRequirement
+            pressureRequired / maxRequirement
         })
-    }
 }

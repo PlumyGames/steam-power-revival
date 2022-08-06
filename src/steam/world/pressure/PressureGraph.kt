@@ -3,6 +3,7 @@ package steam.world.pressure
 import arc.struct.IntSet
 import arc.struct.Seq
 import mindustry.gen.Building
+import plumy.core.math.isZero
 import steam.utils.sumOf
 import steam.world.pressure.IPressureNode.Companion.linkedVertices
 import steam.world.pressure.IPressureNode.Companion.linkedVertices2
@@ -29,7 +30,10 @@ class PressureGraph {
             val produced = producers.sumOf(IPressureProducer::pressureProduced)
             // accumulate the pressure required from all consumers
             val required = consumers.sumOf(IPressureConsumer::pressureRequired)
-            produced / required
+            if (produced.isZero || required.isZero)
+                0f
+            else
+                produced / required
         }
     }
     /**
