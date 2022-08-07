@@ -8,8 +8,10 @@ import mindustry.Vars.tilesize
 import mindustry.Vars.world
 import mindustry.entities.units.BuildPlan
 import mindustry.graphics.Drawf
+import mindustry.graphics.Layer
 import steam.DebugOnly
 import steam.utils.sheet
+import steam.world.pressure.IPressureNode
 import steam.world.pressure.PressureBlock
 
 class PressurePipe(name: String) : PressureBlock(name) {
@@ -25,7 +27,7 @@ class PressurePipe(name: String) : PressureBlock(name) {
 
         for (i in 0..3) {
             val pt = Geometry.d4((4 - i) % 4).cpy().add(plan.x, plan.y)
-            if (world.build(pt.x, pt.y) is PressurePipeBuild) {
+            if (world.build(pt.x, pt.y) is IPressureNode) {
                 drawIndex += 1 shl i
             } else {
                 val f = booleanArrayOf(false)
@@ -48,7 +50,7 @@ class PressurePipe(name: String) : PressureBlock(name) {
             super.onProximityUpdate()
             drawIndex = 0
             for (i in 0 until 4) {
-                if (nearby((4 - i) % 4) is PressurePipeBuild) drawIndex += 1 shl i
+                if (nearby((4 - i) % 4) is IPressureNode) drawIndex += 1 shl i
             }
         }
 
@@ -63,6 +65,17 @@ class PressurePipe(name: String) : PressureBlock(name) {
 
         override fun draw() {
             Draw.rect(regions[drawIndex], x, y)
+
+            //improvement maybe required
+            Draw.z(Layer.blockUnder)
+            for(j in 0 until 4) {
+                val i = nearby(j) ?: continue
+                if(i is IPressureNode && i !is PressurePipeBuild)
+                    Draw.rect(regions[drawIndex],
+                    x + Geometry.d4[j].x * tilesize,
+                    y + Geometry.d4[j].y * tilesize)
+            }
+            Draw.z()
         }
     }
 }

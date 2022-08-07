@@ -53,6 +53,7 @@ object SteamBlocks {
     //crafting
     lateinit var boiler: Block
     lateinit var blastFurnace: MultiCrafter
+    lateinit var advanceFurnace: MultiCrafter
     lateinit var crystalizer: Block
     //crafting - heating
     lateinit var burner: ItemBurner
