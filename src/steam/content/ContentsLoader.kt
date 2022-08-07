@@ -26,6 +26,7 @@ object ContentsLoader {
             fluidBurner()
             reservoir()
             well()
+            pressurizer()
             pressureNode()
             coreFragment()
             mechPad()

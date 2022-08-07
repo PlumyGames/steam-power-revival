@@ -2,6 +2,7 @@ package steam.world.pressure
 
 import arc.Core.bundle
 import arc.struct.IntSeq
+import arc.util.Time
 import arc.util.Tmp
 import mindustry.Vars
 import mindustry.gen.Building
@@ -35,6 +36,7 @@ interface IPressureNode : Buildingc {
         return out
     }
 
+    fun pdelta() = currentPressure * Time.delta * timeScale()
     fun isConnectedToTwoWay(other: IPressureNode) =
         other.pos() in this.links && this.pos() in other.links
 
@@ -88,7 +90,7 @@ inline fun <reified T> Block.addPressureBar() where T : Building, T : IPressureN
 }
 
 inline fun <reified T> Block.addPressureProducedBar(maxProduced: Pressure) where T : Building, T : IPressureProducer {
-    AddBar<T>("pressure",
+    AddBar<T>("pressure-produced",
         {
             bundle.format("bar.pressure-procured", pressureProduced)
         }, {
@@ -99,7 +101,7 @@ inline fun <reified T> Block.addPressureProducedBar(maxProduced: Pressure) where
 }
 
 inline fun <reified T> Block.addPressureRequiredBar(maxRequirement: Pressure) where T : Building, T : IPressureConsumer {
-    AddBar<T>("pressure",
+    AddBar<T>("pressure-required",
         {
             bundle.format("bar.pressure-required", pressureRequired)
         }, {

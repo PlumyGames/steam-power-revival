@@ -38,6 +38,7 @@ import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
 import steam.world.mech.MechPad
+import steam.world.pressure.PressureProducer
 import steam.world.pressure.PressureSource
 import steam.world.pressure.PressureVoid
 
@@ -68,6 +69,7 @@ object SteamBlocks {
     lateinit var oreIron: OreBlock
     lateinit var pressureSource: PressureSource
     lateinit var pressureVoid: PressureVoid
+    lateinit var pressurizer: PressureProducer
     fun rifle() {
         rifle = ItemTurret("rifle").apply {
             reload = 25f
@@ -335,6 +337,16 @@ object SteamBlocks {
         }
     }
 
+    fun pressurizer() {
+        pressurizer = PressureProducer("pressurizer").apply {
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
+            consumeLiquid(SteamFluids.steam, 0.1f)
+            pressureOutput = 5f
+            size = 2
+        }
+    }
+
     fun pressureNode() {
         pressureNode = PressurePipe("pressure-pipe").apply {
             health = 120
@@ -385,7 +397,7 @@ object SteamBlocks {
             }
         }
     }
-
+    // sandbox only
     fun heatAccumulator() {
         heatAccumulator = HeatAccumulator("heat-accumulator").apply {
             category = Category.effect
@@ -394,7 +406,7 @@ object SteamBlocks {
         }
     }
 
-    fun pressureSource(){
+    fun pressureSource() {
         pressureSource = PressureSource("pressure-source").apply {
             category = Category.effect
             buildVisibility = BuildVisibility.sandboxOnly
@@ -402,14 +414,13 @@ object SteamBlocks {
         }
     }
 
-    fun pressureVoid(){
+    fun pressureVoid() {
         pressureVoid = PressureVoid("pressure-void").apply {
             category = Category.effect
             buildVisibility = BuildVisibility.sandboxOnly
             size = 1
         }
     }
-
     //env
     fun ironOre() {
         oreIron = OreBlock(SteamItems.iron).apply {
