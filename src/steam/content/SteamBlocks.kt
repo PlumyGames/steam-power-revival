@@ -34,6 +34,7 @@ import steam.world.crafting.MultiCrafter
 import steam.world.crafting.TemperatureCrafter
 import steam.world.distribution.PressurePipe
 import steam.world.drawer.DrawReservoir
+import steam.world.drawer.DrawSteam
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
@@ -314,7 +315,11 @@ object SteamBlocks {
                     SteamItems.stone + 80, SteamItems.glass + 10
                 )
             }
-            drawer = DrawMulti(DrawDefault(), DrawReservoir(null), DrawRegion("-top"))
+            drawer = DrawMulti(
+                DrawDefault(),
+                DrawReservoir(null),
+                DrawRegion("-top")
+            )
         }
     }
 
@@ -344,6 +349,11 @@ object SteamBlocks {
             consumeLiquid(SteamFluids.steam, 0.1f)
             pressureOutput = 5f
             size = 2
+            drawer = DrawMulti(
+                DrawRegion("-bottom"),
+                DrawDefault(),
+                DrawSteam(),
+            )
         }
     }
 
