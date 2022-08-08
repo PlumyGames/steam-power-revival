@@ -41,6 +41,7 @@ object ContentsLoader {
             conveyor()
             siliconSmelter()
             kiln()
+            graphitePress()
             conduit()
             alpha()
             beta()
