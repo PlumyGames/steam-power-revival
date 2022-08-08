@@ -20,6 +20,9 @@ class PressurePipe(name: String) : PressureBlock(name) {
         super.load()
         regions = "$name-tile".sheet(size * 32, size * 32)
     }
+    override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
+        drawPlanConfig(plan, list)
+    }
 
     override fun drawPlanConfig(plan: BuildPlan, list: Eachable<BuildPlan>) {
         var drawIndex = 0

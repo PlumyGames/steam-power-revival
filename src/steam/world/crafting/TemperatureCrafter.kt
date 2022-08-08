@@ -12,7 +12,6 @@ import mindustry.ui.LiquidDisplay
 import mindustry.world.consumers.ConsumeLiquid
 import mindustry.world.meta.Stat
 import steam.utils.addTable
-import steam.world.module.IPressureContainer
 import steam.world.module.celsius
 
 class TemperatureCrafter(name: String) : TemperatureBlock(name) {
@@ -24,7 +23,6 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
     val pressureCapacity: Float
         get() = liquidCapacity
     var maxTemp = 400f.celsius
-
     lateinit var outputFluid: LiquidStack
 
     init {
@@ -33,13 +31,12 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
         buildType = Prov { TempCrafterBuild() }
     }
 
-    inner class TempCrafterBuild : TemperatureBuild(), IPressureContainer {
-        override val pressureAmount: Float
+    inner class TempCrafterBuild : TemperatureBuild() {
+        val pressureAmount: Float
             get() = liquids[outputFluid.liquid]
-        override val pressureProportion: Float
+        val pressureProportion: Float
             get() = pressureAmount / pressureCapacity
         var warmup = 0f
-
         override fun updateTile() {
             super.updateTile()
             if (efficiency > 0 && temp >= minRequired) {
@@ -57,9 +54,11 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
         override fun shouldConsume(): Boolean {
             return pressureProportion <= 1f && enabled && temp >= minRequired
         }
+
         override fun efficiency(): Float {
             return Mathf.clamp(temp - 25f, 0f, maxTemp) / minRequired
         }
+
         override fun warmup() = warmup
     }
 

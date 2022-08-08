@@ -26,6 +26,7 @@ import mindustry.world.draw.*
 import mindustry.world.meta.Attribute
 import mindustry.world.meta.BuildVisibility
 import mindustry.world.meta.Env
+import plumy.world.worldXY
 import steam.R
 import steam.UndebugOnly
 import steam.gen.OreGenerator
@@ -33,8 +34,8 @@ import steam.utils.plus
 import steam.world.crafting.MultiCrafter
 import steam.world.crafting.TemperatureCrafter
 import steam.world.distribution.PressurePipe
+import steam.world.drawer.DrawPressureOutput
 import steam.world.drawer.DrawReservoir
-import steam.world.drawer.DrawSteam
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
@@ -353,7 +354,10 @@ object SteamBlocks {
             drawer = DrawMulti(
                 DrawRegion("-bottom"),
                 DrawDefault(),
-                DrawSteam(),
+                DrawPressureOutput {
+                    visualMaxProduced = 5f
+                    particleRad = size.worldXY
+                },
             )
         }
     }

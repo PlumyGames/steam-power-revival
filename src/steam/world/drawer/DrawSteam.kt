@@ -9,10 +9,14 @@ import arc.math.Mathf
 import arc.util.Time
 import mindustry.gen.Building
 import mindustry.world.draw.DrawBlock
+import plumy.core.math.Progress
 import steam.R
+import steam.world.pressure.IPressureConsumer
+import steam.world.pressure.IPressureNode
+import steam.world.pressure.IPressureNode.Companion.pressureFact
+import steam.world.pressure.IPressureProducer
 
-import steam.world.module.IPressureContainer
-class DrawSteam : DrawBlock() {
+open class DrawSteam : DrawBlock() {
     var color = R.C.steam
     var alpha = 0.4f
     var particles = 30
@@ -24,9 +28,9 @@ class DrawSteam : DrawBlock() {
     var particleInterp: Interp = Interp.PowIn(1.5f)
     var particleSizeInterp: Interp = Interp.slope
     var blending: Blending = Blending.normal
+    open fun getSteamFact(build: Building): Progress = if (build is IPressureNode) build.pressureFact else 0f
     override fun draw(build: Building) {
-        if (build !is IPressureContainer) return
-        val steam = build.pressureProportion
+        val steam = getSteamFact(build)
         if (steam > 0f) {
             val a = alpha * steam
             Draw.blend(blending)
@@ -48,5 +52,37 @@ class DrawSteam : DrawBlock() {
             Draw.blend()
             Draw.reset()
         }
+    }
+
+    companion object {
+        operator fun invoke(config: DrawSteam.() -> Unit) = DrawSteam().apply(config)
+    }
+}
+
+class DrawPressureOutput(
+    var visualMaxProduced: Float = 10f,
+) : DrawSteam() {
+    override fun getSteamFact(build: Building): Progress =
+        if (build is IPressureProducer) build.pressureProduced / visualMaxProduced else 0f
+
+    companion object {
+        operator fun invoke(
+            visualMaxProduced: Float = 10f,
+            config: DrawPressureOutput.() -> Unit,
+        ) = DrawPressureOutput(visualMaxProduced).apply(config)
+    }
+}
+
+class DrawPressureInput(
+    var visualMaxRequired: Float = 10f,
+) : DrawSteam() {
+    override fun getSteamFact(build: Building): Progress =
+        if (build is IPressureConsumer) build.pressureRequired / visualMaxRequired else 0f
+
+    companion object {
+        operator fun invoke(
+            visualMaxRequired: Float = 10f,
+            config: DrawPressureInput.() -> Unit,
+        ) = DrawPressureInput(visualMaxRequired).apply(config)
     }
 }
