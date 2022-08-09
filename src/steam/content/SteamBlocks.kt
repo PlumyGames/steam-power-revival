@@ -1,6 +1,5 @@
 package steam.content
 
-import arc.math.Interp
 import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
@@ -33,9 +32,11 @@ import steam.gen.OreGenerator
 import steam.utils.plus
 import steam.world.crafting.MultiCrafter
 import steam.world.crafting.TemperatureCrafter
+import steam.world.crafting.addRecipe
 import steam.world.distribution.PressurePipe
 import steam.world.drawer.DrawPressureOutput
 import steam.world.drawer.DrawReservoir
+import steam.world.drawer.DrawSteamInside
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
@@ -185,17 +186,12 @@ object SteamBlocks {
             hasLiquids = true
             consumeLiquid(Liquids.water, 0.2f)
             outputFluid = LiquidStack(SteamFluids.steam, 0.2f)
-            drawer = DrawMulti(DrawRegion("-bottom"), DrawLiquidRegion(Liquids.water),
-                DrawParticles().apply {
-                    color = R.C.steam
-                    alpha = 0.3f
-                    particleSize = 2.5f
-                    particles = 8
-                    particleRad = 4f
-                    particleLife = 80f
-                    reverse = true
-                    particleSizeInterp = Interp.one
-                }, DrawLiquidTile(SteamFluids.steam, 0f), DrawDefault(),
+            drawer = DrawMulti(
+                DrawRegion("-bottom"),
+                DrawLiquidRegion(Liquids.water),
+                DrawSteamInside(),
+                DrawLiquidTile(SteamFluids.steam, 0f),
+                DrawDefault(),
                 DrawHeatInput().apply { heatColor = R.C.burnerFlame }
             )
         }
@@ -209,18 +205,17 @@ object SteamBlocks {
             hasTemp = false
             configurable = false
             itemCapacity = 80
-            for (ore in OreGenerator.all) {
-                if (ore.key.radioactivity <= 0f && ore.key.hardness < 3)
-                    recipes.add(
-                        MultiCrafter.Recipe(
-                            80f, arrayOf(ore.value + 1), arrayOf(ore.key + 1), null, arrayOf(
-                                Liquids.slag + 0.05f
-                            )
-                        )
+            for ((raw, ore) in OreGenerator.all) {
+                if (raw.radioactivity <= 0f && raw.hardness < 3)
+                    addRecipe(
+                        craftTime = 80f,
+                        inItem = arrayOf(ore + 1),
+                        outItem = arrayOf(ore + 1),
+                        outLiquid = arrayOf(Liquids.slag + 0.05f)
                     )
             }
-            recipes.add(MultiCrafter.Recipe(45f, arrayOf(Items.sand + 1), arrayOf(SteamItems.glass + 1)))
-            recipes.add(MultiCrafter.Recipe(80f, arrayOf(Items.scrap + 1), emptyArray(), null, arrayOf(Liquids.slag + 0.1f)))
+            addRecipe(45f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
+            addRecipe(80f, inItem = arrayOf(Items.scrap + 1), outLiquid = arrayOf(Liquids.slag + 0.1f))
             drawer = DrawMulti(
                 DrawDefault(),
                 DrawGlowRegion().apply { color = R.C.burnerFlame },
@@ -348,12 +343,14 @@ object SteamBlocks {
         pressurizer = PressureProducer("pressurizer").apply {
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
-            consumeLiquid(SteamFluids.steam, 0.1f)
+            consumeLiquid(SteamFluids.steam, 0.2f)
             pressureOutput = 5f
             size = 2
             squareSprite = false
             drawer = DrawMulti(
                 DrawRegion("-bottom"),
+                DrawLiquidTile(SteamFluids.steam, 8f),
+                DrawSteamInside(),
                 DrawDefault(),
                 DrawPressureOutput {
                     visualMaxProduced = 5f

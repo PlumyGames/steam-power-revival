@@ -52,6 +52,7 @@ class SteamMod : Mod() {
             replaceAll()
         }
         ContentsLoader.loadAfterOreGenerated()
+        ContentsLoader.resisterEvents()
         DebugOnly {
             ContentsLoader.unlockForDebug()
         }

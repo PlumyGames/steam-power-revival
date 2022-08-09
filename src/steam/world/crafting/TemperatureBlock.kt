@@ -50,7 +50,7 @@ open class TemperatureBlock(name: String) : Block(name) {
                 //25f is base temp
                 temp = Mathf.lerpDelta(temp, 25f, coolDownSpeed * convertSpeed)
                 temp += (heat * convertSpeed * delta()) / 60
-                if (temp > tempCap) kill() //explode when overheat}
+                if (temp > tempCap) kill() //explode when overheat
             }
         }
         override fun warmup() = warmupImpl()

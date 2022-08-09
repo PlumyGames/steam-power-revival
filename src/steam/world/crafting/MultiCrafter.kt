@@ -38,7 +38,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         val inItem: Array<ItemStack> = emptyArray(),
         val outItem: Array<ItemStack> = emptyArray(),
         val inLiquid: LiquidStack? = null,
-        val outLiquid: Array<LiquidStack> = emptyArray()
+        val outLiquid: Array<LiquidStack> = emptyArray(),
     ) {
         val allInItems = inItem.map { it.item }
         val allOutItems = outItem.map { it.item }
@@ -108,7 +108,6 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                     } else progress += getProgressIncrease(currentRecipe.craftTime) * warmup
                     totalProgress += edelta()
                     warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed)
-
                     //continuously output based on efficiency
                     if (currentRecipe.outLiquid.isNotEmpty()) {
                         val inc = getProgressIncrease(1f)
@@ -179,4 +178,17 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             }
         }
     }
+}
+
+fun MultiCrafter.addRecipe(
+    craftTime: Float,
+    inItem: Array<ItemStack> = emptyArray(),
+    outItem: Array<ItemStack> = emptyArray(),
+    inLiquid: LiquidStack? = null,
+    outLiquid: Array<LiquidStack> = emptyArray(),
+) {
+    val recipe = MultiCrafter.Recipe(
+        craftTime, inItem, outItem, inLiquid, outLiquid
+    )
+    recipes.add(recipe)
 }

@@ -2,6 +2,7 @@ package steam.content
 
 import mindustry.content.Blocks
 import plumy.world.EntityRegistry
+import steam.world.mech.MechPad
 import steam.world.pressure.PressureGraphUpdater
 
 object ContentsLoader {
@@ -59,6 +60,10 @@ object ContentsLoader {
             blastFurnace()
             crystalizer()
         }
+    }
+
+    fun resisterEvents() {
+        MechPad.registerTapEvent()
     }
 
     fun unlockForDebug() {
