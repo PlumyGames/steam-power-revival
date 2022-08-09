@@ -10,11 +10,14 @@ object DebugDialog {
             val icons = Table()
             fun rebuild() {
                 icons.clear()
-                OreGenerator.all.values.forEach {
+                OreGenerator.all.values.forEachIndexed { i, it ->
                     icons.add(Table().apply {
                         image(it.uiIcon).size(100f).row()
-                        add(it.localizedName)
-                    }).size(120f).pad(10f)
+                        add(it.localizedName).grow()
+                    }).minSize(120f).pad(10f)
+                    if (i != 0 && i % 5 == 4) {
+                        icons.row()
+                    }
                 }
             }
             rebuild()

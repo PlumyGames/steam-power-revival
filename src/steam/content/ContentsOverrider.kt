@@ -1,6 +1,7 @@
 package steam.content
 
 import mindustry.content.Blocks.*
+import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.UnitTypes.alpha
 import mindustry.content.UnitTypes.beta
@@ -16,6 +17,7 @@ import mindustry.world.meta.Attribute
 import mindustry.world.meta.BuildVisibility
 import steam.utils.plus
 import steam.world.distribution.ElectricConveyor
+import steam.world.pressure.PressureCrafter
 
 object ContentsOverrider {
     fun mechanicalDrill() {
@@ -76,6 +78,22 @@ object ContentsOverrider {
             removeConsumer(findConsumer { it is ConsumeItems })
             consumeItems(Items.lead + 1, SteamItems.quartz + 1, SteamItems.glass + 1)
         }
+    }
+
+    fun graphitePress(){
+        // TODO: to hide the vanilla?
+     /*   graphitePress.buildVisibility = BuildVisibility.hidden
+        PressureCrafter("graphite-press").apply {
+            requirements(Category.crafting, ItemStack.with(Items.copper, 75, Items.lead, 30))
+
+            craftEffect = Fx.pulverizeMedium
+            outputItem = ItemStack(Items.graphite, 1)
+            craftTime = 90f
+            size = 2
+            hasItems = true
+
+            consumeItem(Items.coal, 2)
+        }*/
     }
 
     fun alpha() {
