@@ -37,12 +37,17 @@ class SteamMod : Mod() {
         mod = Vars.mods.getMod(Meta.name)
         ContentsLoader.load()
         OreGenerator.apply {
+            // lol
+            /*
             blacklist += Items.coal
             blacklist += Items.scrap
             blacklist += Items.sand
+            */
             // lol
             extra += SteamItems.stone
             extra += SteamItems.quartz
+            extra += Items.serpuloItems
+            extra += Items.erekirItems
             generateAll()
             replaceAll()
         }

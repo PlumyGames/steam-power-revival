@@ -20,12 +20,12 @@ object OreGenerator {
     val extra = HashSet<RawItem>()
     fun generateAll() {
         val steamMod = SteamMod.mod
-        for (ore in Item.getAllOres().toList().distinctBy {
-            it.name
-        }.filter {
+        for (ore in (Item.getAllOres().toList() + extra).filter {
             val mod = it.minfo.mod
             !it.isHidden && (mod == null || mod == steamMod) && it !in blacklist
-        } + extra) {
+        }.distinctBy {
+            it.name
+        }) {
             val generated = generate(ore)
             all[ore] = generated
         }
