@@ -1,12 +1,22 @@
 package steam.world.crafting
 
+import arc.Core
 import arc.func.Prov
+import arc.graphics.Color
 import arc.math.Mathf
+import arc.util.Strings
 import mindustry.content.Fx
 import mindustry.gen.Building
+import mindustry.gen.Icon
+import mindustry.gen.Tex
+import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
+import mindustry.ui.ItemDisplay
+import mindustry.ui.LiquidDisplay
+import mindustry.world.meta.Stat
+import steam.utils.addTable
 import kotlin.math.min
 
 /* todo
@@ -148,5 +158,25 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         override fun progress() = progress
         override fun warmup() = warmup
         override fun totalProgress() = totalProgress
+    }
+
+    override fun setStats() {
+        super.setStats()
+        stats.add(Stat.output) { table ->
+            table.row()
+            recipes.forEach { r ->
+                table.addTable {
+                    background(Tex.whiteui)
+                    setColor(Pal.darkestGray)
+                    addTable {
+                        r.inItem.forEach { add(ItemDisplay(it.item, it.amount, r.craftTime, false)).padRight(5f).padLeft(5f) }
+                        image(Icon.right)
+                        r.outItem.forEach { add(ItemDisplay(it.item, it.amount, r.craftTime, false)).padRight(5f).padLeft(5f) }
+                        r.outLiquid.forEach { add(LiquidDisplay(it.liquid, it.amount * 60f, true)).padRight(5f).padLeft(5f) }
+                    }.expandX().left().pad(10f)
+                    add("${Strings.autoFixed(r.craftTime / 60f, 1)} ${Core.bundle["unit.seconds"]}").color(Color.gray).right().padRight(10f)
+                }.grow().padBottom(5f).row()
+            }
+        }
     }
 }

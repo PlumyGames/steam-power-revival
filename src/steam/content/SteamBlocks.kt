@@ -209,17 +209,17 @@ object SteamBlocks {
             configurable = false
             itemCapacity = 80
             for (ore in OreGenerator.all) {
-                if (ore.key.radioactivity <= 0f)
+                if (ore.key.radioactivity <= 0f && ore.key.hardness < 3)
                     recipes.add(
                         MultiCrafter.Recipe(
-                            60f, arrayOf(ore.value + 1), arrayOf(ore.key + 1), null, arrayOf(
+                            80f, arrayOf(ore.value + 1), arrayOf(ore.key + 1), null, arrayOf(
                                 Liquids.slag + 0.05f
                             )
                         )
                     )
             }
-            recipes.add(MultiCrafter.Recipe(60f, arrayOf(Items.sand + 1), arrayOf(SteamItems.glass + 1)))
-            recipes.add(MultiCrafter.Recipe(60f, arrayOf(Items.scrap + 1), emptyArray(), null, arrayOf(Liquids.slag + 0.1f)))
+            recipes.add(MultiCrafter.Recipe(45f, arrayOf(Items.sand + 1), arrayOf(SteamItems.glass + 1)))
+            recipes.add(MultiCrafter.Recipe(80f, arrayOf(Items.scrap + 1), emptyArray(), null, arrayOf(Liquids.slag + 0.1f)))
             drawer = DrawMulti(
                 DrawDefault(),
                 DrawGlowRegion().apply { color = R.C.burnerFlame },
@@ -350,6 +350,7 @@ object SteamBlocks {
             consumeLiquid(SteamFluids.steam, 0.1f)
             pressureOutput = 5f
             size = 2
+            squareSprite = false
             drawer = DrawMulti(
                 DrawRegion("-bottom"),
                 DrawDefault(),

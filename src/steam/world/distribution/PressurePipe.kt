@@ -1,5 +1,6 @@
 package steam.world.distribution
 
+import arc.Core
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.TextureRegion
 import arc.math.geom.Geometry
@@ -16,9 +17,11 @@ import steam.world.pressure.PressureBlock
 
 class PressurePipe(name: String) : PressureBlock(name) {
     lateinit var regions: Array<TextureRegion>
+    lateinit var blendRegion: TextureRegion
     override fun load() {
         super.load()
         regions = "$name-tile".sheet(size * 32, size * 32)
+        blendRegion = Core.atlas.find("$name-blend")
     }
 
     override fun drawPlanConfig(plan: BuildPlan, list: Eachable<BuildPlan>) {
@@ -70,8 +73,8 @@ class PressurePipe(name: String) : PressureBlock(name) {
             Draw.z(Layer.blockUnder)
             for(j in 0 until 4) {
                 val i = nearby(j) ?: continue
-                if(i is IPressureNode && i !is PressurePipeBuild)
-                    Draw.rect(regions[drawIndex],
+                if(i is IPressureNode && i !is PressurePipeBuild && !i.block.squareSprite)
+                    Draw.rect(blendRegion,
                     x + Geometry.d4[j].x * tilesize,
                     y + Geometry.d4[j].y * tilesize)
             }

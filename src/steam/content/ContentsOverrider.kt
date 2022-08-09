@@ -119,4 +119,9 @@ object ContentsOverrider {
             itemDrop = SteamItems.stone
         }
     }
+
+    fun items() {
+        Items.titanium.hardness = 4
+        Items.thorium.hardness = 5
+    }
 }

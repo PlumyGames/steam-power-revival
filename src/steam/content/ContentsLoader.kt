@@ -46,6 +46,7 @@ object ContentsLoader {
             beta()
             sand()
             stone()
+            items()
         }
         EntityRegistry.apply {
             register<PressureGraphUpdater>(::PressureGraphUpdater)
