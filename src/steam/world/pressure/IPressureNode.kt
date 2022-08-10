@@ -26,6 +26,7 @@ interface IPressureNode : Buildingc {
     val currentPressure: Pressure
     @Serialized
     val links: IntSeq
+    var flash: Float
     val pressureCapacity: Pressure
     fun getNetworkConnections(out: MutableList<IPressureNode>):
             MutableList<IPressureNode> {
