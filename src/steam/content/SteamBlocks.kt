@@ -1,6 +1,5 @@
 package steam.content
 
-import arc.math.Interp
 import arc.math.Mathf
 import mindustry.content.Fx
 import mindustry.content.Items
@@ -169,7 +168,13 @@ object SteamBlocks {
             consumeLiquid(SteamFluids.steam, 0.05f)
             craftTime = 240f
             outputItem = SteamItems.quartz + 3
-            drawer = DrawMulti(DrawDefault(), DrawRegion("-rotator").apply { rotateSpeed = 3f; spinSprite = true }, DrawRegion("-top"))
+            drawer = DrawMulti(
+                DrawDefault(),
+                DrawRegion("-rotator").apply {
+                    rotateSpeed = 3f; spinSprite = true
+                },
+                DrawRegion("-top")
+            )
         }
     }
 
@@ -187,17 +192,11 @@ object SteamBlocks {
             hasLiquids = true
             consumeLiquid(Liquids.water, 0.2f)
             outputFluid = LiquidStack(SteamFluids.steam, 0.2f)
-            drawer = DrawMulti(DrawRegion("-bottom"), DrawLiquidRegion(Liquids.water),
-                DrawParticles().apply {
-                    color = R.C.steam
-                    alpha = 0.3f
-                    particleSize = 2.5f
-                    particles = 8
-                    particleRad = 4f
-                    particleLife = 80f
-                    reverse = true
-                    particleSizeInterp = Interp.one
-                }, DrawLiquidTile(SteamFluids.steam, 0f), DrawDefault(),
+            drawer = DrawMulti(DrawRegion("-bottom"),
+                DrawLiquidRegion(Liquids.water),
+                DrawSteamInside(),
+                DrawLiquidTile(SteamFluids.steam, 0f),
+                DrawDefault(),
                 DrawHeatInput().apply { heatColor = R.C.burnerFlame }
             )
         }
@@ -357,6 +356,7 @@ object SteamBlocks {
             drawer = DrawMulti(
                 DrawRegion("-bottom"),
                 DrawLiquidTile(SteamFluids.steam, 1f),
+                DrawSteamInside(),
                 DrawBuilding().apply {
                     for (i in Mathf.signs) {
                         parts.add(RegionPart("-piston").apply {
