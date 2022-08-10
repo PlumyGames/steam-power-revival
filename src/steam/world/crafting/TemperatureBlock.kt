@@ -13,10 +13,10 @@ import mindustry.world.blocks.heat.HeatConsumer
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
 import steam.R
-import steam.world.module.Celsius100
-import steam.world.module.ITemperatureBlock
-import steam.world.module.ITemperatureBlock.Companion.warmupImpl
-import steam.world.module.celsius
+import steam.world.temp.Celsius100
+import steam.world.temp.ITemperatureBlock
+import steam.world.temp.ITemperatureBlock.Companion.warmupImpl
+import steam.world.temp.celsius
 
 open class TemperatureBlock(name: String) : Block(name) {
     var heatRequirement = 10f
@@ -40,12 +40,14 @@ open class TemperatureBlock(name: String) : Block(name) {
 
     open inner class TemperatureBuild : Building(), ITemperatureBlock, HeatConsumer {
         override var temp = 25f.celsius
+        override val tempCap get() = this@TemperatureBlock.tempCap
+        override var flash = 0f
         var sideHeat = FloatArray(4)
         var heat = 0f
         override fun sideHeat() = sideHeat
         override fun heatRequirement() = heatRequirement
         override fun updateTile() {
-            if(hasTemp) {
+            if (hasTemp) {
                 heat = calculateHeat(sideHeat)
                 //25f is base temp
                 temp = Mathf.lerpDelta(temp, 25f, coolDownSpeed * convertSpeed)
@@ -53,18 +55,21 @@ open class TemperatureBlock(name: String) : Block(name) {
                 if (temp > tempCap) kill() //explode when overheat
             }
         }
+
         override fun warmup() = warmupImpl()
         override fun draw() {
             drawer.draw(this)
         }
     }
+
     override fun setBars() {
         super.setBars()
-        if(hasTemp) addBar<TemperatureBuild>("temp") { Bar(
-            { Core.bundle.format("bar.temp", Strings.autoFixed(it.temp, 1)) },
-            { Tmp.c1.set(R.C.burnerFlame).lerp(Color.orange, it.temp / tempCap) },
-            { it.temp / minRequired }
-        )
+        if (hasTemp) addBar<TemperatureBuild>("temp") {
+            Bar(
+                { Core.bundle.format("bar.temp", Strings.autoFixed(it.temp, 1)) },
+                { Tmp.c1.set(R.C.burnerFlame).lerp(Color.orange, it.temp / tempCap) },
+                { it.temp / minRequired }
+            )
         }
     }
 }

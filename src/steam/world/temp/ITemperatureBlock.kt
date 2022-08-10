@@ -1,4 +1,4 @@
-package steam.world.module
+package steam.world.temp
 
 import mindustry.gen.Buildingc
 
@@ -12,7 +12,8 @@ const val Celsius100: Celsius = 100f
 
 interface ITemperatureBlock : Buildingc {
     var temp: Celsius
-
+    val tempCap: Celsius
+    var flash:Float
     companion object {
         fun ITemperatureBlock.warmupImpl() = (temp / Celsius100).coerceIn(0f, 1f)
     }

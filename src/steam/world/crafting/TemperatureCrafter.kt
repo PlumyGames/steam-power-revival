@@ -12,7 +12,7 @@ import mindustry.ui.LiquidDisplay
 import mindustry.world.consumers.ConsumeLiquid
 import mindustry.world.meta.Stat
 import steam.utils.addTable
-import steam.world.module.celsius
+import steam.world.temp.celsius
 
 class TemperatureCrafter(name: String) : TemperatureBlock(name) {
     //amount of temp lose per craft

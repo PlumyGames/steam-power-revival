@@ -36,6 +36,7 @@ import steam.world.crafting.addRecipe
 import steam.world.distribution.PressurePipe
 import steam.world.drawer.DrawBuilding
 import steam.world.drawer.DrawReservoir
+import steam.world.drawer.DrawSteamInside
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
@@ -43,6 +44,7 @@ import steam.world.mech.MechPad
 import steam.world.pressure.PressureProducer
 import steam.world.pressure.PressureSource
 import steam.world.pressure.PressureVoid
+import steam.world.temp.DrawOverheat
 
 object SteamBlocks {
     //should be listed all at once
@@ -191,12 +193,14 @@ object SteamBlocks {
             hasLiquids = true
             consumeLiquid(Liquids.water, 0.2f)
             outputFluid = LiquidStack(SteamFluids.steam, 0.2f)
-            drawer = DrawMulti(DrawRegion("-bottom"),
+            drawer = DrawMulti(
+                DrawRegion("-bottom"),
                 DrawLiquidRegion(Liquids.water),
                 DrawSteamInside(),
                 DrawLiquidTile(SteamFluids.steam, 0f),
                 DrawDefault(),
-                DrawHeatInput().apply { heatColor = R.C.burnerFlame }
+                DrawHeatInput().apply { heatColor = R.C.burnerFlame },
+                DrawOverheat()
             )
         }
     }
