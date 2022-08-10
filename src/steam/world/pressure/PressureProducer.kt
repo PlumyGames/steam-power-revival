@@ -9,7 +9,6 @@ open class PressureProducer(name: String) : GenericCrafter(name) {
     var pressureOutput: Pressure = 10f
     override fun setBars() {
         super.setBars()
-        addPressureBar<PressureProducerBuild>()
         addPressureProducedBar<PressureProducerBuild>(pressureOutput)
     }
 
@@ -20,6 +19,7 @@ open class PressureProducer(name: String) : GenericCrafter(name) {
         override var currentPressure: Pressure = 0f
         override val links = IntSeq()
         override val pressureCapacity: Pressure = this@PressureProducer.pressureCapacity
+        var totalProduceTime = 0f
         override fun created() {
             super.created()
             graph.initNode(this)
@@ -52,6 +52,13 @@ open class PressureProducer(name: String) : GenericCrafter(name) {
         override fun updateTile() {
             updatePressureProduced()
             updatePressure()
+            totalProduceTime += getProgressIncrease(craftTime)
+            warmup = if(efficiency > 0) Mathf.lerpDelta(warmup, 1f, warmupSpeed)
+            else Mathf.lerpDelta(warmup, 0f, warmupSpeed)
         }
+
+        override fun progress() = totalProduceTime % craftTime
+        override fun totalProgress() = totalProduceTime
+        override fun warmup() = warmup
     }
 }

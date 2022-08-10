@@ -1,6 +1,7 @@
 package steam.content
 
 import arc.math.Interp
+import arc.math.Mathf
 import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
@@ -26,7 +27,6 @@ import mindustry.world.draw.*
 import mindustry.world.meta.Attribute
 import mindustry.world.meta.BuildVisibility
 import mindustry.world.meta.Env
-import plumy.world.worldXY
 import steam.R
 import steam.UndebugOnly
 import steam.gen.OreGenerator
@@ -34,7 +34,7 @@ import steam.utils.plus
 import steam.world.crafting.MultiCrafter
 import steam.world.crafting.TemperatureCrafter
 import steam.world.distribution.PressurePipe
-import steam.world.drawer.DrawPressureOutput
+import steam.world.drawer.DrawBuilding
 import steam.world.drawer.DrawReservoir
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
@@ -351,14 +351,23 @@ object SteamBlocks {
             consumeLiquid(SteamFluids.steam, 0.1f)
             pressureOutput = 5f
             size = 2
+            craftTime = 45f
             squareSprite = false
             drawer = DrawMulti(
                 DrawRegion("-bottom"),
-                DrawDefault(),
-                DrawPressureOutput {
-                    visualMaxProduced = 5f
-                    particleRad = size.worldXY
+                DrawLiquidTile(SteamFluids.steam, 1f),
+                DrawBuilding().apply {
+                    for (i in Mathf.signs) {
+                        parts.add(RegionPart("-piston").apply {
+                            x = 2f * i
+                            y = 4f * i
+                            moveY = -8f * i
+                            progress = PartProgress.constant(0f).absin(craftTime / 3f, 1f).mul(PartProgress.warmup)
+                            outline = false
+                        })
+                    }
                 },
+                DrawDefault()
             )
         }
     }

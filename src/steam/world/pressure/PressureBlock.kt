@@ -8,7 +8,7 @@ import steam.world.pressure.IPressureNode.Companion.pressureFact
 
 open class PressureBlock(name: String) : Block(name) {
     var pressureCapacity: Pressure = 0.5f
-    val warmupSpeed = 0.01f
+    val warmupSpeed = 0.05f
 
     init {
         solid = true
