@@ -28,20 +28,10 @@ class MechPad(name: String) : Block(name) {
         update = true
     }
 
-    override fun init() {
-        super.init()
-
-        Events.on(EventType.TapEvent::class.java) {
-            val build = it.tile.build
-            if (build is MechPadBuild) Call.unitControl(it.player, build.unit())
-        }
-    }
-
     inner class MechPadBuild : Building(), ControlBlock {
         var unit: BlockUnitc? = null
         var progress = 0f
         var warmup = 0f
-
         override fun unit(): Unit {
             if (unit == null) {
                 unit = UnitTypes.block.create(team) as BlockUnitc
@@ -66,7 +56,7 @@ class MechPad(name: String) : Block(name) {
 
         override fun updateTile() {
             super.updateTile()
-            if(isControlled && efficiency >= 0.01f) {
+            if (isControlled && efficiency >= 0.01f) {
                 if (progress >= 1f) {
                     progress = 0f
                     warmup = 0f
@@ -93,11 +83,19 @@ class MechPad(name: String) : Block(name) {
         override fun progress() = progress
         override fun warmup() = warmup
         override fun shouldConsume() = enabled && isControlled
-
         override fun draw() {
             super.draw()
             Draw.draw(Layer.blockOver) {
                 Drawf.construct(this, mech, 0f, progress(), warmup(), totalProgress())
+            }
+        }
+    }
+
+    companion object {
+        fun registerTapEvent() {
+            Events.on(EventType.TapEvent::class.java) {
+                val build = it.tile.build
+                if (build is MechPadBuild) Call.unitControl(it.player, build.unit())
             }
         }
     }

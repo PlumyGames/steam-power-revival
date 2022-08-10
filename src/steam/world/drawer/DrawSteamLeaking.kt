@@ -9,6 +9,7 @@ import arc.math.Mathf
 import arc.util.Time
 import mindustry.gen.Building
 import mindustry.world.draw.DrawBlock
+import mindustry.world.draw.DrawParticles
 import plumy.core.math.Progress
 import steam.R
 import steam.world.pressure.IPressureConsumer
@@ -16,7 +17,18 @@ import steam.world.pressure.IPressureNode
 import steam.world.pressure.IPressureNode.Companion.pressureFact
 import steam.world.pressure.IPressureProducer
 
-open class DrawSteam : DrawBlock() {
+fun DrawSteamInside() = DrawParticles().apply {
+    color = R.C.steam
+    alpha = 0.3f
+    particleSize = 2.5f
+    particles = 8
+    particleRad = 4f
+    particleLife = 80f
+    reverse = true
+    particleSizeInterp = Interp.one
+}
+
+open class DrawSteamLeaking : DrawBlock() {
     var color = R.C.steam
     var alpha = 0.4f
     var particles = 30
@@ -55,13 +67,13 @@ open class DrawSteam : DrawBlock() {
     }
 
     companion object {
-        operator fun invoke(config: DrawSteam.() -> Unit) = DrawSteam().apply(config)
+        operator fun invoke(config: DrawSteamLeaking.() -> Unit) = DrawSteamLeaking().apply(config)
     }
 }
 
 class DrawPressureOutput(
     var visualMaxProduced: Float = 10f,
-) : DrawSteam() {
+) : DrawSteamLeaking() {
     override fun getSteamFact(build: Building): Progress =
         if (build is IPressureProducer) build.pressureProduced / visualMaxProduced else 0f
 
@@ -75,7 +87,7 @@ class DrawPressureOutput(
 
 class DrawPressureInput(
     var visualMaxRequired: Float = 10f,
-) : DrawSteam() {
+) : DrawSteamLeaking() {
     override fun getSteamFact(build: Building): Progress =
         if (build is IPressureConsumer) build.pressureRequired / visualMaxRequired else 0f
 

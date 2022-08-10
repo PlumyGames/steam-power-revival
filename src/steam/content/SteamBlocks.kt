@@ -33,9 +33,11 @@ import steam.gen.OreGenerator
 import steam.utils.plus
 import steam.world.crafting.MultiCrafter
 import steam.world.crafting.TemperatureCrafter
+import steam.world.crafting.addRecipe
 import steam.world.distribution.PressurePipe
 import steam.world.drawer.DrawBuilding
 import steam.world.drawer.DrawReservoir
+import steam.world.drawer.DrawSteamInside
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
@@ -209,18 +211,17 @@ object SteamBlocks {
             hasTemp = false
             configurable = false
             itemCapacity = 80
-            for (ore in OreGenerator.all) {
-                if (ore.key.radioactivity <= 0f && ore.key.hardness < 3)
-                    recipes.add(
-                        MultiCrafter.Recipe(
-                            80f, arrayOf(ore.value + 1), arrayOf(ore.key + 1), null, arrayOf(
-                                Liquids.slag + 0.05f
-                            )
-                        )
+            for ((raw, ore) in OreGenerator.all) {
+                if (raw.radioactivity <= 0f && raw.hardness < 3)
+                    addRecipe(
+                        craftTime = 80f,
+                        inItem = arrayOf(ore + 1),
+                        outItem = arrayOf(ore + 1),
+                        outLiquid = arrayOf(Liquids.slag + 0.05f)
                     )
             }
-            recipes.add(MultiCrafter.Recipe(45f, arrayOf(Items.sand + 1), arrayOf(SteamItems.glass + 1)))
-            recipes.add(MultiCrafter.Recipe(80f, arrayOf(Items.scrap + 1), emptyArray(), null, arrayOf(Liquids.slag + 0.1f)))
+            addRecipe(45f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
+            addRecipe(80f, inItem = arrayOf(Items.scrap + 1), outLiquid = arrayOf(Liquids.slag + 0.1f))
             drawer = DrawMulti(
                 DrawDefault(),
                 DrawGlowRegion().apply { color = R.C.burnerFlame },
