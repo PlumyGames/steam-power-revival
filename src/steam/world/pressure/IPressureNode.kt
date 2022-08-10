@@ -2,6 +2,7 @@ package steam.world.pressure
 
 import arc.Core.bundle
 import arc.struct.IntSeq
+import arc.util.Strings
 import arc.util.Time
 import arc.util.Tmp
 import mindustry.Vars
@@ -79,34 +80,21 @@ interface IPressureConsumer : IPressureNode {
 
 inline fun <reified T> Block.addPressureBar() where T : Building, T : IPressureNode {
     AddBar<T>("pressure",
-        {
-            bundle.format("bar.pressure", currentPressure)
-        }, {
-            Tmp.c1.set(R.C.pressureSafe).hsvLerp(R.C.pressureWarning, pressureFact)
-        }, {
-            pressureFact
-        }) {
-    }
+        { bundle.format("bar.pressure", Strings.autoFixed(currentPressure, 1)) },
+        { Tmp.c1.set(R.C.pressureSafe).hsvLerp(R.C.pressureWarning, pressureFact) },
+        { pressureFact })
 }
 
 inline fun <reified T> Block.addPressureProducedBar(maxProduced: Pressure) where T : Building, T : IPressureProducer {
     AddBar<T>("pressure-produced",
-        {
-            bundle.format("bar.pressure-procured", pressureProduced)
-        }, {
-            R.C.pressure
-        }, {
-            pressureProduced / maxProduced
-        })
+        { bundle.format("bar.pressure-procured", Strings.autoFixed(pressureProduced, 1)) },
+        { R.C.pressure },
+        { pressureProduced / maxProduced })
 }
 
 inline fun <reified T> Block.addPressureRequiredBar(maxRequirement: Pressure) where T : Building, T : IPressureConsumer {
     AddBar<T>("pressure-required",
-        {
-            bundle.format("bar.pressure-required", pressureRequired)
-        }, {
-            R.C.pressure
-        }, {
-            pressureRequired / maxRequirement
-        })
+        { bundle.format("bar.pressure-required", Strings.autoFixed(pressureRequired, 1)) },
+        { R.C.pressure },
+        { pressureRequired / maxRequirement })
 }
