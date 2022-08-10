@@ -36,7 +36,6 @@ import steam.world.crafting.addRecipe
 import steam.world.distribution.PressurePipe
 import steam.world.drawer.DrawBuilding
 import steam.world.drawer.DrawReservoir
-import steam.world.drawer.DrawSteamInside
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
