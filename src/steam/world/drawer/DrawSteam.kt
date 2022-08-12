@@ -7,6 +7,7 @@ import arc.math.Angles
 import arc.math.Interp
 import arc.math.Mathf
 import arc.util.Time
+import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawParticles
@@ -31,7 +32,7 @@ fun DrawSteamInside() = DrawParticles().apply {
 open class DrawSteamLeaking : DrawBlock() {
     var color = R.C.steam
     var alpha = 0.4f
-    var particles = 30
+    var particles = if (Vars.mobile) 15 else 30
     var particleLife = 140f
     var particleRad = 7f
     var particleSize = 3f

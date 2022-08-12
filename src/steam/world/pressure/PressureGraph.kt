@@ -20,8 +20,16 @@ class PressureGraph {
     val consumers = Seq<IPressureConsumer>(false, 16, IPressureNode::class.java)
     val size: Int
         get() = all.size
+    /**
+     * Only graph can change its pressure
+     */
     var currentPressure = 0f
+        private set
+    /**
+     * Only graph can change its max pressure
+     */
     var maxPressure = 2f
+        private set
     fun update() {
         // accumulate the pressure produced from all producers
         val produced = producers.sumOf(IPressureProducer::pressureProduced)

@@ -16,6 +16,7 @@ import mindustry.world.consumers.ConsumeLiquid
 import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.Attribute
+import mindustry.world.meta.BuildVisibility
 import steam.utils.plus
 import steam.utils.sheet
 import steam.world.distribution.ElectricConveyor
@@ -42,10 +43,10 @@ object ContentsOverrider {
     }
 
     fun conveyor() {
-/*        FakeVanilla {
-            Vars.content.blocks().remove(conveyor)
-            val allNameMap = Reflect.get<Array<ObjectMap<String, MappableContent>>>(Vars.content, "contentNameMap")
-            allNameMap[ContentType.block.ordinal].remove("conveyor")*/
+        conveyor.buildVisibility = BuildVisibility.hidden
+        titaniumConveyor.buildVisibility = BuildVisibility.hidden
+        plastaniumConveyor.buildVisibility = BuildVisibility.hidden
+        armoredConveyor.buildVisibility = BuildVisibility.hidden
         conveyor = ElectricConveyor("electric-conveyor").apply {
             requirements(Category.distribution, arrayOf(Items.copper + 1, Items.lead + 1, SteamItems.iron + 1), true)
             health = 60
@@ -57,13 +58,14 @@ object ContentsOverrider {
             conductivePower = true
             consumePower(0.01f)
         }
-        //}
     }
+
     fun conduit() {
         conduit.apply {
             requirements = arrayOf(SteamItems.glass + 1)
         }
     }
+
     fun siliconSmelter() {
         (siliconSmelter as GenericCrafter).apply {
             removeConsumer(findConsumer { it is ConsumeItems })
@@ -78,9 +80,11 @@ object ContentsOverrider {
         }
     }
 
-    fun graphitePress(){
+    fun graphitePress() {
+        graphitePress.buildVisibility = BuildVisibility.hidden
         graphitePress = PressureCrafter("graphite-compressor").apply {
-            requirements(Category.crafting,
+            requirements(
+                Category.crafting,
                 arrayOf(
                     SteamItems.stone + 40,
                     Items.copper + 32,
