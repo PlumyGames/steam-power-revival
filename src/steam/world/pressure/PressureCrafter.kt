@@ -49,6 +49,11 @@ class PressureCrafter(name: String) : GenericCrafter(name) {
             Log.info(efficiency())
             super.updateTile()
         }
+
+        override fun drawSelect() {
+            super.drawSelect()
+            drawWholeGraphForDebug()
+        }
         override fun updatePressure() {
             super.updatePressure()
             pressureRequired = if(shouldConsume()) (this@PressureCrafter.pressureRequired * efficiency) else 0f

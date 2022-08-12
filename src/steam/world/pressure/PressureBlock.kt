@@ -46,6 +46,11 @@ open class PressureBlock(name: String) : Block(name) {
             removeFromGraph()
         }
 
+        override fun drawSelect() {
+            super.drawSelect()
+            drawWholeGraphForDebug()
+        }
+
         override fun warmup() = pressureFact
     }
 }

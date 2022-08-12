@@ -35,6 +35,10 @@ class PressureSource(name: String) : PressureBlock(name) {
         override var currentPressure: Pressure = 0f
         override val pressureCapacity: Pressure = 0.5f
         override val links = IntSeq()
+        override fun drawSelect() {
+            super.drawSelect()
+            drawWholeGraphForDebug()
+        }
         override fun config() = pressureProduced
         override fun buildConfiguration(table: Table) {
             table.bottom()

@@ -9,12 +9,14 @@ import arc.util.Tmp
 import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.gen.Buildingc
+import mindustry.graphics.Drawf
 import mindustry.world.Block
 import plumy.core.Serialized
 import plumy.core.arc.hsvLerp
 import plumy.core.math.Progress
 import plumy.core.math.clamp
 import plumy.world.AddBar
+import steam.DebugOnly
 import steam.R
 import steam.world.pressure.IPressureNode.Companion.pressureFact
 
@@ -79,12 +81,38 @@ interface IPressureNode : Buildingc {
     }
 }
 
+fun IPressureNode.drawWholeGraphForDebug() {
+    DebugOnly {
+        graph.all.forEach {
+            Drawf.square(it.x, it.y, it.block().size * Vars.tilesize / 2.5f, 0f)
+        }
+    }
+}
+
 interface IPressureProducer : IPressureNode {
     val pressureProduced: Pressure
+    override fun updateProximateLink() {
+        val proximity = proximity()
+        for (build in proximity) {
+            if (build is IPressureNode && build !is IPressureProducer) {
+                this.connectToTwoWay(build)
+                PressureGraph.mergeToLagerNetwork(this, build)
+            }
+        }
+    }
 }
 
 interface IPressureConsumer : IPressureNode {
     val pressureRequired: Pressure
+    override fun updateProximateLink() {
+        val proximity = proximity()
+        for (build in proximity) {
+            if (build is IPressureNode && build !is IPressureConsumer) {
+                this.connectToTwoWay(build)
+                PressureGraph.mergeToLagerNetwork(this, build)
+            }
+        }
+    }
 }
 
 inline fun <reified T> Block.addPressureBar() where T : Building, T : IPressureNode {

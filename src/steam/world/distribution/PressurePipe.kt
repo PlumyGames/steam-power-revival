@@ -8,12 +8,11 @@ import arc.util.Eachable
 import mindustry.Vars.tilesize
 import mindustry.Vars.world
 import mindustry.entities.units.BuildPlan
-import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
-import steam.DebugOnly
 import steam.utils.sheet
 import steam.world.pressure.IPressureNode
 import steam.world.pressure.PressureBlock
+import steam.world.pressure.drawWholeGraphForDebug
 
 class PressurePipe(name: String) : PressureBlock(name) {
     lateinit var regions: Array<TextureRegion>
@@ -23,6 +22,7 @@ class PressurePipe(name: String) : PressureBlock(name) {
         regions = "$name-tile".sheet(size * 32, size * 32)
         blendRegion = Core.atlas.find("$name-blend")
     }
+
     override fun drawPlanRegion(plan: BuildPlan, list: Eachable<BuildPlan>) {
         drawPlanConfig(plan, list)
     }
@@ -62,24 +62,21 @@ class PressurePipe(name: String) : PressureBlock(name) {
 
         override fun drawSelect() {
             super.drawSelect()
-            DebugOnly {
-                graph.all.forEach {
-                    Drawf.square(it.x, it.y, it.block().size * tilesize / 2.5f, 0f)
-                }
-            }
+            drawWholeGraphForDebug()
         }
 
         override fun draw() {
             Draw.rect(regions[drawIndex], x, y)
-
             //improvement maybe required
             Draw.z(Layer.blockUnder)
-            for(j in 0 until 4) {
+            for (j in 0 until 4) {
                 val i = nearby(j) ?: continue
-                if(i is IPressureNode && i !is PressurePipeBuild && !i.block.squareSprite)
-                    Draw.rect(blendRegion,
-                    x + Geometry.d4[j].x * tilesize,
-                    y + Geometry.d4[j].y * tilesize)
+                if (i is IPressureNode && i !is PressurePipeBuild && !i.block.squareSprite)
+                    Draw.rect(
+                        blendRegion,
+                        x + Geometry.d4[j].x * tilesize,
+                        y + Geometry.d4[j].y * tilesize
+                    )
             }
             Draw.z()
         }
