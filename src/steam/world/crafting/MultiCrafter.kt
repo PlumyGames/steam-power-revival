@@ -1,6 +1,6 @@
 package steam.world.crafting
 
-import arc.Core
+import arc.Core.bundle
 import arc.func.Prov
 import arc.graphics.Color
 import arc.math.Mathf
@@ -15,7 +15,9 @@ import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import mindustry.ui.ItemDisplay
 import mindustry.ui.LiquidDisplay
+import mindustry.world.consumers.Consume
 import mindustry.world.meta.Stat
+import plumy.world.AddBar
 import steam.utils.addTable
 import kotlin.math.min
 
@@ -39,6 +41,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         val outItem: Array<ItemStack> = emptyArray(),
         val inLiquid: LiquidStack? = null,
         val outLiquid: Array<LiquidStack> = emptyArray(),
+        val booster: Consume? = null,
     ) {
         val allInItems = inItem.map { it.item }
         val allOutItems = outItem.map { it.item }
@@ -97,6 +100,11 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             curRecipeIdx = recipes.indexOfFirst { items.has(it.inItem) }
         }
 
+        override fun updateEfficiencyMultiplier() {
+            efficiency *= if (curRecipeIdx >= 0) currentRecipe.booster?.efficiencyMultiplier(this) ?: 1f else 1f
+            consumers.forEach { efficiency += it.efficiencyMultiplier(this) }
+        }
+
         override fun updateTile() {
             super.updateTile()
 
@@ -125,7 +133,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean {
-            return this.items.get(item) < this.getMaximumAccepted(item) && recipeList.allInItems.contains(item)
+            return this.items.get(item) < this.getMaximumAccepted(item) && (recipeList.allInItems.contains(item) || block.consumesItem(item))
         }
 
         fun dumpOutputs() {
@@ -137,6 +145,8 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         }
 
         fun craft() {
+            consume()
+            currentRecipe.booster?.trigger(this)
             items.remove(currentRecipe.inItem)
 
             for (output in currentRecipe.outItem) {
@@ -159,6 +169,14 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         override fun totalProgress() = totalProgress
     }
 
+    override fun setBars() {
+        super.setBars()
+        AddBar<MultiCrafterBuild>("efficiency",
+            { bundle.format("bar.efficiency", warmup * efficiency * 100f) },
+            { Pal.lightOrange},
+            { efficiency * warmup }
+        )
+    }
     override fun setStats() {
         super.setStats()
         stats.add(Stat.output) { table ->
@@ -173,7 +191,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                         r.outItem.forEach { add(ItemDisplay(it.item, it.amount, r.craftTime, false)).padRight(5f).padLeft(5f) }
                         r.outLiquid.forEach { add(LiquidDisplay(it.liquid, it.amount * 60f, true)).padRight(5f).padLeft(5f) }
                     }.expandX().left().pad(10f)
-                    add("${Strings.autoFixed(r.craftTime / 60f, 1)} ${Core.bundle["unit.seconds"]}").color(Color.gray).right().padRight(10f)
+                    add("${Strings.autoFixed(r.craftTime / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray).right().padRight(10f)
                 }.grow().padBottom(5f).row()
             }
         }
@@ -186,9 +204,10 @@ fun MultiCrafter.addRecipe(
     outItem: Array<ItemStack> = emptyArray(),
     inLiquid: LiquidStack? = null,
     outLiquid: Array<LiquidStack> = emptyArray(),
+    booster: Consume? = null
 ) {
     val recipe = MultiCrafter.Recipe(
-        craftTime, inItem, outItem, inLiquid, outLiquid
+        craftTime, inItem, outItem, inLiquid, outLiquid, booster
     )
     recipes.add(recipe)
 }

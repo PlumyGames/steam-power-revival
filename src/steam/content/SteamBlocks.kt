@@ -21,6 +21,7 @@ import mindustry.world.blocks.production.AttributeCrafter
 import mindustry.world.blocks.production.Pump
 import mindustry.world.blocks.production.SolidPump
 import mindustry.world.blocks.storage.CoreBlock
+import mindustry.world.consumers.ConsumeItemFlammable
 import mindustry.world.draw.*
 import mindustry.world.meta.Attribute
 import mindustry.world.meta.BuildVisibility
@@ -229,6 +230,7 @@ object SteamBlocks {
                 DrawGlowRegion().apply { color = R.C.burnerFlame },
                 DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
             )
+            consume(ConsumeItemFlammable(1f).boost())
             squareSprite = false
             category = Category.crafting
             buildVisibility = BuildVisibility.shown

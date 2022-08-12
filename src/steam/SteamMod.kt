@@ -7,7 +7,6 @@ import mindustry.game.EventType.FileTreeInitEvent
 import mindustry.mod.Mod
 import mindustry.mod.Mods.LoadedMod
 import steam.content.ContentsLoader
-import steam.content.SteamItems
 import steam.gen.DebugDialog
 import steam.gen.OreGenerator
 import steam.gen.OreIconGenerator
@@ -37,17 +36,9 @@ class SteamMod : Mod() {
         mod = Vars.mods.getMod(Meta.name)
         ContentsLoader.load()
         OreGenerator.apply {
-            // lol
-            /*
             blacklist += Items.coal
             blacklist += Items.scrap
             blacklist += Items.sand
-            */
-            // lol
-            extra += SteamItems.stone
-            extra += SteamItems.quartz
-            extra += Items.serpuloItems
-            extra += Items.erekirItems
             generateAll()
             replaceAll()
         }
