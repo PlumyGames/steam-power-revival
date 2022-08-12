@@ -1,5 +1,7 @@
 package steam.world.pressure
 
+import arc.func.Prov
+import arc.math.Mathf
 import arc.struct.IntSeq
 import arc.util.Log
 import mindustry.world.blocks.production.GenericCrafter
@@ -8,6 +10,9 @@ class PressureCrafter(name: String) : GenericCrafter(name) {
     var pressureCapacity: Pressure = 0.5f
     var pressureRequired: Pressure = 4f
     var maxEfficiency = 4f
+    init {
+        buildType = Prov { PressureCrafterBuild() }
+    }
     override fun setBars() {
         super.setBars()
         addPressureBar<PressureCrafterBuild>()
