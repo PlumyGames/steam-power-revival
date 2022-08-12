@@ -94,9 +94,10 @@ object ContentsOverrider {
             pressureRequired = 2f
             drawer = DrawMulti(DrawRegion("-bottom"), DrawBuilding().apply {
                 val regions = "$name-pistons".sheet(12, 12)
-                for (i in 0 until 3) {
+                for (i in 0 until 4) {
                     parts.add(RegionPart().apply {
                         region = regions[i]
+                        outline = false
                         val xd = Geometry.d8edge[i].x
                         val yd = Geometry.d8edge[i].y
                         x = xd * (22f / 4f)
