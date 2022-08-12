@@ -5,6 +5,8 @@ import arc.math.Mathf
 import arc.util.Structs
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.content.Fx
+import mindustry.entities.Effect
 import mindustry.gen.Building
 import mindustry.logic.LAccess
 import mindustry.type.Item
@@ -27,6 +29,7 @@ class Separator(name: String) : Block(name) {
     var results: Array<ItemStack> = ItemStack.empty
     var craftTime = 0f
     var drawer: DrawBlock = DrawDefault()
+    var craftFx: Effect = Fx.none
 
     init {
         update = true
@@ -34,7 +37,7 @@ class Separator(name: String) : Block(name) {
         hasItems = true
         hasLiquids = true
         sync = true
-        buildType = Prov {SeparatorBuild()  }
+        buildType = Prov { SeparatorBuild() }
     }
 
     override fun load() {
@@ -68,6 +71,7 @@ class Separator(name: String) : Block(name) {
             seed = Mathf.randomSeed(tile.pos().toLong(), 0, Int.MAX_VALUE - 1)
         }
 
+        override fun progress() = progress
         override fun shouldAmbientSound(): Boolean {
             return efficiency > 0
         }
@@ -114,6 +118,7 @@ class Separator(name: String) : Block(name) {
                 if (item != null && items[item] < itemCapacity) {
                     offload(item)
                 }
+                craftFx.at(this)
             }
             if (timer(timerDump, dumpTime.toFloat())) {
                 dump()

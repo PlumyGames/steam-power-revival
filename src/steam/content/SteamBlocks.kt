@@ -57,7 +57,7 @@ object SteamBlocks {
     lateinit var boiler: Block
     lateinit var blastFurnace: MultiCrafter
     lateinit var advanceFurnace: MultiCrafter
-    lateinit var crystalizer: Block
+    lateinit var crystallizer: Block
     //crafting - heating
     lateinit var burner: ItemBurner
     lateinit var fluidBurner: FluidCombustor
@@ -240,8 +240,8 @@ object SteamBlocks {
         }
     }
 
-    fun crystalizer() {
-        crystalizer = Separator("crystalizer").apply {
+    fun crystallizer() {
+        crystallizer = Separator("crystallizer").apply {
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
@@ -256,7 +256,8 @@ object SteamBlocks {
                 Items.lead + 4,
                 SteamItems.iron + 3,
             )
-            craftTime = 30f
+            craftTime = 100f
+            craftFx = Fx.smeltsmoke
             consumeLiquid(Liquids.slag, 0.1f)
             drawer = DrawMulti(
                 DrawRegion("-bottom"),
