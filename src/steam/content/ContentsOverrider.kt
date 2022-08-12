@@ -1,5 +1,6 @@
 package steam.content
 
+import arc.Core
 import arc.math.geom.Geometry
 import mindustry.content.Blocks.*
 import mindustry.content.Items
@@ -13,6 +14,7 @@ import mindustry.world.blocks.production.Drill
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumeLiquid
+import mindustry.world.draw.DrawDefault
 import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.Attribute
@@ -99,10 +101,9 @@ object ContentsOverrider {
             craftTime = 100f
             pressureRequired = 2f
             drawer = DrawMulti(DrawRegion("-bottom"), DrawBuilding().apply {
-                val regions = "$name-pistons".sheet(12, 12)
+                "$name-pistons".sheet(12, 12).forEachIndexed { i, t -> Core.atlas.addRegion("$name-piston-$i", t) }
                 for (i in 0 until 4) {
-                    parts.add(RegionPart().apply {
-                        region = regions[i]
+                    parts.add(RegionPart("$name-piston-$i").apply {
                         outline = false
                         val xd = Geometry.d8edge[i].x
                         val yd = Geometry.d8edge[i].y
@@ -113,7 +114,7 @@ object ContentsOverrider {
                         progress = DrawPart.PartProgress.reload
                     })
                 }
-            })
+            }, DrawDefault())
         }
     }
 
