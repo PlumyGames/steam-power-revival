@@ -1,6 +1,5 @@
 package steam.world.pressure
 
-import arc.math.Mathf
 import arc.struct.IntSeq
 import mindustry.gen.Building
 import mindustry.world.Block
@@ -27,12 +26,9 @@ open class PressureBlock(name: String) : Block(name) {
         override var currentPressure: Pressure = 0f
         override val links = IntSeq()
         override val pressureCapacity: Pressure = this@PressureBlock.pressureCapacity
+        override val pressureWarmupSpeed = warmupSpeed
         override fun updateTile() {
-            val targetPressure = graph.currentPressure
-            currentPressure = (if (targetPressure > 0f)
-                Mathf.approachDelta(currentPressure, targetPressure, warmupSpeed)
-            else
-                Mathf.approachDelta(currentPressure, 0f, warmupSpeed))
+            updatePressure()
         }
 
         override fun created() {

@@ -1,7 +1,6 @@
 package steam.world.pressure
 
 import arc.func.Prov
-import arc.math.Mathf
 import arc.struct.IntSeq
 import arc.util.Log
 import mindustry.world.blocks.production.GenericCrafter
@@ -10,9 +9,11 @@ class PressureCrafter(name: String) : GenericCrafter(name) {
     var pressureCapacity: Pressure = 0.5f
     var pressureRequired: Pressure = 4f
     var maxEfficiency = 4f
+
     init {
         buildType = Prov { PressureCrafterBuild() }
     }
+
     override fun setBars() {
         super.setBars()
         addPressureBar<PressureCrafterBuild>()
@@ -27,6 +28,7 @@ class PressureCrafter(name: String) : GenericCrafter(name) {
         override var currentPressure: Pressure = 0f
         override val links = IntSeq()
         override val pressureCapacity: Pressure = this@PressureCrafter.pressureCapacity
+        override val pressureWarmupSpeed = warmupSpeed
         override fun created() {
             super.created()
             graph.initNode(this)
@@ -43,7 +45,7 @@ class PressureCrafter(name: String) : GenericCrafter(name) {
         }
 
         override fun updateTile() {
-            currentPressure = graph.currentPressure
+            updatePressure()
             Log.info(efficiency())
             super.updateTile()
         }

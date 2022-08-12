@@ -1,6 +1,7 @@
 package steam.world.pressure
 
 import arc.Core.bundle
+import arc.math.Mathf
 import arc.struct.IntSeq
 import arc.util.Strings
 import arc.util.Time
@@ -23,11 +24,12 @@ interface IPressureNode : Buildingc {
     var graph: PressureGraph
     var graphInitialized: Boolean
     @Serialized
-    val currentPressure: Pressure
+    var currentPressure: Pressure
     @Serialized
     val links: IntSeq
     var flash: Float
     val pressureCapacity: Pressure
+    val pressureWarmupSpeed: Float
     fun getNetworkConnections(out: MutableList<IPressureNode>):
             MutableList<IPressureNode> {
         out.clear()
@@ -36,6 +38,12 @@ interface IPressureNode : Buildingc {
             out.add(node)
         }
         return out
+    }
+
+    fun updatePressure() {
+        val targetPressure = graph.currentPressure
+        currentPressure = (if (targetPressure > 0f) Mathf.approachDelta(currentPressure, targetPressure, pressureWarmupSpeed)
+        else Mathf.approachDelta(currentPressure, 0f, pressureWarmupSpeed))
     }
 
     fun pdelta() = currentPressure * Time.delta * timeScale()

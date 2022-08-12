@@ -20,6 +20,7 @@ open class PressureProducer(name: String) : GenericCrafter(name) {
         override var currentPressure: Pressure = 0f
         override val links = IntSeq()
         override val pressureCapacity: Pressure = this@PressureProducer.pressureCapacity
+        override val pressureWarmupSpeed = warmupSpeed
         var totalProduceTime = 0f
         override fun created() {
             super.created()
@@ -35,26 +36,20 @@ open class PressureProducer(name: String) : GenericCrafter(name) {
             super.onProximityRemoved()
             removeFromGraph()
         }
-        open fun updatePressureProduced(){
+
+        open fun updatePressureProduced() {
             pressureProduced = if (efficiency > 0f) {
                 Mathf.approachDelta(pressureProduced, pressureOutput * efficiency, warmupSpeed)
             } else {
                 Mathf.approachDelta(pressureProduced, 0f, warmupSpeed)
             }
         }
-        open fun updatePressure() {
-            val targetPressure = graph.currentPressure
-            currentPressure = (if (targetPressure > 0f)
-                Mathf.approachDelta(currentPressure, targetPressure, warmupSpeed)
-            else
-                Mathf.approachDelta(currentPressure, 0f, warmupSpeed))
-        }
 
         override fun updateTile() {
             updatePressureProduced()
             updatePressure()
             totalProduceTime += getProgressIncrease(craftTime)
-            warmup = if(efficiency > 0) Mathf.lerpDelta(warmup, 1f, warmupSpeed)
+            warmup = if (efficiency > 0) Mathf.lerpDelta(warmup, 1f, warmupSpeed)
             else Mathf.lerpDelta(warmup, 0f, warmupSpeed)
         }
 
