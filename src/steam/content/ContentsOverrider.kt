@@ -58,6 +58,7 @@ object ContentsOverrider {
             conductivePower = true
             consumePower(0.01f)
         }
+        //}
     }
 
     fun conduit() {
@@ -83,6 +84,7 @@ object ContentsOverrider {
     fun graphitePress() {
         graphitePress.buildVisibility = BuildVisibility.hidden
         graphitePress = PressureCrafter("graphite-compressor").apply {
+            maxEfficiency = 1.5f
             requirements(
                 Category.crafting,
                 arrayOf(
