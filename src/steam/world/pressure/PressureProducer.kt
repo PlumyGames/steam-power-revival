@@ -13,6 +13,7 @@ open class PressureProducer(name: String) : GenericCrafter(name) {
     }
 
     open inner class PressureProducerBuild : GenericCrafterBuild(), IPressureProducer {
+        override var flash: Float = 0f
         override var pressureProduced: Pressure = 0f
         override var graph: PressureGraph = PressureGraph()
         override var graphInitialized = false

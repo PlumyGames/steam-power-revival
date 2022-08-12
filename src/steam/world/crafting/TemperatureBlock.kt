@@ -38,6 +38,8 @@ open class TemperatureBlock(name: String) : Block(name) {
         drawer.load(this)
     }
 
+    override fun icons() = drawer.finalIcons(this)
+
     open inner class TemperatureBuild : Building(), ITemperatureBlock, HeatConsumer {
         override var temp = 25f.celsius
         override val tempCap get() = this@TemperatureBlock.tempCap

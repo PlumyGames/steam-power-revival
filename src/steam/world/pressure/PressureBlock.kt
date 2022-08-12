@@ -21,6 +21,7 @@ open class PressureBlock(name: String) : Block(name) {
     }
 
     open inner class PressureBuild : Building(), IPressureNode {
+        override var flash: Float = 0f
         override var graph: PressureGraph = PressureGraph()
         override var graphInitialized = false
         override var currentPressure: Pressure = 0f

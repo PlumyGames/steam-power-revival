@@ -1,22 +1,25 @@
 package steam.content
 
+import arc.math.geom.Geometry
 import mindustry.content.Blocks.*
-import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.UnitTypes.alpha
 import mindustry.content.UnitTypes.beta
+import mindustry.entities.part.DrawPart
+import mindustry.entities.part.RegionPart
 import mindustry.type.Category
-import mindustry.type.ItemStack
 import mindustry.type.UnitType
-import mindustry.world.blocks.distribution.Conveyor
 import mindustry.world.blocks.production.Drill
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumeLiquid
+import mindustry.world.draw.DrawMulti
+import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.Attribute
-import mindustry.world.meta.BuildVisibility
 import steam.utils.plus
+import steam.utils.sheet
 import steam.world.distribution.ElectricConveyor
+import steam.world.drawer.DrawBuilding
 import steam.world.pressure.PressureCrafter
 
 object ContentsOverrider {
@@ -43,21 +46,16 @@ object ContentsOverrider {
             Vars.content.blocks().remove(conveyor)
             val allNameMap = Reflect.get<Array<ObjectMap<String, MappableContent>>>(Vars.content, "contentNameMap")
             allNameMap[ContentType.block.ordinal].remove("conveyor")*/
-        ElectricConveyor("electric-conveyor").apply {
-            requirements(Category.distribution, ItemStack.with(Items.copper, 1), true)
-            health = 45
+        conveyor = ElectricConveyor("electric-conveyor").apply {
+            requirements(Category.distribution, arrayOf(Items.copper + 1, Items.lead + 1, SteamItems.iron + 1), true)
+            health = 60
             speed = 0.08f
             displayedSpeed = 10.5f
             buildCostMultiplier = 2f
             hasPower = true
             consumesPower = true
             conductivePower = true
-            consumePower(1f / 60f)
-            regions = (conveyor as Conveyor).regions
-            region = (conveyor as Conveyor).region
-        }
-        conveyor.apply {
-            buildVisibility = BuildVisibility.hidden
+            consumePower(0.01f)
         }
         //}
     }
@@ -81,19 +79,35 @@ object ContentsOverrider {
     }
 
     fun graphitePress(){
-        // TODO: to hide the vanilla?
-     /*   graphitePress.buildVisibility = BuildVisibility.hidden
-        PressureCrafter("graphite-press").apply {
-            requirements(Category.crafting, ItemStack.with(Items.copper, 75, Items.lead, 30))
-
-            craftEffect = Fx.pulverizeMedium
-            outputItem = ItemStack(Items.graphite, 1)
-            craftTime = 90f
+        graphitePress = PressureCrafter("graphite-compressor").apply {
+            requirements(Category.crafting,
+                arrayOf(
+                    SteamItems.stone + 40,
+                    Items.copper + 32,
+                    SteamItems.iron + 25,
+                )
+            )
             size = 2
-            hasItems = true
-
-            consumeItem(Items.coal, 2)
-        }*/
+            consumeItem(Items.coal, 5)
+            outputItem = Items.graphite + 2
+            craftTime = 100f
+            pressureRequired = 2f
+            drawer = DrawMulti(DrawRegion("-bottom"), DrawBuilding().apply {
+                val regions = "$name-pistons".sheet(12, 12)
+                for (i in 0 until 3) {
+                    parts.add(RegionPart().apply {
+                        region = regions[i]
+                        val xd = Geometry.d8edge[i].x
+                        val yd = Geometry.d8edge[i].y
+                        x = xd * (22f / 4f)
+                        y = yd * (22f / 4f)
+                        moveX = xd * -1.25f
+                        moveY = yd * -1.25f
+                        progress = DrawPart.PartProgress.reload
+                    })
+                }
+            })
+        }
     }
 
     fun alpha() {
