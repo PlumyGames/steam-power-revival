@@ -19,7 +19,6 @@ import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.blocks.environment.OreBlock
 import mindustry.world.blocks.production.AttributeCrafter
 import mindustry.world.blocks.production.Pump
-import mindustry.world.blocks.production.Separator
 import mindustry.world.blocks.production.SolidPump
 import mindustry.world.blocks.storage.CoreBlock
 import mindustry.world.draw.*
@@ -31,6 +30,7 @@ import steam.UndebugOnly
 import steam.gen.OreGenerator
 import steam.utils.plus
 import steam.world.crafting.MultiCrafter
+import steam.world.crafting.Separator
 import steam.world.crafting.TemperatureCrafter
 import steam.world.crafting.addRecipe
 import steam.world.distribution.PressurePipe
@@ -258,6 +258,11 @@ object SteamBlocks {
             )
             craftTime = 30f
             consumeLiquid(Liquids.slag, 0.1f)
+            drawer = DrawMulti(
+                DrawRegion("-bottom"),
+                DrawLiquidTile(Liquids.slag),
+                DrawDefault(),
+            )
         }
     }
 
