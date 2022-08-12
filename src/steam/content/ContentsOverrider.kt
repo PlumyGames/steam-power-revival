@@ -1,5 +1,6 @@
 package steam.content
 
+import arc.Core
 import arc.math.geom.Geometry
 import mindustry.content.Blocks.*
 import mindustry.content.Items
@@ -104,8 +105,8 @@ object ContentsOverrider {
                 for (i in 0 until 4) {
                     parts.add(object : RegionPart() {
                         override fun load(name: String) {
-                            super.load(name)
-                            regions = arrayOf(pistons[i])
+                            regions = arrayOf(region)
+                            heat = Core.atlas.find("error")
                         }
                     }.apply {
                         outline = false

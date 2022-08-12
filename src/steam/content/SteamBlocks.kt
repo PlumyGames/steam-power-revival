@@ -218,7 +218,7 @@ object SteamBlocks {
                     addRecipe(
                         craftTime = 80f,
                         inItem = arrayOf(ore + 1),
-                        outItem = arrayOf(ore + 1),
+                        outItem = arrayOf(raw + 1),
                         outLiquid = arrayOf(Liquids.slag + 0.05f)
                     )
             }
