@@ -9,9 +9,9 @@ fun String.frames(number: Int, suffix: String = "-") =
     }
 
 fun String.sheet(
-    width: Int,
-    height: Int = width,
-) = Core.atlas.find(this).sheet(width, height)
+    tileWidth: Int,
+    tileHeight: Int = tileWidth,
+) = Core.atlas.find(this).sheet(tileWidth, tileHeight)
 /**
  * Slice sprites in order of
  * ```

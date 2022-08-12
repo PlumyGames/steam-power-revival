@@ -100,10 +100,12 @@ object ContentsOverrider {
             craftTime = 100f
             pressureRequired = 2f
             drawer = DrawMulti(DrawRegion("-bottom"), DrawBuilding().apply {
-                "$name-pistons".sheet(12, 12).forEachIndexed { i, t ->
-                    parts.add(object : RegionPart(){
+                val pistons by lazy { "$name-pistons".sheet(12, 12) }
+                for (i in 0 until 4) {
+                    parts.add(object : RegionPart() {
                         override fun load(name: String) {
-                            regions = arrayOf(t)
+                            super.load(name)
+                            regions = arrayOf(pistons[i])
                         }
                     }.apply {
                         outline = false
