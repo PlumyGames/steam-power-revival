@@ -19,7 +19,6 @@ import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.blocks.environment.OreBlock
 import mindustry.world.blocks.production.AttributeCrafter
 import mindustry.world.blocks.production.Pump
-import mindustry.world.blocks.production.Separator
 import mindustry.world.blocks.production.SolidPump
 import mindustry.world.blocks.storage.CoreBlock
 import mindustry.world.draw.*
@@ -31,6 +30,7 @@ import steam.UndebugOnly
 import steam.gen.OreGenerator
 import steam.utils.plus
 import steam.world.crafting.MultiCrafter
+import steam.world.crafting.Separator
 import steam.world.crafting.TemperatureCrafter
 import steam.world.crafting.addRecipe
 import steam.world.distribution.PressurePipe
@@ -57,7 +57,7 @@ object SteamBlocks {
     lateinit var boiler: Block
     lateinit var blastFurnace: MultiCrafter
     lateinit var advanceFurnace: MultiCrafter
-    lateinit var crystalizer: Block
+    lateinit var crystallizer: Block
     //crafting - heating
     lateinit var burner: ItemBurner
     lateinit var fluidBurner: FluidCombustor
@@ -240,8 +240,8 @@ object SteamBlocks {
         }
     }
 
-    fun crystalizer() {
-        crystalizer = Separator("crystalizer").apply {
+    fun crystallizer() {
+        crystallizer = Separator("crystallizer").apply {
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
@@ -256,8 +256,14 @@ object SteamBlocks {
                 Items.lead + 4,
                 SteamItems.iron + 3,
             )
-            craftTime = 30f
+            craftTime = 100f
+            craftFx = Fx.smeltsmoke
             consumeLiquid(Liquids.slag, 0.1f)
+            drawer = DrawMulti(
+                DrawRegion("-bottom"),
+                DrawLiquidTile(Liquids.slag),
+                DrawDefault(),
+            )
         }
     }
 

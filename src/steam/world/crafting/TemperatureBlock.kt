@@ -12,6 +12,7 @@ import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatConsumer
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
+import plumy.core.assets.TRs
 import steam.R
 import steam.world.temp.Celsius100
 import steam.world.temp.ITemperatureBlock
@@ -38,7 +39,7 @@ open class TemperatureBlock(name: String) : Block(name) {
         drawer.load(this)
     }
 
-    override fun icons() = drawer.finalIcons(this)
+    override fun icons():TRs = drawer.finalIcons(this)
 
     open inner class TemperatureBuild : Building(), ITemperatureBlock, HeatConsumer {
         override var temp = 25f.celsius
