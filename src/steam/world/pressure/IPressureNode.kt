@@ -103,7 +103,7 @@ interface IPressureProducer : IPressureNode {
 }
 
 interface IPressureConsumer : IPressureNode {
-    val pressureRequired: Pressure
+    var pressureRequired: Pressure
     override fun updateProximateLink() {
         val proximity = proximity()
         for (build in proximity) {

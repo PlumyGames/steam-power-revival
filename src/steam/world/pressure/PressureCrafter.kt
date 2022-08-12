@@ -3,7 +3,6 @@ package steam.world.pressure
 import arc.func.Prov
 import arc.math.Mathf
 import arc.struct.IntSeq
-import arc.util.Log
 import mindustry.world.blocks.production.GenericCrafter
 
 class PressureCrafter(name: String) : GenericCrafter(name) {
@@ -45,18 +44,13 @@ class PressureCrafter(name: String) : GenericCrafter(name) {
             removeFromGraph()
         }
 
-        override fun updateTile() {
-            Log.info(efficiency())
-            super.updateTile()
-        }
-
         override fun drawSelect() {
             super.drawSelect()
             drawWholeGraphForDebug()
         }
         override fun updatePressure() {
             super.updatePressure()
-            pressureRequired = if(shouldConsume()) (this@PressureCrafter.pressureRequired * efficiency) else 0f
+            pressureRequired = if(efficiency > 0f) (this@PressureCrafter.pressureRequired * efficiency) else 0f
         }
         override fun updateEfficiencyMultiplier() {
             val eff = Mathf.clamp(graph.currentPressure, 0f, maxEfficiency)

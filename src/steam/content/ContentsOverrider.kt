@@ -1,6 +1,9 @@
 package steam.content
 
-import arc.Core
+import arc.graphics.g2d.Draw
+import arc.graphics.g2d.Fill
+import arc.math.Angles
+import arc.math.Interp.pow2Out
 import arc.math.geom.Geometry
 import mindustry.content.Blocks.*
 import mindustry.content.Items
@@ -19,8 +22,8 @@ import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.Attribute
 import mindustry.world.meta.BuildVisibility
+import steam.utils.NewEffect
 import steam.utils.plus
-import steam.utils.sheet
 import steam.world.distribution.ElectricConveyor
 import steam.world.drawer.DrawBuilding
 import steam.world.pressure.PressureCrafter
@@ -98,17 +101,11 @@ object ContentsOverrider {
             size = 2
             consumeItem(Items.coal, 5)
             outputItem = Items.graphite + 2
-            craftTime = 100f
+            craftTime = 190f
             pressureRequired = 2f
             drawer = DrawMulti(DrawRegion("-bottom"), DrawBuilding().apply {
-                val pistons by lazy { "$name-pistons".sheet(12, 12) }
                 for (i in 0 until 4) {
-                    parts.add(object : RegionPart() {
-                        override fun load(name: String) {
-                            regions = arrayOf(region)
-                            heat = Core.atlas.find("error")
-                        }
-                    }.apply {
+                    parts.add(RegionPart("-piston-$i").apply {
                         outline = false
                         val xd = Geometry.d8edge[i].x
                         val yd = Geometry.d8edge[i].y
@@ -116,10 +113,22 @@ object ContentsOverrider {
                         y = yd * (22f / 4f)
                         moveX = xd * -1.25f
                         moveY = yd * -1.25f
-                        progress = DrawPart.PartProgress.reload
+                        //bad?
+                        progress = DrawPart.PartProgress.reload.curve(pow2Out)
                     })
                 }
             }, DrawDefault())
+            craftEffect = NewEffect(60f) {
+                Draw.color(this.color)
+                for(i in 0 until 4){
+                    Angles.randLenVectors(
+                        this.id.toLong() + i, 8, 10f * this.finpow(),45f + i * 90f, 10f
+                    ) { x, y ->
+                        Draw.alpha(fout())
+                        Fill.circle(this.x + x + (3.75f * Geometry.d8edge[i].x), this.y + y + (3.75f * Geometry.d8edge[i].y), this.fin() * 3f)
+                    }
+                }
+            }
         }
     }
 
