@@ -52,8 +52,8 @@ interface IPressureNode : Buildingc {
         val proximateMaxPressure = if (links.isNotEmpty()) links.maxOf { it.currentPressure } else 0f
         val proximateMinPressure = if (links.isNotEmpty()) links.minOf { it.currentPressure } else 0f
         val graphPressure = graph.currentPressure
-        if (this is IPressureProducer) {
-            currentPressure = if (graphPressure > 0f) Mathf.approachDelta(currentPressure, graphPressure, pressureWarmupSpeed)
+        currentPressure = if (this is IPressureProducer) {
+            if (graphPressure > 0f) Mathf.approachDelta(currentPressure, graphPressure, pressureWarmupSpeed)
             else Mathf.approachDelta(currentPressure, 0f, pressureWarmupSpeed)
         } else {
             val targetPressure = if (graphPressure > 0f) {
@@ -61,7 +61,7 @@ interface IPressureNode : Buildingc {
             } else {
                 if (links.size > 1) proximateMinPressure else 0f
             }
-            currentPressure = if (targetPressure > 0f) Mathf.approachDelta(currentPressure, targetPressure, pressureWarmupSpeed)
+            if (targetPressure > 0f) Mathf.approachDelta(currentPressure, targetPressure, pressureWarmupSpeed)
             else Mathf.approachDelta(currentPressure, 0f, pressureWarmupSpeed)
         }
     }
@@ -78,11 +78,19 @@ interface IPressureNode : Buildingc {
     fun updateProximateLink() {
         val proximity = proximity()
         for (build in proximity) {
-            if (build is IPressureNode) {
-                this.connectToTwoWay(build)
-                PressureGraph.mergeToLagerNetwork(this, build)
-            }
+            link(build)
         }
+    }
+
+    fun link(build: Building) {
+        if (build is IPressureNode) {
+            this.connectToTwoWay(build)
+            PressureGraph.mergeToLagerNetwork(this, build)
+        }
+    }
+
+    fun unlink(build: Building) {
+        if (build is IPressureNode) graph.unlink(build)
     }
 
     fun Writes.writePressureNode() {
