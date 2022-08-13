@@ -34,6 +34,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
     lateinit var recipeList: RecipeList
     var warmupSpeed = 0.1f
     var craftEffect = Fx.smeltsmoke
+    var craftTime = 100f
 
     class Recipe(
         val craftTime: Float,
@@ -86,6 +87,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
     }
 
     inner class MultiCrafterBuild : TemperatureBuild() {
+        var baseProgress = 0f
         var progress = 0f
         var totalProgress = 0f
         var warmup = 0f
@@ -102,7 +104,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
 
         override fun updateEfficiencyMultiplier() {
             efficiency *= if (curRecipeIdx >= 0) currentRecipe.booster?.efficiencyMultiplier(this) ?: 1f else 1f
-            consumers.forEach { efficiency += it.efficiencyMultiplier(this) }
+            consumers.forEach { efficiency *= it.efficiencyMultiplier(this) }
         }
 
         override fun updateTile() {
@@ -114,8 +116,12 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                     if (progress >= 1f) {
                         craft()
                     } else progress += getProgressIncrease(currentRecipe.craftTime) * warmup
+                    if (baseProgress >= 1f) {
+                        baseCraft()
+                    } else baseProgress += getProgressIncrease(craftTime) * warmup
+
                     totalProgress += edelta()
-                    warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed)
+                    warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed * efficiency)
                     //continuously output based on efficiency
                     if (currentRecipe.outLiquid.isNotEmpty()) {
                         val inc = getProgressIncrease(1f)
@@ -145,7 +151,6 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         }
 
         fun craft() {
-            consume()
             currentRecipe.booster?.trigger(this)
             items.remove(currentRecipe.inItem)
 
@@ -158,6 +163,10 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             if (wasVisible) craftEffect.at(this)
 
             progress %= 1f
+        }
+        fun baseCraft() {
+            baseProgress %= 1f
+            consume()
         }
 
         fun canCraft(): Boolean {

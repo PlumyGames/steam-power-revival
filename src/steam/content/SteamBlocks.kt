@@ -230,13 +230,14 @@ object SteamBlocks {
                 DrawGlowRegion().apply { color = R.C.burnerFlame },
                 DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
             )
-            consume(ConsumeItemFlammable(1f).boost())
+            consume(ConsumeItemFlammable(1f))
+            craftTime = 210f
             squareSprite = false
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
                 requirements = arrayOf(
-                    SteamItems.stone + 90
+                    SteamItems.stone + 80
                 )
             }
         }
@@ -248,7 +249,7 @@ object SteamBlocks {
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
                 requirements = arrayOf(
-                    SteamItems.stone + 20
+                    SteamItems.stone + 20, Items.copper + 5
                 )
             }
 
@@ -392,7 +393,7 @@ object SteamBlocks {
 
             UndebugOnly {
                 requirements = arrayOf(
-                    SteamItems.stone + 10, Items.copper + 5, SteamItems.iron + 5
+                    SteamItems.stone + 10, SteamItems.iron + 5, Items.graphite + 2
                 )
             }
         }

@@ -58,7 +58,7 @@ class PressureCrafter(name: String) : GenericCrafter(name) {
 
         override fun updatePressure() {
             super.updatePressure()
-            pressureRequired = if (efficiency > 0f) (this@PressureCrafter.pressureRequired * efficiency) else 0f
+            pressureRequired = if (efficiency > 0f) this@PressureCrafter.pressureRequired * efficiency else 0f
         }
 
         override fun write(write: Writes) {
