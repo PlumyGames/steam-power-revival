@@ -2,14 +2,19 @@ package steam.world.distribution
 
 import arc.Core
 import arc.graphics.g2d.Draw
+import arc.graphics.g2d.Lines
 import arc.graphics.g2d.TextureRegion
 import arc.math.geom.Geometry
 import arc.util.Eachable
+import arc.util.Tmp
 import mindustry.Vars.tilesize
 import mindustry.Vars.world
 import mindustry.entities.TargetPriority
 import mindustry.entities.units.BuildPlan
 import mindustry.graphics.Layer
+import mindustry.graphics.Pal
+import plumy.core.math.clamp
+import steam.DebugOnly
 import steam.utils.sheet
 import steam.world.pressure.IPressureNode
 import steam.world.pressure.PressureBlock
@@ -78,6 +83,13 @@ class PressurePipe(name: String) : PressureBlock(name) {
 
         override fun draw() {
             Draw.rect(regions[drawIndex], x, y)
+            DebugOnly {
+                Tmp.c1.set(Pal.redLight).a((currentPressure / graph.maxPressure).clamp)
+                Draw.color(Tmp.c1)
+                val radius = size * tilesize / 2.5f
+                Lines.square(x, y, radius + 1f, rotation.toFloat())
+                Draw.reset()
+            }
             //improvement maybe required
             Draw.z(Layer.blockUnder)
             for (j in 0 until 4) {

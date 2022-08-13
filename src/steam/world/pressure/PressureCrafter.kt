@@ -44,6 +44,11 @@ class PressureCrafter(name: String) : GenericCrafter(name) {
             removeFromGraph()
         }
 
+        override fun updateTile() {
+            updatePressure()
+            super.updateTile()
+        }
+
         override fun drawSelect() {
             super.drawSelect()
             drawWholeGraphForDebug()

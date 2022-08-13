@@ -6,6 +6,8 @@ import arc.struct.IntSeq
 import arc.util.Strings
 import arc.util.Time
 import arc.util.Tmp
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.gen.Buildingc
@@ -15,9 +17,11 @@ import plumy.core.Serialized
 import plumy.core.arc.hsvLerp
 import plumy.core.math.Progress
 import plumy.core.math.clamp
+import plumy.core.math.isZero
 import plumy.world.AddBar
 import steam.DebugOnly
 import steam.R
+import steam.utils.format
 import steam.world.pressure.IPressureNode.Companion.pressureFact
 
 typealias Pressure = Float
@@ -32,6 +36,7 @@ interface IPressureNode : Buildingc {
     var flash: Float
     val pressureCapacity: Pressure
     val pressureWarmupSpeed: Float
+    val nodeRevision: Int get() = 0
     fun getNetworkConnections(out: MutableList<IPressureNode>):
             MutableList<IPressureNode> {
         out.clear()
@@ -43,9 +48,22 @@ interface IPressureNode : Buildingc {
     }
 
     fun updatePressure() {
-        val targetPressure = graph.currentPressure
-        currentPressure = (if (targetPressure > 0f) Mathf.approachDelta(currentPressure, targetPressure, pressureWarmupSpeed)
-        else Mathf.approachDelta(currentPressure, 0f, pressureWarmupSpeed))
+        val links = linkedVertices
+        val proximateMaxPressure = if (links.isNotEmpty()) links.maxOf { it.currentPressure } else 0f
+        val proximateMinPressure = if (links.isNotEmpty()) links.minOf { it.currentPressure } else 0f
+        val graphPressure = graph.currentPressure
+        if (this is IPressureProducer) {
+            currentPressure = if (graphPressure > 0f) Mathf.approachDelta(currentPressure, graphPressure, pressureWarmupSpeed)
+            else Mathf.approachDelta(currentPressure, 0f, pressureWarmupSpeed)
+        } else {
+            val targetPressure = if (graphPressure > 0f) {
+                proximateMaxPressure
+            } else {
+                if (links.size > 1) proximateMinPressure else 0f
+            }
+            currentPressure = if (targetPressure > 0f) Mathf.approachDelta(currentPressure, targetPressure, pressureWarmupSpeed)
+            else Mathf.approachDelta(currentPressure, 0f, pressureWarmupSpeed)
+        }
     }
 
     fun pdelta() = currentPressure * Time.delta * timeScale()
@@ -64,6 +82,25 @@ interface IPressureNode : Buildingc {
                 this.connectToTwoWay(build)
                 PressureGraph.mergeToLagerNetwork(this, build)
             }
+        }
+    }
+
+    fun writeNode(writer: Writes) {
+        writer.b(nodeRevision)
+        writer.f(currentPressure)
+        writer.s(links.size)
+        for (i in 0 until links.size) {
+            writer.i(links[i])
+        }
+    }
+
+    fun readNode(reader: Reads) {
+        val revision = reader.b().toInt()
+        currentPressure = reader.f()
+        links.clear()
+        val size = reader.s()
+        for (i in 0 until size) {
+            links.add(reader.i())
         }
     }
 
@@ -124,14 +161,14 @@ inline fun <reified T> Block.addPressureBar() where T : Building, T : IPressureN
 
 inline fun <reified T> Block.addPressureProducedBar(maxProduced: Pressure) where T : Building, T : IPressureProducer {
     AddBar<T>("pressure-produced",
-        { bundle.format("bar.pressure-procured", Strings.autoFixed(pressureProduced, 1)) },
+        { bundle.format("bar.pressure-procured", if (pressureProduced.isZero) "0" else pressureProduced.format(1)) },
         { R.C.pressure },
         { pressureProduced / maxProduced })
 }
 
 inline fun <reified T> Block.addPressureRequiredBar(maxRequirement: Pressure) where T : Building, T : IPressureConsumer {
     AddBar<T>("pressure-required",
-        { bundle.format("bar.pressure-required", Strings.autoFixed(pressureRequired, 1)) },
+        { bundle.format("bar.pressure-required", if (pressureRequired.isZero) "0" else pressureRequired.format(1)) },
         { R.C.pressure },
         { pressureRequired / maxRequirement })
 }
