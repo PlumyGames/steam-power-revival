@@ -44,10 +44,12 @@ open class PressureProducer(name: String) : GenericCrafter(name) {
                 Mathf.approachDelta(pressureProduced, 0f, warmupSpeed)
             }
         }
+
         override fun drawSelect() {
             super.drawSelect()
             drawWholeGraphForDebug()
         }
+
         override fun updateTile() {
             updatePressureProduced()
             updatePressure()

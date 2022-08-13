@@ -7,6 +7,7 @@ import arc.math.geom.Geometry
 import arc.util.Eachable
 import mindustry.Vars.tilesize
 import mindustry.Vars.world
+import mindustry.entities.TargetPriority
 import mindustry.entities.units.BuildPlan
 import mindustry.graphics.Layer
 import steam.utils.sheet
@@ -17,6 +18,16 @@ import steam.world.pressure.drawWholeGraphForDebug
 class PressurePipe(name: String) : PressureBlock(name) {
     lateinit var regions: Array<TextureRegion>
     lateinit var blendRegion: TextureRegion
+
+    init {
+        underBullets = true
+        floating = true
+        noUpdateDisabled = true
+        conveyorPlacement = true
+        canOverdrive = false
+        priority = TargetPriority.transport
+    }
+
     override fun load() {
         super.load()
         regions = "$name-tile".sheet(size * 32, size * 32)
