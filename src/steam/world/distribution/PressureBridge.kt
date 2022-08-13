@@ -1,6 +1,7 @@
 package steam.world.distribution
 
 import arc.func.Prov
+import arc.math.geom.Point2
 import arc.struct.IntSeq
 import arc.util.Log
 import mindustry.Vars.tilesize
@@ -10,6 +11,7 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Pal
 import mindustry.world.Tile
 import plumy.core.arc.forEach
+import plumy.world.unpack
 import steam.world.pressure.PressureBlock
 import kotlin.math.abs
 
@@ -25,23 +27,15 @@ open class PressureBridge(name: String) : PressureBlock(name) {
         buildType = Prov{ PressureBridgeBuild() }
     }
     override fun init() {
-        fun connect(int: Int, b: PressureBridgeBuild) {
-            if(!b.linked.contains(int)) {
-                b.linked.add(int)
-            } else {
-                b.linked.removeValue(int)
-            }
+        fun connect(tile: PressureBridgeBuild, i: Point2) { if(!tile.linked.addUnique(Point2.pack(i.x + tile.tileX(), i.y + tile.tileY()))) tile.linked.removeValue(i.pack()) }
+        config(Point2::class.java) { tile: PressureBridgeBuild, i ->
+            connect(tile, i)
         }
-
-        config(java.lang.Integer::class.java) { b: PressureBridgeBuild, i ->
-            connect(i.toInt(), b)
-        }
-        config(IntArray::class.java) { b: PressureBridgeBuild, i ->
-            i.forEach { connect(it, b) }
+        config(Array<Point2>::class.java) { tile: PressureBridgeBuild, i ->
+            i.forEach{ connect(tile, it) }
         }
         configClear { b: PressureBridgeBuild ->
             b.linked.clear()
-            b.updateProximateLink()
         }
     }
 
@@ -58,7 +52,8 @@ open class PressureBridge(name: String) : PressureBlock(name) {
                 deselect()
                 return true
             } else if (linkValid(tile, other.tile)){
-                configure(other)
+                configure(other.pos().unpack())
+                other.configure(this)
             }
             return false
         }
@@ -66,13 +61,17 @@ open class PressureBridge(name: String) : PressureBlock(name) {
         override fun drawSelect() {
             super.drawSelect()
             linked.forEach {
-                val b = world.build(it)
+                val b = world.build(it) ?: return
                 Drawf.select(b.x, b.y, b.block.size * tilesize.toFloat(), Pal.accent)
             }
         }
 
-        override fun config(): Any {
-            return links.toArray()
+        override fun config(): Array<Point2?> {
+            val out = arrayOfNulls<Point2>(linked.size)
+            for (i in out.indices) {
+                out[i] = Point2.unpack(power.links[i]).sub(tile.x.toInt(), tile.y.toInt())
+            }
+            return out
         }
     }
 
