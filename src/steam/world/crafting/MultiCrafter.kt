@@ -3,7 +3,10 @@ package steam.world.crafting
 import arc.Core.bundle
 import arc.func.Prov
 import arc.graphics.Color
+import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
+import arc.scene.style.TextureRegionDrawable
+import arc.scene.ui.layout.Table
 import arc.util.Strings
 import mindustry.content.Fx
 import mindustry.gen.Building
@@ -48,6 +51,9 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         val allOutItems = outItem.map { it.item }
         val allOutLiquids = outLiquid.map { it.liquid }
         val allItems = (allInItems + allOutItems).distinct()
+        val icon: TextureRegion by lazy {
+            outItem.getOrNull(0)?.item?.uiIcon ?: outLiquid.getOrNull(0)?.liquid?.uiIcon ?: Icon.cancel.region
+        }
     }
 
     class RecipeList(
@@ -164,6 +170,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
 
             progress %= 1f
         }
+
         fun baseCraft() {
             baseProgress %= 1f
             consume()
@@ -176,16 +183,28 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         override fun progress() = progress
         override fun warmup() = warmup
         override fun totalProgress() = totalProgress
+        override fun buildConfiguration(table: Table) {
+            table.addTable {
+                background(Tex.whiteui)
+                setColor(Pal.gray)
+                for ((i, recipe) in recipes.withIndex()) {
+                    table.button(TextureRegionDrawable(recipe.icon)) {
+                        configure(i)
+                    }.pad(5f)
+                }
+            }
+        }
     }
 
     override fun setBars() {
         super.setBars()
         AddBar<MultiCrafterBuild>("efficiency",
             { bundle.format("bar.efficiency", warmup * efficiency * 100f) },
-            { Pal.lightOrange},
+            { Pal.lightOrange },
             { efficiency * warmup }
         )
     }
+
     override fun setStats() {
         super.setStats()
         stats.add(Stat.output) { table ->
@@ -213,7 +232,7 @@ fun MultiCrafter.addRecipe(
     outItem: Array<ItemStack> = emptyArray(),
     inLiquid: LiquidStack? = null,
     outLiquid: Array<LiquidStack> = emptyArray(),
-    booster: Consume? = null
+    booster: Consume? = null,
 ) {
     val recipe = MultiCrafter.Recipe(
         craftTime, inItem, outItem, inLiquid, outLiquid, booster
