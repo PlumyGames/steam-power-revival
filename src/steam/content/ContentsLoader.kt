@@ -12,6 +12,7 @@ object ContentsLoader {
             glass()
             iron()
             quartz()
+            steel()
         }
         SteamFluids.apply {
             steam()
@@ -29,6 +30,7 @@ object ContentsLoader {
             well()
             pressurizer()
             pressureNode()
+            pressureBridge()
             coreFragment()
             mechPad()
             heatAccumulator()

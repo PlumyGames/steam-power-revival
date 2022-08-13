@@ -100,7 +100,8 @@ class PressurePipe(name: String) : PressureBlock(name) {
                     Draw.rect(
                         blendRegion,
                         x + Geometry.d4[j].x * tilesize,
-                        y + Geometry.d4[j].y * tilesize
+                        y + Geometry.d4[j].y * tilesize,
+                        j * 90f
                     )
             }
             Draw.z()

@@ -34,6 +34,7 @@ import steam.world.crafting.MultiCrafter
 import steam.world.crafting.Separator
 import steam.world.crafting.TemperatureCrafter
 import steam.world.crafting.addRecipe
+import steam.world.distribution.PressureBridge
 import steam.world.distribution.PressurePipe
 import steam.world.drawer.DrawBuilding
 import steam.world.drawer.DrawReservoir
@@ -66,6 +67,7 @@ object SteamBlocks {
     lateinit var reservoir: Block
     //pressure
     lateinit var pressureNode: Block
+    lateinit var pressureBridge: Block
     //effect
     lateinit var coreFragment: Block
     lateinit var mechPad: Block
@@ -399,6 +401,15 @@ object SteamBlocks {
         }
     }
 
+    fun pressureBridge() {
+        pressureBridge = PressureBridge("pressure-bridge").apply {
+            requirements(
+                Category.distribution,
+                arrayOf(Items.lead + 10, Items.graphite + 15, SteamItems.steel + 10)
+            )
+            health = 120
+        }
+    }
     fun coreFragment() {
         coreFragment = CoreBlock("core-fragment").apply {
             size = 3
