@@ -23,11 +23,16 @@ open class PressureBridge(name: String) : PressureBlock(name) {
 
     init {
         configurable = true
-        saveConfig = true
         buildType = Prov{ PressureBridgeBuild() }
     }
     override fun init() {
-        fun connect(tile: PressureBridgeBuild, i: Point2) { if(!tile.linked.addUnique(Point2.pack(i.x + tile.tileX(), i.y + tile.tileY()))) tile.linked.removeValue(i.pack()) }
+        fun connect(tile: PressureBridgeBuild, i: Point2) {
+            val pos = Point2.pack(i.x + tile.tileX(), i.y + tile.tileY())
+            if(!tile.linked.contains(pos))
+                tile.linked.add(pos)
+            else
+                tile.linked.removeValue(pos)
+        }
         config(Point2::class.java) { tile: PressureBridgeBuild, i ->
             connect(tile, i)
         }
@@ -44,7 +49,16 @@ open class PressureBridge(name: String) : PressureBlock(name) {
 
         override fun updateTile() {
             super.updateTile()
+            updateLinks()
             Log.info(linked)
+        }
+
+        override fun draw() {
+            super.draw()
+            linked.forEach { Drawf.selected(it.unpack().x, it.unpack().y, this@PressureBridge, Pal.accent) }
+        }
+        fun updateLinks() {
+            linked.forEach{ links.addUnique(it) }
         }
         override fun onConfigureBuildTapped(other: Building): Boolean {
             if(other == this) {
@@ -53,17 +67,9 @@ open class PressureBridge(name: String) : PressureBlock(name) {
                 return true
             } else if (linkValid(tile, other.tile)){
                 configure(other.pos().unpack())
-                other.configure(this)
+                other.configure(pos().unpack())
             }
             return false
-        }
-
-        override fun drawSelect() {
-            super.drawSelect()
-            linked.forEach {
-                val b = world.build(it) ?: return
-                Drawf.select(b.x, b.y, b.block.size * tilesize.toFloat(), Pal.accent)
-            }
         }
 
         override fun config(): Array<Point2?> {
@@ -73,6 +79,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
             }
             return out
         }
+
     }
 
     fun linkValid(t1: Tile?, t2: Tile?): Boolean {
