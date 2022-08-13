@@ -69,7 +69,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
         override fun config(): Array<Point2?> {
             val out = arrayOfNulls<Point2>(linked.size)
             for (i in out.indices) {
-                out[i] = Point2.unpack(power.links[i]).sub(tile.x.toInt(), tile.y.toInt())
+                out[i] = Point2.unpack(linked[i]).sub(tile.x.toInt(), tile.y.toInt())
             }
             return out
         }
