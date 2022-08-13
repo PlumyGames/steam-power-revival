@@ -19,7 +19,7 @@ import kotlin.math.abs
 
 open class PressureBridge(name: String) : PressureBlock(name) {
     var range = 4f
-    var maxConnection = 3
+    var maxConnection = 2
     //client side, for connecting
     var lastBuild: PressureBridgeBuild? = null
     lateinit var regions: Array<TextureRegion>
@@ -124,6 +124,8 @@ open class PressureBridge(name: String) : PressureBlock(name) {
     fun linkValid(t1: Tile?, t2: Tile?): Boolean {
         if(t1 == null || t2 == null || !posValid(t1.x, t1.y, t2.x, t2.y)) return false
         return t2.block() is PressureBridge && t1.team() == t2.team()
+            && (t1.build as PressureBridgeBuild).linked.size < maxConnection
+            && (t2.build as PressureBridgeBuild).linked.size < maxConnection
     }
     fun posValid(x1: Short, y1: Short, x2: Short, y2: Short): Boolean {
         return if (x1 == x2)
