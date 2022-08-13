@@ -1,8 +1,9 @@
-
 package steam.world.pressure
 
 import arc.math.Mathf
 import arc.struct.IntSeq
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.world.blocks.production.GenericCrafter
 
 open class PressureProducer(name: String) : GenericCrafter(name) {
@@ -62,5 +63,14 @@ open class PressureProducer(name: String) : GenericCrafter(name) {
         override fun progress() = totalProduceTime % craftTime
         override fun totalProgress() = totalProduceTime
         override fun warmup() = warmup
+        override fun write(write: Writes) {
+            super.write(write)
+            write.writePressureNode()
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            read.readPressureNode()
+        }
     }
 }

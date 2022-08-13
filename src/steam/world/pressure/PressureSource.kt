@@ -1,5 +1,6 @@
 package steam.world.pressure
 
+import arc.func.Prov
 import arc.scene.ui.Label
 import arc.scene.ui.Slider
 import arc.scene.ui.layout.Stack
@@ -14,6 +15,7 @@ class PressureSource(name: String) : PressureBlock(name) {
     init {
         configurable = true
         saveConfig = true
+        buildType = Prov { PressureSourceBuild() }
     }
 
     override fun init() {
@@ -39,6 +41,7 @@ class PressureSource(name: String) : PressureBlock(name) {
             super.drawSelect()
             drawWholeGraphForDebug()
         }
+
         override fun config() = pressureProduced
         override fun buildConfiguration(table: Table) {
             table.bottom()

@@ -1,6 +1,7 @@
 package steam.world.distribution
 
 import arc.Core
+import arc.func.Prov
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
 import arc.graphics.g2d.TextureRegion
@@ -31,6 +32,7 @@ class PressurePipe(name: String) : PressureBlock(name) {
         conveyorPlacement = true
         canOverdrive = false
         priority = TargetPriority.transport
+        buildType = Prov { PressurePipeBuild() }
     }
 
     override fun load() {

@@ -85,22 +85,22 @@ interface IPressureNode : Buildingc {
         }
     }
 
-    fun writeNode(writer: Writes) {
-        writer.b(nodeRevision)
-        writer.f(currentPressure)
-        writer.s(links.size)
+    fun Writes.writePressureNode() {
+        b(nodeRevision)
+        f(currentPressure)
+        s(links.size)
         for (i in 0 until links.size) {
-            writer.i(links[i])
+            i(links[i])
         }
     }
 
-    fun readNode(reader: Reads) {
-        val revision = reader.b().toInt()
-        currentPressure = reader.f()
+    fun Reads.readPressureNode() {
+        val revision = b().toInt()
+        currentPressure = f()
         links.clear()
-        val size = reader.s()
+        val size = s()
         for (i in 0 until size) {
-            links.add(reader.i())
+            links.add(i())
         }
     }
 

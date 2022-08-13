@@ -1,6 +1,9 @@
 package steam.world.pressure
 
+import arc.func.Prov
 import arc.struct.IntSeq
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.gen.Building
 import mindustry.world.Block
 import steam.world.pressure.IPressureNode.Companion.pressureFact
@@ -12,6 +15,7 @@ open class PressureBlock(name: String) : Block(name) {
     init {
         solid = true
         update = true
+        buildType = Prov { PressureBuild() }
     }
 
     override fun setBars() {
@@ -52,5 +56,14 @@ open class PressureBlock(name: String) : Block(name) {
         }
 
         override fun warmup() = pressureFact
+        override fun write(write: Writes) {
+            super.write(write)
+            write.writePressureNode()
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            read.readPressureNode()
+        }
     }
 }
