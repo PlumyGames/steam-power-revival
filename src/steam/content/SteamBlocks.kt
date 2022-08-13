@@ -214,7 +214,8 @@ object SteamBlocks {
             size = 3
             health = 800
             hasTemp = false
-            configurable = false
+            // for test
+            configurable = true
             itemCapacity = 80
             for ((raw, ore) in OreGenerator.all) {
                 if (raw.radioactivity <= 0f && raw.hardness < 3)
@@ -410,6 +411,7 @@ object SteamBlocks {
             health = 120
         }
     }
+
     fun coreFragment() {
         coreFragment = CoreBlock("core-fragment").apply {
             size = 3
