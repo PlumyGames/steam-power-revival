@@ -5,128 +5,218 @@ import arc.func.Prov
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Lines
 import arc.graphics.g2d.TextureRegion
+import arc.math.geom.Geometry
 import arc.math.geom.Point2
-import arc.struct.IntSeq
 import arc.util.Tmp
 import mindustry.Vars.tilesize
 import mindustry.Vars.world
 import mindustry.gen.Building
 import mindustry.world.Tile
-import plumy.world.unpack
+import plumy.core.assets.EmptyTR
+import plumy.core.assets.EmptyTRs
+import plumy.world.PackedPos
+import plumy.world.castBuild
+import plumy.world.config
 import steam.utils.sheet
 import steam.world.pressure.PressureBlock
+import steam.world.pressure.tryLink
+import steam.world.pressure.tryUnlink
 import kotlin.math.abs
+
+typealias Side = Int
+
+/**
+ * Get the reflected side index in [Geometry.d4]
+ */
+val Side.reflect: Side
+    get() = (this + 2) % 4
 
 open class PressureBridge(name: String) : PressureBlock(name) {
     var range = 4f
     var maxConnection = 2
+        set(value) {
+            field = value.coerceIn(1, 4)
+        }
     //client side, for connecting
     var lastBuild: PressureBridgeBuild? = null
-    lateinit var regions: Array<TextureRegion>
-    lateinit var bridgeRegion: TextureRegion
+    var regions: Array<TextureRegion> = EmptyTRs
+    var bridgeRegion1: TextureRegion = EmptyTR
+    var bridgeRegion2: TextureRegion = EmptyTR
 
     init {
         configurable = true
-        buildType = Prov{ PressureBridgeBuild() }
+        buildType = Prov { PressureBridgeBuild() }
     }
 
     override fun load() {
         super.load()
         regions = "$name-tile".sheet(32 * size, 32 * size)
-        bridgeRegion = Core.atlas.find("$name-bridge")
+        bridgeRegion1 = Core.atlas.find("$name-bridge1")
+        bridgeRegion2 = Core.atlas.find("$name-bridge2")
     }
+
     override fun init() {
-        fun connect(tile: PressureBridgeBuild, i: Point2) {
-            val pos = Point2.pack(i.x + tile.tileX(), i.y + tile.tileY())
-            if(!tile.linked.contains(pos)) {
-                tile.linked.add(pos)
-                tile.link(world.build(i.x, i.y))
-            }
-            else {
-                tile.linked.removeValue(pos)
-                tile.unlink(world.build(i.x, i.y))
-            }
+        config<PressureBridgeBuild, Int> {
+            connectFromRemote(it)
         }
-        config(Point2::class.java) { tile: PressureBridgeBuild, i ->
-            connect(tile, i)
+        config<PressureBridgeBuild, Point2> {
+            connectFromRemote(it)
         }
-        config(Array<Point2>::class.java) { tile: PressureBridgeBuild, i ->
-            i.forEach{ connect(tile, it) }
+        config<PressureBridgeBuild, Array<Point2>> {
+            connectFromRemote(it)
         }
-        configClear { b: PressureBridgeBuild -> b.linked.clear() }
+        configClear<PressureBridgeBuild> {
+            it.emptyLinkFromRemote()
+        }
+        super.init()
     }
 
     inner class PressureBridgeBuild : PressureBuild() {
-        val linked = IntSeq()
+        val bridgeLinks = IntArray(4) { -1 }
+        val activeLinks: Int
+            get() = bridgeLinks.count { it != -1 }
         var drawIndex = 0
-
         override fun onConfigureBuildTapped(other: Building): Boolean {
-            if(other == this) {
+            if (other == this) {
                 configure(null)
                 deselect()
                 return true
-            } else if (linkValid(tile, other.tile)){
-                configure(other.pos().unpack())
-                other.configure(pos().unpack())
+            } else if (linkValid(tile, other.tile)) {
+                configure(other.pos())
+                other.configure(pos())
             }
             return false
+        }
+
+        fun connectFromRemote(point: Point2) {
+            val pos = Point2.pack(point.x + tileX(), point.y + tileY())
+            val other = pos.castBuild<PressureBridgeBuild>() ?: return
+            val dir = relativeTo(other).toInt().let {
+                if (it == -1) return
+                else it.coerceIn(0, 4)
+            }
+            if (bridgeLinks[dir] == -1) {
+                if (tryLink(other)) {
+                    bridgeLinks[dir] = pos
+                }
+            } else {
+                if (tryUnlink(other)) {
+                    bridgeLinks[dir] = -1
+                }
+            }
+        }
+
+        fun connectFromRemote(pos: PackedPos) {
+            val other = pos.castBuild<PressureBridgeBuild>() ?: return
+            val dir = relativeTo(other).toInt().let {
+                if (it == -1) return
+                else it.coerceIn(0, 4)
+            }
+            if (bridgeLinks[dir] == -1) {
+                if (tryLink(other)) {
+                    bridgeLinks[dir] = pos
+                }
+            } else {
+                if (tryUnlink(other)) {
+                    bridgeLinks[dir] = -1
+                }
+            }
+        }
+
+        fun connectFromRemote(points: Array<Point2>) {
+            for ((dir, point) in points.withIndex()) {
+                val pos = Point2.pack(point.x + tileX(), point.y + tileY())
+                val other = pos.castBuild<PressureBridgeBuild>() ?: return
+                if (bridgeLinks[dir] == -1) {
+                    if (tryLink(other)) {
+                        bridgeLinks[dir] = pos
+                    }
+                } else {
+                    if (tryUnlink(other)) {
+                        bridgeLinks[dir] = -1
+                    }
+                }
+            }
+        }
+
+        fun emptyLinkFromRemote() {
+            bridgeLinks.fill(-1)
         }
 
         override fun configure(value: Any?) {
             super.configure(value)
             updateRegion()
         }
+
         fun updateRegion() {
             drawIndex = 0
-            for (i in 0 until linked.size) {
-                val p = config()[i]!!.pack()
-                val r = relativeTo(world.tile(p))
+            forEachLink { it: Int ->
+                val r = relativeTo(world.tile(it))
                 drawIndex += 1 shl ((4 - r.toInt()) % 4)
             }
         }
-        override fun config(): Array<Point2?> {
-            val out = arrayOfNulls<Point2>(linked.size)
-            for (i in out.indices) {
-                out[i] = Point2.unpack(linked[i]).sub(tile.x.toInt(), tile.y.toInt())
+
+        override fun config() = Array(4) {
+            val link = bridgeLinks[it]
+            if (link != -1) Point2.unpack(link).sub(tile.x.toInt(), tile.y.toInt())
+            else Point2(Int.MAX_VALUE, Int.MAX_VALUE)
+        }
+        @JvmName("forEachLinkPoint")
+        inline fun forEachLink(func: (Point2) -> Unit) {
+            bridgeLinks.forEach {
+                if (it != -1) func(Point2.unpack(it).sub(tile.x.toInt(), tile.y.toInt()))
             }
-            return out
+        }
+        @JvmName("forEachLinkInt")
+        inline fun forEachLink(func: (Int) -> Unit) {
+            bridgeLinks.forEach {
+                if (it != -1) func(it)
+            }
+        }
+
+        inline fun forEachLinkIndexed(func: (Side, Int) -> Unit) {
+            bridgeLinks.forEachIndexed { index, pos ->
+                if (pos != -1) func(index, pos)
+            }
         }
 
         override fun draw() {
             Draw.rect(regions[drawIndex], x, y)
-
             Lines.stroke(8f)
-            config().forEach{
-                val t = world.tile(it!!.pack())
 
-                Tmp.v1.set(x, y).sub(t.worldx(), t.worldy()).setLength(tilesize / 2f).inv()
-
+            forEachLinkIndexed { side, pos ->
+                val t = pos.castBuild<Building>() ?: return@forEachLinkIndexed
+                val other = Tmp.v1.set(x, y).sub(t.x, t.y).setLength(tilesize / 2f).inv()
+                val bridgeTR = if (side % 2 == 0) bridgeRegion1 else bridgeRegion2
                 Lines.line(
-                    bridgeRegion,
-                    x + Tmp.v1.x,
-                    y + Tmp.v1.y,
-                    t.worldx() - Tmp.v1.x,
-                    t.worldy() - Tmp.v1.y, false
+                    bridgeTR,
+                    x + other.x,
+                    y + other.y,
+                    t.x - other.x,
+                    t.y - other.y,
+                    false
                 )
             }
-
             Draw.reset()
         }
+
         override fun onRemoved() {
-            config().forEachIndexed { i, j ->
-                val t = world.build(j!!.pack()) as PressureBridgeBuild
-                t.unlink(this)
-                t.linked.removeValue(linked[i])
+            bridgeLinks.forEachIndexed { side, pos ->
+                val bridge = pos.castBuild<PressureBridgeBuild>() ?: return@forEachIndexed
+                bridge.unlink(this)
+                bridge.bridgeLinks[side.reflect] = -1
             }
+            removeFromGraph()
         }
     }
 
     fun linkValid(t1: Tile?, t2: Tile?): Boolean {
-        if(t1 == null || t2 == null || !posValid(t1.x, t1.y, t2.x, t2.y)) return false
+        if (t1 == null || t2 == null || !posValid(t1.x, t1.y, t2.x, t2.y)) return false
         return t2.block() is PressureBridge && t1.team() == t2.team()
-            && (t1.build as PressureBridgeBuild).linked.size < maxConnection
-            && (t2.build as PressureBridgeBuild).linked.size < maxConnection
+                && (t1.build as PressureBridgeBuild).activeLinks < maxConnection
+                && (t2.build as PressureBridgeBuild).activeLinks < maxConnection
     }
+
     fun posValid(x1: Short, y1: Short, x2: Short, y2: Short): Boolean {
         return if (x1 == x2)
             abs(y1 - y2) <= range

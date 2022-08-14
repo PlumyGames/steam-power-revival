@@ -6,7 +6,6 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
 import mindustry.world.Block
-import steam.world.pressure.IPressureNode.Companion.pressureFact
 
 open class PressureBlock(name: String) : Block(name) {
     var pressureCapacity: Pressure = 0.5f

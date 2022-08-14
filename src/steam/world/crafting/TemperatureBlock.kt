@@ -12,6 +12,7 @@ import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatConsumer
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
+import plumy.core.Serialized
 import plumy.core.assets.TRs
 import steam.R
 import steam.world.temp.Celsius100
@@ -42,6 +43,8 @@ open class TemperatureBlock(name: String) : Block(name) {
     override fun icons():TRs = drawer.finalIcons(this)
 
     open inner class TemperatureBuild : Building(), ITemperatureBlock, HeatConsumer {
+        // TODO: Serialized
+        @Serialized
         override var temp = 25f.celsius
         override val tempCap get() = this@TemperatureBlock.tempCap
         override var flash = 0f
