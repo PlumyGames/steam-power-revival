@@ -8,6 +8,7 @@ import arc.scene.ui.layout.Table
 import arc.struct.IntSeq
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
+import plumy.world.config
 
 class PressureSource(name: String) : PressureBlock(name) {
     var maxProduce = 10f
@@ -20,8 +21,8 @@ class PressureSource(name: String) : PressureBlock(name) {
 
     override fun init() {
         super.init()
-        config(java.lang.Float::class.java) { b: PressureSourceBuild, f ->
-            b.pressureProduced = f.toFloat()
+        config<PressureSourceBuild, Float> {
+            pressureProduced = it
         }
     }
 

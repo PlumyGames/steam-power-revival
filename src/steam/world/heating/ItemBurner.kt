@@ -9,6 +9,8 @@ import arc.struct.EnumSet
 import arc.struct.Seq
 import arc.util.Eachable
 import arc.util.Strings.autoFixed
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.Vars.content
 import mindustry.content.Fx
@@ -27,6 +29,7 @@ import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.Stat
+import plumy.core.Serialized
 import steam.utils.addTable
 import kotlin.math.max
 
@@ -84,18 +87,18 @@ class ItemBurner(name: String) : Block(name) {
     }
 
     inner class BurnerBuild : Building(), HeatBlock {
-        /** Serialized*/
+        @Serialized
         var heat = 0f
-        /** Serialized*/
+        @Serialized
         var warmup = 0f
-        /** Serialized*/
+        @Serialized
         var heatingTime = 0f
         /**
-         * Serialized
          * It will also take [Item.explosiveness] into account.
          */
+        @Serialized
         var curFlammability = 0f
-        /** Serialized*/
+        @Serialized
         var targetHeatingTime = 0f
         override fun updateEfficiencyMultiplier() {
             curFlammability = flammableFilter.efficiencyMultiplier(this)
@@ -135,6 +138,21 @@ class ItemBurner(name: String) : Block(name) {
         override fun drawLight() {
             super.drawLight()
             drawer.drawLight(this)
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            write.f(heat)
+            write.f(warmup)
+            write.f(curFlammability)
+            write.f(targetHeatingTime)
+        }
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            heat = read.f()
+            warmup = read.f()
+            curFlammability = read.f()
+            targetHeatingTime = read.f()
         }
     }
 

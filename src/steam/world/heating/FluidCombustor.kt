@@ -8,6 +8,8 @@ import arc.struct.EnumSet
 import arc.struct.Seq
 import arc.util.Eachable
 import arc.util.Strings
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.Vars
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
@@ -23,6 +25,7 @@ import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
 import mindustry.world.meta.BlockFlag
 import mindustry.world.meta.Stat
+import plumy.core.Serialized
 import steam.utils.addTable
 import kotlin.math.max
 
@@ -70,11 +73,11 @@ class FluidCombustor(name: String) : Block(name) {
     }
 
     inner class CombustorBuild : Building(), HeatBlock {
-        /** Serialized*/
+        @Serialized
         var heat = 0f
-        /** Serialized*/
+        @Serialized
         var warmup = 0f
-        /** Serialized */
+        @Serialized
         var curFlammability = 0f
         override fun updateEfficiencyMultiplier() {
             curFlammability = flammableFilter.efficiencyMultiplier(this)
@@ -102,6 +105,19 @@ class FluidCombustor(name: String) : Block(name) {
         override fun drawLight() {
             super.drawLight()
             drawer.drawLight(this)
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            write.f(heat)
+            write.f(warmup)
+            write.f(curFlammability)
+        }
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            heat = read.f()
+            warmup = read.f()
+            curFlammability = read.f()
         }
     }
 

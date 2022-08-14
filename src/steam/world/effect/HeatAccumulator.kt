@@ -9,6 +9,7 @@ import mindustry.graphics.Pal
 import mindustry.ui.Bar
 import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatConsumer
+import plumy.world.config
 
 class HeatAccumulator(name: String) : Block(name) {
     var measuringRange = 3.5E4f
@@ -19,9 +20,8 @@ class HeatAccumulator(name: String) : Block(name) {
         configurable = true
         buildType = Prov { AccumulatorBuild() }
 
-        config(java.lang.Boolean::class.java) { build: AccumulatorBuild, bool ->
-            if (bool.booleanValue())
-                build.total = 0f
+        config<AccumulatorBuild, Boolean> {
+            if (it) total = 0f
         }
     }
 

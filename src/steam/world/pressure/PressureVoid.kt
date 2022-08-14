@@ -8,6 +8,7 @@ import arc.scene.ui.layout.Table
 import arc.struct.IntSeq
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
+import plumy.world.config
 
 class PressureVoid(name: String) : PressureBlock(name) {
     var maxRequirement = 10f
@@ -20,8 +21,8 @@ class PressureVoid(name: String) : PressureBlock(name) {
 
     override fun init() {
         super.init()
-        config(java.lang.Float::class.java) { b: PressureVoidBuild, f ->
-            b.pressureRequired = f.toFloat()
+        config<PressureVoidBuild, Float> {
+            pressureRequired = it
         }
     }
 

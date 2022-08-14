@@ -6,6 +6,8 @@ import arc.graphics.Color
 import arc.math.Mathf
 import arc.util.Strings
 import arc.util.Tmp
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.gen.Building
 import mindustry.ui.Bar
 import mindustry.world.Block
@@ -32,6 +34,7 @@ open class TemperatureBlock(name: String) : Block(name) {
     init {
         update = true
         solid = true
+        sync = true
         buildType = Prov { TemperatureBuild() }
     }
 
@@ -40,15 +43,14 @@ open class TemperatureBlock(name: String) : Block(name) {
         drawer.load(this)
     }
 
-    override fun icons():TRs = drawer.finalIcons(this)
-
+    override fun icons(): TRs = drawer.finalIcons(this)
     open inner class TemperatureBuild : Building(), ITemperatureBlock, HeatConsumer {
-        // TODO: Serialized
         @Serialized
         override var temp = 25f.celsius
         override val tempCap get() = this@TemperatureBlock.tempCap
         override var flash = 0f
         var sideHeat = FloatArray(4)
+        @Serialized
         var heat = 0f
         override fun sideHeat() = sideHeat
         override fun heatRequirement() = heatRequirement
@@ -65,6 +67,18 @@ open class TemperatureBlock(name: String) : Block(name) {
         override fun warmup() = warmupImpl()
         override fun draw() {
             drawer.draw(this)
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            write.f(temp)
+            write.f(heat)
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            temp = read.f()
+            heat = read.f()
         }
     }
 

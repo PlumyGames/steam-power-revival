@@ -27,6 +27,7 @@ import mindustry.ui.Styles
 import mindustry.world.consumers.Consume
 import mindustry.world.meta.Stat
 import plumy.world.AddBar
+import plumy.world.config
 import steam.utils.addTable
 import kotlin.math.min
 
@@ -85,13 +86,15 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         saveConfig = true
         buildType = Prov { MultiCrafterBuild() }
 
-        config(java.lang.Integer::class.java) { tile: MultiCrafterBuild, i ->
+        config<MultiCrafterBuild, Int> {
             if (!configurable) return@config
-            val new = i.toInt()
-            if (tile.curRecipeIdx != new) {
-                tile.curRecipeIdx = if (!configurable) tile.recipeIdx() else if (new < 0) -1 else new.coerceIn(0, recipes.size - 1)
-                tile.progress = 0f
-                tile.warmup = 0f
+            val new = it
+            if (curRecipeIdx != new) {
+                curRecipeIdx = if (!configurable) recipeIdx()
+                else if (new < 0) -1
+                else new.coerceIn(0, recipes.size - 1)
+                progress = 0f
+                warmup = 0f
             }
         }
     }
@@ -201,7 +204,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                 val button = cont.button(Tex.whiteui, Styles.clearTogglei, 24f) {
                     deselect()
                 }.group(group).tooltip(recipe.mainOut.localizedName).get()
-                button.changed { if(i != curRecipeIdx) configure(i) else configure(-1) }
+                button.changed { if (i != curRecipeIdx) configure(i) else configure(-1) }
                 button.style.imageUp = TextureRegionDrawable(recipe.mainOut.uiIcon)
                 button.update { button.isChecked = curRecipeIdx >= 0 && currentRecipe.mainOut == recipe.mainOut }
             }

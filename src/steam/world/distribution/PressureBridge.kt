@@ -17,6 +17,7 @@ import plumy.core.assets.EmptyTRs
 import plumy.world.PackedPos
 import plumy.world.castBuild
 import plumy.world.config
+import plumy.world.configNull
 import steam.utils.sheet
 import steam.world.pressure.PressureBlock
 import steam.world.pressure.tryLink
@@ -65,8 +66,8 @@ open class PressureBridge(name: String) : PressureBlock(name) {
         config<PressureBridgeBuild, Array<Point2>> {
             connectFromRemote(it)
         }
-        configClear<PressureBridgeBuild> {
-            it.emptyLinkFromRemote()
+        configNull<PressureBridgeBuild> {
+            emptyLinkFromRemote()
         }
         super.init()
     }
@@ -104,6 +105,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
                     bridgeLinks[dir] = -1
                 }
             }
+            updateRegion()
         }
 
         fun connectFromRemote(pos: PackedPos) {
@@ -121,6 +123,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
                     bridgeLinks[dir] = -1
                 }
             }
+            updateRegion()
         }
 
         fun connectFromRemote(points: Array<Point2>) {
@@ -137,15 +140,11 @@ open class PressureBridge(name: String) : PressureBlock(name) {
                     }
                 }
             }
+            updateRegion()
         }
 
         fun emptyLinkFromRemote() {
             bridgeLinks.fill(-1)
-        }
-
-        override fun configure(value: Any?) {
-            super.configure(value)
-            updateRegion()
         }
 
         fun updateRegion() {
