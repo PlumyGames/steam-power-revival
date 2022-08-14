@@ -12,7 +12,7 @@ import plumy.core.WhenNotPaused
 import plumy.core.assets.EmptyTR
 import plumy.core.math.Progress
 import steam.world.pressure.IPressureNode
-import steam.world.pressure.IPressureNode.Companion.pressureFact
+import steam.world.pressure.pressureFact
 
 class DrawOverpressure(
     var suffix: String = "-lights",

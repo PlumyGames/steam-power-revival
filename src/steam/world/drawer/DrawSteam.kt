@@ -15,8 +15,8 @@ import plumy.core.math.Progress
 import steam.R
 import steam.world.pressure.IPressureConsumer
 import steam.world.pressure.IPressureNode
-import steam.world.pressure.IPressureNode.Companion.pressureFact
 import steam.world.pressure.IPressureProducer
+import steam.world.pressure.pressureFact
 
 fun DrawSteamInside() = DrawParticles().apply {
     color = R.C.steam

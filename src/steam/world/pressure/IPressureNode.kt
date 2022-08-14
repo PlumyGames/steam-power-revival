@@ -22,7 +22,6 @@ import plumy.world.AddBar
 import steam.DebugOnly
 import steam.R
 import steam.utils.format
-import steam.world.pressure.IPressureNode.Companion.pressureFact
 
 typealias Pressure = Float
 
@@ -67,12 +66,13 @@ interface IPressureNode : Buildingc {
     }
 
     fun pdelta() = currentPressure * Time.delta * timeScale()
-    fun isConnectedToTwoWay(other: IPressureNode) =
-        other.pos() in this.links && this.pos() in other.links
+    fun link(other: IPressureNode) {
+        connectToTwoWay(other)
+        PressureGraph.mergeToLagerNetwork(this, other)
+    }
 
-    fun connectToTwoWay(other: IPressureNode) {
-        other.links.addUnique(this.pos())
-        this.links.addUnique(other.pos())
+    fun unlink(other: IPressureNode) {
+        graph.unlink(other)
     }
 
     fun updateProximateLink() {
@@ -82,15 +82,8 @@ interface IPressureNode : Buildingc {
         }
     }
 
-    fun link(build: Building) {
-        if (build is IPressureNode) {
-            this.connectToTwoWay(build)
-            PressureGraph.mergeToLagerNetwork(this, build)
-        }
-    }
-
-    fun unlink(build: Building) {
-        if (build is IPressureNode) graph.unlink(build)
+    fun removeFromGraph() {
+        unlink(this)
     }
 
     fun Writes.writePressureNode() {
@@ -112,18 +105,49 @@ interface IPressureNode : Buildingc {
         }
     }
 
-    fun removeFromGraph() {
-        graph.unlink(this)
-    }
-
     companion object {
         private val tempList = ArrayList<IPressureNode>()
         private val tempList2 = ArrayList<IPressureNode>()
         val IPressureNode.linkedVertices get() = getNetworkConnections(tempList)
         val IPressureNode.linkedVertices2 get() = getNetworkConnections(tempList2)
-        val IPressureNode.pressureFact: Progress get() = if (maxPressure != 0f) (currentPressure / maxPressure).clamp else 0f
-        val IPressureNode.maxPressure: Pressure get() = graph.maxPressure
     }
+}
+
+val IPressureNode.pressureFact: Progress get() = if (maxPressure != 0f) (currentPressure / maxPressure).clamp else 0f
+val IPressureNode.maxPressure: Pressure get() = graph.maxPressure
+fun IPressureNode.isConnectedToTwoWay(other: IPressureNode) =
+    other.pos() in this.links && this.pos() in other.links
+
+fun IPressureNode.connectToTwoWay(other: IPressureNode) {
+    other.links.addUnique(this.pos())
+    this.links.addUnique(other.pos())
+}
+
+fun IPressureNode.tryLink(build: Building): Boolean {
+    if (build is IPressureNode) {
+        this.link(build)
+        return true
+    }
+    return false
+}
+
+fun IPressureNode.link(build: Building) {
+    if (build is IPressureNode) {
+        this.connectToTwoWay(build)
+        PressureGraph.mergeToLagerNetwork(this, build)
+    }
+}
+
+fun IPressureNode.tryUnlink(build: Building): Boolean {
+    if (build is IPressureNode) {
+        graph.unlink(build)
+        return true
+    }
+    return false
+}
+
+fun IPressureNode.unlink(build: Building) {
+    if (build is IPressureNode) graph.unlink(build)
 }
 
 fun IPressureNode.drawWholeGraphForDebug() {
