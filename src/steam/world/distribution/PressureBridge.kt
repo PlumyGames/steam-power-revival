@@ -94,8 +94,8 @@ open class PressureBridge(name: String) : PressureBlock(name) {
 
         override fun draw() {
             Draw.rect(regions[drawIndex], x, y)
-            Lines.stroke(8f)
 
+            Lines.stroke(8f)
             config().forEach{
                 val t = world.tile(it!!.pack())
 

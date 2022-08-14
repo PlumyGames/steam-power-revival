@@ -28,7 +28,6 @@ import mindustry.world.meta.BuildVisibility
 import mindustry.world.meta.Env
 import steam.R
 import steam.UndebugOnly
-import steam.gen.OreGenerator
 import steam.utils.plus
 import steam.world.crafting.MultiCrafter
 import steam.world.crafting.Separator
@@ -37,6 +36,7 @@ import steam.world.crafting.addRecipe
 import steam.world.distribution.PressureBridge
 import steam.world.distribution.PressurePipe
 import steam.world.drawer.DrawBuilding
+import steam.world.drawer.DrawLiquidWarmup
 import steam.world.drawer.DrawReservoir
 import steam.world.drawer.DrawSteamInside
 import steam.world.effect.HeatAccumulator
@@ -214,19 +214,11 @@ object SteamBlocks {
             size = 3
             health = 800
             hasTemp = false
-            // for test
-            configurable = true
             itemCapacity = 80
-            for ((raw, ore) in OreGenerator.all) {
-                if (raw.radioactivity <= 0f && raw.hardness < 3)
-                    addRecipe(
-                        craftTime = 80f,
-                        inItem = arrayOf(ore + 1),
-                        outItem = arrayOf(raw + 1),
-                        outLiquid = arrayOf(Liquids.slag + 0.05f)
-                    )
-            }
-            addRecipe(45f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
+            configurable = false
+
+            recipes.oreRecipe(3, 80f, 0.05f)
+            addRecipe(60f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
             addRecipe(80f, inItem = arrayOf(Items.scrap + 1), outLiquid = arrayOf(Liquids.slag + 0.1f))
             drawer = DrawMulti(
                 DrawDefault(),
@@ -241,6 +233,38 @@ object SteamBlocks {
             UndebugOnly {
                 requirements = arrayOf(
                     SteamItems.stone + 80
+                )
+            }
+        }
+    }
+
+    fun advanceFurnace() {
+        advanceFurnace = MultiCrafter("advance-furnace").apply {
+            warmupSpeed = 0.012f
+            size = 3
+            health = 1200
+            hasTemp = false
+            itemCapacity = 80
+            configurable = true
+
+            recipes.oreRecipe(4, 50f, 0.05f * 1.6f)
+            addRecipe(45f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
+            addRecipe(80f * 0.625f, inItem = arrayOf(Items.scrap + 1), outLiquid = arrayOf(Liquids.slag + 0.16f))
+            addRecipe(260f, inItem = arrayOf(SteamItems.iron + 2, Items.coal + 3), outItem = arrayOf(SteamItems.steel + 1), outLiquid = arrayOf(Liquids.slag + 0.04f))
+            drawer = DrawMulti(
+                DrawDefault(),
+                DrawLiquidWarmup(Liquids.slag),
+                DrawRegion("-top1"),
+                DrawGlowRegion().apply { color = R.C.burnerFlame },
+                DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
+            )
+            consumePower(2.5f)
+            craftTime = 210f
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    Items.copper + 90, Items.lead + 40, Items.graphite + 50, SteamItems.iron + 65
                 )
             }
         }
@@ -405,6 +429,7 @@ object SteamBlocks {
     fun pressureBridge() {
         pressureBridge = PressureBridge("pressure-bridge").apply {
             requirements(
+                
                 Category.distribution,
                 arrayOf(Items.lead + 10, Items.graphite + 15, SteamItems.steel + 10)
             )

@@ -6,9 +6,14 @@ import arc.graphics.Color
 import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.scene.style.TextureRegionDrawable
+import arc.scene.ui.ButtonGroup
+import arc.scene.ui.ImageButton
+import arc.scene.ui.ScrollPane
+import arc.scene.ui.layout.Scl
 import arc.scene.ui.layout.Table
 import arc.util.Strings
 import mindustry.content.Fx
+import mindustry.ctype.UnlockableContent
 import mindustry.gen.Building
 import mindustry.gen.Icon
 import mindustry.gen.Tex
@@ -18,6 +23,7 @@ import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import mindustry.ui.ItemDisplay
 import mindustry.ui.LiquidDisplay
+import mindustry.ui.Styles
 import mindustry.world.consumers.Consume
 import mindustry.world.meta.Stat
 import plumy.world.AddBar
@@ -51,9 +57,10 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         val allOutItems = outItem.map { it.item }
         val allOutLiquids = outLiquid.map { it.liquid }
         val allItems = (allInItems + allOutItems).distinct()
-        val icon: TextureRegion by lazy {
-            outItem.getOrNull(0)?.item?.uiIcon ?: outLiquid.getOrNull(0)?.liquid?.uiIcon ?: Icon.cancel.region
+        val mainOut: UnlockableContent by lazy {
+            (outItem.getOrNull(0)?.item ?: outLiquid.getOrNull(0)?.liquid) as UnlockableContent
         }
+        val icon: TextureRegion by lazy { mainOut.uiIcon }
     }
 
     class RecipeList(
@@ -66,6 +73,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         val allInLiquids = recipes.map { it.inLiquid }
         val allOutLiquids = recipes.flatMap { it.allOutLiquids }
         val allItems = (allInItems + allOutItems).distinct()
+        val mainOut = recipes.map { it.mainOut }
     }
 
     init {
@@ -81,8 +89,9 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             if (!configurable) return@config
             val new = i.toInt()
             if (tile.curRecipeIdx != new) {
-                tile.curRecipeIdx = if (new < 0) -1 else new.coerceIn(0, recipes.size - 1)
+                tile.curRecipeIdx = if (!configurable) tile.recipeIdx() else if (new < 0) -1 else new.coerceIn(0, recipes.size - 1)
                 tile.progress = 0f
+                tile.warmup = 0f
             }
         }
     }
@@ -104,8 +113,8 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             get() = curRecipeIdx >= 0
 
         override fun config() = curRecipeIdx
-        fun updateRecipe() {
-            curRecipeIdx = recipes.indexOfFirst { items.has(it.inItem) }
+        fun recipeIdx(): Int {
+            return recipes.indexOfFirst { items.has(it.inItem) }
         }
 
         override fun updateEfficiencyMultiplier() {
@@ -116,7 +125,6 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         override fun updateTile() {
             super.updateTile()
 
-            if (!configurable) updateRecipe()
             if (enabledRecipe && efficiency >= 0f) {
                 if (canCraft()) {
                     if (progress >= 1f) {
@@ -184,15 +192,26 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         override fun warmup() = warmup
         override fun totalProgress() = totalProgress
         override fun buildConfiguration(table: Table) {
-            table.addTable {
-                background(Tex.whiteui)
-                setColor(Pal.gray)
-                for ((i, recipe) in recipes.withIndex()) {
-                    table.button(TextureRegionDrawable(recipe.icon)) {
-                        configure(i)
-                    }.pad(5f)
-                }
+            val group = ButtonGroup<ImageButton>()
+            group.setMinCheckCount(0)
+            val cont = Table()
+            cont.defaults().size(40f)
+
+            for ((i, recipe) in recipes.withIndex()) {
+                val button = cont.button(Tex.whiteui, Styles.clearTogglei, 24f) {
+                    deselect()
+                }.group(group).tooltip(recipe.mainOut.localizedName).get()
+                button.changed { if(i != curRecipeIdx) configure(i) else configure(-1) }
+                button.style.imageUp = TextureRegionDrawable(recipe.mainOut.uiIcon)
+                button.update { button.isChecked = curRecipeIdx >= 0 && currentRecipe.mainOut == recipe.mainOut }
             }
+            val pane = ScrollPane(cont, Styles.smallPane)
+            pane.setScrollingDisabled(true, false)
+
+            pane.setScrollYForce(block.selectScroll)
+            pane.update { block.selectScroll = pane.scrollY }
+
+            table.add(pane).maxHeight(Scl.scl((40 * 5f)))
         }
     }
 
