@@ -11,6 +11,7 @@ import arc.util.Tmp
 import mindustry.Vars.tilesize
 import mindustry.Vars.world
 import mindustry.gen.Building
+import mindustry.graphics.Layer
 import mindustry.world.Tile
 import plumy.core.assets.EmptyTR
 import plumy.core.assets.EmptyTRs
@@ -43,6 +44,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
     var regions: Array<TextureRegion> = EmptyTRs
     var bridgeRegion1: TextureRegion = EmptyTR
     var bridgeRegion2: TextureRegion = EmptyTR
+    var underRegion: TextureRegion = EmptyTR
 
     init {
         configurable = true
@@ -54,6 +56,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
         regions = "$name-tile".sheet(32 * size, 32 * size)
         bridgeRegion1 = Core.atlas.find("$name-bridge1")
         bridgeRegion2 = Core.atlas.find("$name-bridge2")
+        underRegion = Core.atlas.find("$name-under")
     }
 
     override fun init() {
@@ -181,6 +184,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
 
         override fun draw() {
             Draw.rect(regions[drawIndex], x, y)
+
             Lines.stroke(8f)
 
             forEachLinkIndexed { side, pos ->
@@ -196,6 +200,10 @@ open class PressureBridge(name: String) : PressureBlock(name) {
                     false
                 )
             }
+
+            Draw.z(Layer.blockUnder + 0.01f)
+            Draw.rect(underRegion, x, y)
+
             Draw.reset()
         }
 
