@@ -2,7 +2,9 @@ package steam.world.distribution
 
 import arc.Core
 import arc.func.Prov
+import arc.graphics.Color
 import arc.graphics.g2d.Draw
+import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
 import arc.graphics.g2d.TextureRegion
 import arc.math.geom.Geometry
@@ -24,6 +26,8 @@ import steam.world.pressure.PressureBlock
 import steam.world.pressure.tryLink
 import steam.world.pressure.tryUnlink
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 typealias Side = Int
 
@@ -35,7 +39,7 @@ val Side.reflect: Side
 
 open class PressureBridge(name: String) : PressureBlock(name) {
     var range = 4f
-    var maxConnection = 2
+    var maxConnection = 4
         set(value) {
             field = value.coerceIn(1, 4)
         }
@@ -61,13 +65,13 @@ open class PressureBridge(name: String) : PressureBlock(name) {
 
     override fun init() {
         config<PressureBridgeBuild, Int> {
-            connectFromRemote(it)
+            toggleConnectionFromRemote(it)
         }
         config<PressureBridgeBuild, Point2> {
-            connectFromRemote(it)
+            toggleConnectionFromRemote(it)
         }
         config<PressureBridgeBuild, Array<Point2>> {
-            connectFromRemote(it)
+            toggleConnectionFromRemote(it)
         }
         configNull<PressureBridgeBuild> {
             emptyLinkFromRemote()
@@ -80,6 +84,14 @@ open class PressureBridge(name: String) : PressureBlock(name) {
         val activeLinks: Int
             get() = bridgeLinks.count { it != -1 }
         var drawIndex = 0
+        var lastTileChange = -2
+        override fun updateTile() {
+            if (lastTileChange != world.tileChanges) {
+                lastTileChange = world.tileChanges
+                updateRegion()
+            }
+        }
+
         override fun onConfigureBuildTapped(other: Building): Boolean {
             if (other == this) {
                 configure(null)
@@ -92,7 +104,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
             return false
         }
 
-        fun connectFromRemote(point: Point2) {
+        fun toggleConnectionFromRemote(point: Point2) {
             val pos = Point2.pack(point.x + tileX(), point.y + tileY())
             val other = pos.castBuild<PressureBridgeBuild>() ?: return
             val dir = relativeTo(other).toInt().let {
@@ -111,7 +123,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
             updateRegion()
         }
 
-        fun connectFromRemote(pos: PackedPos) {
+        fun toggleConnectionFromRemote(pos: PackedPos) {
             val other = pos.castBuild<PressureBridgeBuild>() ?: return
             val dir = relativeTo(other).toInt().let {
                 if (it == -1) return
@@ -129,7 +141,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
             updateRegion()
         }
 
-        fun connectFromRemote(points: Array<Point2>) {
+        fun toggleConnectionFromRemote(points: Array<Point2>) {
             for ((dir, point) in points.withIndex()) {
                 val pos = Point2.pack(point.x + tileX(), point.y + tileY())
                 val other = pos.castBuild<PressureBridgeBuild>() ?: return
@@ -148,6 +160,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
 
         fun emptyLinkFromRemote() {
             bridgeLinks.fill(-1)
+            updateRegion()
         }
 
         fun updateRegion() {
@@ -190,15 +203,21 @@ open class PressureBridge(name: String) : PressureBlock(name) {
             forEachLinkIndexed { side, pos ->
                 val t = pos.castBuild<Building>() ?: return@forEachLinkIndexed
                 val other = Tmp.v1.set(x, y).sub(t.x, t.y).setLength(tilesize / 2f).inv()
-                val bridgeTR = if (side % 2 == 0) bridgeRegion1 else bridgeRegion2
-                Lines.line(
-                    bridgeTR,
-                    x + other.x,
-                    y + other.y,
-                    t.x - other.x,
-                    t.y - other.y,
-                    false
-                )
+                val bridgeTR = if (side % 2 == 0) bridgeRegion2 else bridgeRegion1
+                val x1 = max(x + other.x, t.x - other.x)
+                val x2 = min(x + other.x, t.x - other.x)
+                val y1 = max(y + other.y, t.y - other.y)
+                val y2 = min(y + other.y, t.y - other.y)
+                Lines.line(bridgeTR, x1, y1, x2, y2, false)
+                Lines.stroke(2f)
+                if (bridgeTR == bridgeRegion1)
+                    Draw.color(Color.red)
+                else if (bridgeTR == bridgeRegion2)
+                    Draw.color(Color.yellow)
+                val dir = Geometry.d4[side]
+                Fill.circle(x + dir.x * 2f, y + dir.y * 2f, 1f)
+                Draw.color()
+                Lines.stroke(8f)
             }
 
             Draw.z(Layer.blockUnder + 0.01f)
