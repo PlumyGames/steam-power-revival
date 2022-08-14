@@ -27,6 +27,7 @@ object ContentsLoader {
             burner()
             fluidBurner()
             reservoir()
+            turbine()
             well()
             pressurizer()
             pressureNode()
