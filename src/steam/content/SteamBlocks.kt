@@ -387,13 +387,13 @@ object SteamBlocks {
                     alpha = 0.9f
                     particleSize = 3f
                     particles = 12
-                    rotateScl = 1f
+                    rotateScl = 0.7f
                     particleRad = 6f
                     particleLife = 80f
                     reverse = true
                     particleSizeInterp = Interp.exp5Out
                 },
-                DrawBlurSpin("-rotor", 12f),
+                DrawBlurSpin("-rotor", 12f).apply { blurThresh = 0.95f },
                 DrawDefault(),
                 DrawRegion("-top1")
             )

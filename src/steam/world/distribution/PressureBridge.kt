@@ -52,6 +52,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
 
     init {
         configurable = true
+        copyConfig = false
         buildType = Prov { PressureBridgeBuild() }
     }
 
@@ -196,6 +197,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
         }
 
         override fun draw() {
+            Draw.z(Layer.blockOver)
             Draw.rect(regions[drawIndex], x, y)
 
             Lines.stroke(8f)
