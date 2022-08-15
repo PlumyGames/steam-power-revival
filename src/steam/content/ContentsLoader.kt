@@ -13,6 +13,7 @@ object ContentsLoader {
             iron()
             quartz()
             steel()
+            depletedThorium()
         }
         SteamFluids.apply {
             steam()
@@ -25,6 +26,7 @@ object ContentsLoader {
             rifle()
             quartzExtractor()
             boiler()
+            industrialBoiler()
             burner()
             fluidBurner()
             reservoir()
@@ -65,6 +67,7 @@ object ContentsLoader {
             blastFurnace()
             advancedFurnace()
             crystallizer()
+            thermalCentrifuge()
         }
     }
 

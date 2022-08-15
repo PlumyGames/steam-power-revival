@@ -72,6 +72,8 @@ class Separator(name: String) : Block(name) {
         }
 
         override fun progress() = progress
+        override fun totalProgress() = totalProgress
+        override fun warmup() = warmup
         override fun shouldAmbientSound(): Boolean {
             return efficiency > 0
         }

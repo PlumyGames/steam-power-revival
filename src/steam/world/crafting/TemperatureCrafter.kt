@@ -4,6 +4,8 @@ import arc.Core
 import arc.Core.bundle
 import arc.func.Prov
 import arc.math.Mathf
+import arc.util.Strings.autoFixed
+import mindustry.content.Fx
 import mindustry.gen.Icon
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
@@ -16,13 +18,15 @@ import steam.world.temp.celsius
 
 class TemperatureCrafter(name: String) : TemperatureBlock(name) {
     //amount of temp lose per craft
-    val craftTemp = 0.2f.celsius
+    var craftTemp = 0.2f.celsius
     var warmupSpeed = 0.1f
+    var maxEfficiency = 1.3333334f
+    var effectChance = 0.1f
+    var effect = Fx.none
     //in tick
     var craftTime = 1f
     val pressureCapacity: Float
         get() = liquidCapacity
-    var maxTemp = 400f.celsius
     lateinit var outputFluid: LiquidStack
 
     init {
@@ -46,6 +50,7 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
                     handleLiquid(this, outputFluid.liquid, amount * outputFluid.amount)
                     temp -= amount * craftTemp
                     warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed)
+                    if (Mathf.chance(effectChance.toDouble())) effect.at(this)
                 } else warmup = Mathf.lerpDelta(warmup, 0f, warmupSpeed)
             }
             dumpLiquid(outputFluid.liquid)
@@ -55,8 +60,8 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
             return pressureProportion <= 1f && enabled && temp >= minRequired
         }
 
-        override fun efficiency(): Float {
-            return Mathf.clamp(temp - 25f, 0f, maxTemp) / minRequired
+        override fun updateEfficiencyMultiplier() {
+            efficiency *= if(temp >= minRequired) ((temp - 25) / minRequired).coerceAtMost(maxEfficiency) else 0f
         }
 
         override fun warmup() = warmup
@@ -70,8 +75,9 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
     override fun setStats() {
         super.setStats()
         stats.remove(Stat.input)
-        stats.add(Stat.output) { stat ->
-            stat.addTable {
+        stats.add(Stat.output) {
+            it.row()
+            it.addTable {
                 background(Tex.whiteui)
                 setColor(Pal.darkestGray)
 
@@ -83,15 +89,12 @@ class TemperatureCrafter(name: String) : TemperatureBlock(name) {
                             }
                         }
                         image(Icon.right).padLeft(10f).padRight(10f)
-                        add(LiquidDisplay(outputFluid.liquid, outputFluid.amount * 60f, true))
-                    }.row()
-                    addTable {
+                        add(LiquidDisplay(outputFluid.liquid, outputFluid.amount * 60f, true)).padRight(15f).row()
+                        add(bundle.format("stat.maxEfficiencyNum", autoFixed(maxEfficiency * 100, 1)))
                         image(Core.atlas.find("status-burning")).padRight(5f)
-                        addTable {
-                            add(bundle.format("stat.minTemp", minRequired))
-                        }
-                    }
-                }.grow().pad(1f)
+                        add(bundle.format("stat.minTemp", minRequired))
+                    }.expandX().left()
+                }.expandX().pad(5f)
             }
         }
     }

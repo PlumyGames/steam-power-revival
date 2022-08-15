@@ -1,6 +1,6 @@
 package steam.world.crafting
 
-import arc.Core
+import arc.Core.bundle
 import arc.func.Prov
 import arc.graphics.Color
 import arc.math.Mathf
@@ -14,9 +14,11 @@ import mindustry.world.Block
 import mindustry.world.blocks.heat.HeatConsumer
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
+import mindustry.world.meta.StatUnit
 import plumy.core.Serialized
 import plumy.core.assets.TRs
 import steam.R
+import steam.world.stat.SteamStat
 import steam.world.temp.Celsius100
 import steam.world.temp.ITemperatureBlock
 import steam.world.temp.ITemperatureBlock.Companion.warmupImpl
@@ -86,10 +88,16 @@ open class TemperatureBlock(name: String) : Block(name) {
         super.setBars()
         if (hasTemp) addBar<TemperatureBuild>("temp") {
             Bar(
-                { Core.bundle.format("bar.temp", Strings.autoFixed(it.temp, 1)) },
+                { bundle.format("bar.temp", Strings.autoFixed(it.temp, 1)) },
                 { Tmp.c1.set(R.C.burnerFlame).lerp(Color.orange, it.temp / tempCap) },
                 { it.temp / minRequired }
             )
         }
+    }
+
+    override fun setStats() {
+        super.setStats()
+        stats.add(SteamStat.tempConvert, bundle["stat.convertTemp"], convertSpeed, StatUnit.heatUnits.localized())
+        stats.add(SteamStat.tempLose, bundle["stat.loseTemp"], coolDownSpeed * 6000) //60 * 100
     }
 }

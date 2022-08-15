@@ -16,7 +16,7 @@ class DrawOverheat(
     var suffix: String = "-lights",
 ) : DrawBlock() {
     /** temp threshold at which lights start flashing  */
-    var threshold: Progress = 0.46f
+    var threshold: Progress = 0.75f
     var lightsRegion = EmptyTR
     override fun load(block: Block) {
         lightsRegion = Core.atlas.find("${block.name}$suffix")

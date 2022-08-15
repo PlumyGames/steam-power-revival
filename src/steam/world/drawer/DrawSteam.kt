@@ -18,13 +18,13 @@ import steam.world.pressure.IPressureNode
 import steam.world.pressure.IPressureProducer
 import steam.world.pressure.pressureFact
 
-fun DrawSteamInside() = DrawParticles().apply {
+fun DrawSteamInside(scl: Float = 1f) = DrawParticles().apply {
     color = R.C.steam
-    alpha = 0.3f
-    particleSize = 2.5f
-    particles = 8
-    particleRad = 4f
-    particleLife = 80f
+    alpha = 0.3f * scl
+    particleSize = 2f * scl
+    particles = (10 * scl).toInt()
+    particleRad = 8f * scl - particleSize
+    particleLife = 80f * scl
     reverse = true
     particleSizeInterp = Interp.one
 }

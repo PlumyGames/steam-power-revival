@@ -9,6 +9,7 @@ object SteamItems {
     lateinit var iron: Item
     lateinit var quartz: Item
     lateinit var steel: Item
+    lateinit var depletedThorium: Item
 
     fun stone() {
         stone = Item("stone").apply {
@@ -35,6 +36,12 @@ object SteamItems {
         steel = Item("steel").apply {
             color = Color.valueOf("7f838a")
             cost = 5f
+        }
+    }
+    fun depletedThorium() {
+        depletedThorium = Item("depleted-thorium").apply {
+            color = Color.valueOf("6b4474")
+            radioactivity = 0.25f
         }
     }
 }

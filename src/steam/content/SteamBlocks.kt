@@ -1,7 +1,11 @@
 package steam.content
 
+import arc.graphics.g2d.Draw
+import arc.graphics.g2d.Fill
+import arc.math.Angles
 import arc.math.Interp
 import arc.math.Mathf
+import arc.math.geom.Geometry
 import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
@@ -30,6 +34,8 @@ import mindustry.world.meta.BuildVisibility
 import mindustry.world.meta.Env
 import steam.R
 import steam.UndebugOnly
+import steam.gen.OreGenerator
+import steam.utils.NewEffect
 import steam.utils.plus
 import steam.world.crafting.MultiCrafter
 import steam.world.crafting.Separator
@@ -49,6 +55,7 @@ import steam.world.pressure.PressureProducer
 import steam.world.pressure.PressureSource
 import steam.world.pressure.PressureVoid
 import steam.world.temp.DrawOverheat
+import steam.world.temp.celsius
 
 object SteamBlocks {
     //should be listed all at once
@@ -59,9 +66,11 @@ object SteamBlocks {
     lateinit var quartzExtractor: Block
     //crafting
     lateinit var boiler: Block
+    lateinit var industrialBoiler: Block
     lateinit var blastFurnace: MultiCrafter
     lateinit var advancedFurnace: MultiCrafter
     lateinit var crystallizer: Block
+    lateinit var thermalCentrifuge: Block
     //crafting - heating
     lateinit var burner: ItemBurner
     lateinit var fluidBurner: FluidCombustor
@@ -195,7 +204,7 @@ object SteamBlocks {
                     SteamItems.stone + 50, Items.copper + 30, SteamItems.glass + 15
                 )
             }
-            liquidCapacity = 200f
+            liquidCapacity = 80f
             size = 2
             hasLiquids = true
             consumeLiquid(Liquids.water, 0.2f)
@@ -204,11 +213,51 @@ object SteamBlocks {
                 DrawRegion("-bottom"),
                 DrawLiquidRegion(Liquids.water),
                 DrawSteamInside(),
-                DrawLiquidTile(SteamFluids.steam, 0f),
+                DrawLiquidTile(SteamFluids.steam),
                 DrawDefault(),
                 DrawHeatInput().apply { heatColor = R.C.burnerFlame },
                 DrawOverheat()
             )
+        }
+    }
+
+    fun industrialBoiler() {
+        industrialBoiler = TemperatureCrafter("industrial-boiler").apply {
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.steel + 25, Items.titanium + 50, Items.metaglass + 15, Items.plastanium + 25
+                )
+            }
+            liquidCapacity = 200f
+            size = 3
+            hasLiquids = true
+            squareSprite = false
+            maxEfficiency = 3f
+            tempCap = 750f.celsius
+            consumeLiquid(Liquids.water, 0.2f)
+            outputFluid = LiquidStack(SteamFluids.steam, 0.2f)
+            drawer = DrawMulti(
+                DrawRegion("-bottom"),
+                DrawLiquidTile(Liquids.water, 1f),
+                DrawSteamInside(1.4f),
+                DrawLiquidTile(SteamFluids.steam, 1f),
+                DrawDefault(),
+                DrawHeatInput().apply { heatColor = R.C.burnerFlame },
+                DrawOverheat()
+            )
+            effect = NewEffect(60f) {
+                Draw.color(Pal.darkerGray)
+                for(i in 0 until 4){
+                    Angles.randLenVectors(
+                        this.id.toLong() + i, 8, 16f * this.finpow(),45f + i * 90f, 10f
+                    ) { x, y ->
+                        Draw.alpha(fout())
+                        Fill.circle(this.x + x + (7f * Geometry.d8edge[i].x), this.y + y + (7f * Geometry.d8edge[i].y), this.fin() * 3f)
+                    }
+                }
+            }
         }
     }
 
@@ -297,6 +346,32 @@ object SteamBlocks {
                 DrawRegion("-bottom"),
                 DrawLiquidTile(Liquids.slag),
                 DrawDefault(),
+            )
+        }
+    }
+
+    fun thermalCentrifuge() {
+        thermalCentrifuge = Separator("thermal-centrifuge").apply {
+            requirements(
+                Category.crafting,
+                arrayOf(
+                    SteamItems.steel + 15,
+                    Items.lead + 45,
+                    SteamItems.iron + 25
+                )
+            )
+            size = 2
+            squareSprite = false
+            health = 520
+            craftTime = 50f
+            consumeItem(OreGenerator.all[Items.thorium])
+            consumeLiquid(SteamFluids.acid, 0.1f)
+            consumePower(1.2f)
+            results = arrayOf(SteamItems.depletedThorium + 10, Items.thorium + 1)
+            drawer = DrawMulti(
+                DrawRegion("-bottom"),
+                DrawRegion("-rotor").apply { spinSprite = true; rotateSpeed = 5f },
+                DrawDefault()
             )
         }
     }
@@ -469,6 +544,7 @@ object SteamBlocks {
                 arrayOf(Items.lead + 10, Items.graphite + 15, SteamItems.steel + 10)
             )
             health = 120
+            squareSprite = false
         }
     }
 
