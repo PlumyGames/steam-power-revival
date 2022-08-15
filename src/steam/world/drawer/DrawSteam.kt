@@ -10,23 +10,52 @@ import arc.util.Time
 import mindustry.Vars
 import mindustry.gen.Building
 import mindustry.world.draw.DrawBlock
-import mindustry.world.draw.DrawParticles
 import plumy.core.math.Progress
 import steam.R
+import steam.content.SteamFluids
 import steam.world.pressure.IPressureConsumer
 import steam.world.pressure.IPressureNode
 import steam.world.pressure.IPressureProducer
 import steam.world.pressure.pressureFact
 
-fun DrawSteamInside(scl: Float = 1f) = DrawParticles().apply {
-    color = R.C.steam
-    alpha = 0.3f * scl
-    particleSize = 2f * scl
-    particles = (10 * scl).toInt()
-    particleRad = 8f * scl - particleSize
-    particleLife = 80f * scl
-    reverse = true
-    particleSizeInterp = Interp.one
+class DrawSteamInside(scl: Float = 1f) : DrawBlock() {
+    var color = R.C.steam
+    var alpha = 0.3f * scl
+    var particleSize = 2f * scl
+    var particles = (10 * scl).toInt()
+    var particleRad = 8f * scl - particleSize
+    var particleLife = 80f * scl
+    var reverse = true
+    var particleSizeInterp: Interp = Interp.one
+    var fadeMargin = 0.4f
+    var rotateScl = 3f
+    var particleInterp: Interp = Interp.PowIn(1.5f)
+    var blending: Blending = Blending.normal
+    override fun draw(build: Building) {
+        val steamProp = build.liquids[SteamFluids.steam] / build.block.liquidCapacity
+        if (steamProp > 0f) {
+            val a = alpha * steamProp
+            Draw.blend(blending)
+            Draw.color(color)
+            val base = Time.time / particleLife
+            rand.setSeed(build.id.toLong())
+            for (i in 0 until particles) {
+                var fin = (rand.random(2f) + base) % 1f
+                if (reverse) fin = 1f - fin
+                val fout = 1f - fin
+                val angle = rand.random(360f) + Time.time / rotateScl % 360f
+                val len = particleRad * particleInterp.apply(fout)
+                Draw.alpha(a * (1f - Mathf.curve(fin, 1f - fadeMargin)))
+                Fill.circle(
+                    build.x + Angles.trnsx(angle, len),
+                    build.y + Angles.trnsy(angle, len),
+                    particleSize * particleSizeInterp.apply(fin) * steamProp
+                )
+            }
+            Draw.blend()
+            Draw.reset()
+        }
+    }
 }
 
 open class DrawSteamLeaking : DrawBlock() {

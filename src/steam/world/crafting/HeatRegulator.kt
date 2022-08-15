@@ -13,6 +13,7 @@ import steam.utils.addTable
 
 class HeatRegulator(name: String) : TemperatureBlock(name) {
     var ventSpeed = 1.5f
+
     init {
         solid = true
         update = true
@@ -27,6 +28,7 @@ class HeatRegulator(name: String) : TemperatureBlock(name) {
             this.ventAmount = it
         }
     }
+
     inner class HeatRegulatorBuild : TemperatureBuild() {
         var ventAmount = 25f
         var venting = Seq<Building>()
@@ -40,16 +42,18 @@ class HeatRegulator(name: String) : TemperatureBlock(name) {
                     venting.remove(it)
                     return@forEach
                 }
-                it as TemperatureBuild
-                if (it.temp > ventAmount) {
-                    it.temp -= speed
-                    temp += speed
-                    warmup = warmup.lerp(efficiency, 0.1f)
+                if (it is TemperatureBuild) {
+                    if (it.temp > ventAmount) {
+                        it.temp -= speed
+                        temp += speed
+                        warmup = warmup.lerp(efficiency, 0.1f)
+                    }
                 }
             }
             if (!canVent()) warmup = warmup.lerp(0f, 0.1f)
             totalProgress += warmup
         }
+
         fun canVent() = venting.size > 0
         override fun shouldConsume() = enabled && canVent()
         override fun totalProgress() = totalProgress
@@ -63,9 +67,10 @@ class HeatRegulator(name: String) : TemperatureBlock(name) {
                 label { ventAmount.toString() }
             }.grow().pad(10f)
         }
+
         override fun onProximityUpdate() {
             super.onProximityUpdate()
-            venting = proximity
+            venting.set(proximity)
             venting.retain { it is TemperatureBuild }
         }
     }
