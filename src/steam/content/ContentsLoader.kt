@@ -61,7 +61,7 @@ object ContentsLoader {
     fun loadAfterOreGenerated() {
         SteamBlocks.apply {
             blastFurnace()
-            advanceFurnace()
+            advancedFurnace()
             crystallizer()
         }
     }

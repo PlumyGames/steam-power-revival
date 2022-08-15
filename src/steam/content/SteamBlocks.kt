@@ -60,7 +60,7 @@ object SteamBlocks {
     //crafting
     lateinit var boiler: Block
     lateinit var blastFurnace: MultiCrafter
-    lateinit var advanceFurnace: MultiCrafter
+    lateinit var advancedFurnace: MultiCrafter
     lateinit var crystallizer: Block
     //crafting - heating
     lateinit var burner: ItemBurner
@@ -242,8 +242,8 @@ object SteamBlocks {
         }
     }
 
-    fun advanceFurnace() {
-        advanceFurnace = MultiCrafter("advance-furnace").apply {
+    fun advancedFurnace() {
+        advancedFurnace = MultiCrafter("advanced-furnace").apply {
             warmupSpeed = 0.012f
             size = 3
             health = 1200
