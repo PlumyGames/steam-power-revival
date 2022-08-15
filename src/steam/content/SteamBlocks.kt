@@ -1,5 +1,6 @@
 package steam.content
 
+import arc.math.Interp
 import arc.math.Mathf
 import mindustry.content.Fx
 import mindustry.content.Items
@@ -17,6 +18,7 @@ import mindustry.type.LiquidStack
 import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.blocks.environment.OreBlock
+import mindustry.world.blocks.power.ConsumeGenerator
 import mindustry.world.blocks.production.AttributeCrafter
 import mindustry.world.blocks.production.Pump
 import mindustry.world.blocks.production.SolidPump
@@ -65,6 +67,8 @@ object SteamBlocks {
     lateinit var fluidBurner: FluidCombustor
     //liquid
     lateinit var reservoir: Block
+    //power
+    lateinit var turbine: Block
     //pressure
     lateinit var pressureNode: Block
     lateinit var pressureBridge: Block
@@ -364,6 +368,38 @@ object SteamBlocks {
         }
     }
 
+    fun turbine() {
+        turbine = ConsumeGenerator("turbine").apply {
+            requirements(
+                Category.power,
+                arrayOf(SteamItems.iron + 30, Items.lead + 45, Items.graphite + 15, Items.silicon + 12)
+            )
+            size = 2
+            health = 400
+            consumeLiquid(SteamFluids.steam, 0.1f)
+            liquidCapacity = 40f
+            powerProduction = 3.1f
+            warmupSpeed = 0.03f
+            drawer = DrawMulti(
+                DrawRegion("-bottom"),
+                DrawParticles().apply {
+                    color = R.C.steam
+                    alpha = 0.9f
+                    particleSize = 3f
+                    particles = 12
+                    rotateScl = 0.7f
+                    particleRad = 6f
+                    particleLife = 80f
+                    reverse = true
+                    particleSizeInterp = Interp.exp5Out
+                },
+                DrawBlurSpin("-rotor", 12f).apply { blurThresh = 0.95f },
+                DrawDefault(),
+                DrawRegion("-top1")
+            )
+        }
+    }
+
     fun well() {
         well = SolidPump("well").apply {
             liquidCapacity = 80f
@@ -429,7 +465,6 @@ object SteamBlocks {
     fun pressureBridge() {
         pressureBridge = PressureBridge("pressure-bridge").apply {
             requirements(
-                
                 Category.distribution,
                 arrayOf(Items.lead + 10, Items.graphite + 15, SteamItems.steel + 10)
             )

@@ -43,7 +43,7 @@ import kotlin.math.min
 class MultiCrafter(name: String) : TemperatureBlock(name) {
     var recipes = ArrayList<Recipe>()
     lateinit var recipeList: RecipeList
-    var warmupSpeed = 0.1f
+    var warmupSpeed = 0.025f
     var craftEffect = Fx.smeltsmoke
     var craftTime = 100f
 
@@ -88,10 +88,9 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         buildType = Prov { MultiCrafterBuild() }
 
         config(java.lang.Integer::class.java) { tile: MultiCrafterBuild, i ->
-            if (!configurable) return@config
             val new = i.toInt()
             if (tile.curRecipeIdx != new) {
-                tile.curRecipeIdx = if (!configurable) tile.recipeIdx() else if (new < 0) -1 else new.coerceIn(0, recipes.size - 1)
+                tile.curRecipeIdx = if (new < 0) -1 else new.coerceIn(0, recipes.size - 1)
                 tile.progress = 0f
                 tile.warmup = 0f
             }
@@ -126,8 +125,8 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
 
         override fun updateTile() {
             super.updateTile()
-
-            if (enabledRecipe && efficiency >= 0f) {
+            if (!configurable) curRecipeIdx = recipeIdx()
+            if (enabledRecipe && efficiency > 0f) {
                 if (canCraft()) {
                     if (progress >= 1f) {
                         craft()
@@ -137,7 +136,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                     } else baseProgress += getProgressIncrease(craftTime) * warmup
 
                     totalProgress += edelta()
-                    warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed * efficiency)
+                    warmup = Mathf.approachDelta(warmup, 1f, warmupSpeed)
                     //continuously output based on efficiency
                     if (currentRecipe.outLiquid.isNotEmpty()) {
                         val inc = getProgressIncrease(1f)
@@ -151,7 +150,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                     }
                 }
                 dumpOutputs()
-            } else warmup = Mathf.lerpDelta(warmup, 0f, warmupSpeed)
+            } else warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed)
         }
 
         override fun acceptItem(source: Building, item: Item): Boolean {
@@ -205,7 +204,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                 }.group(group).tooltip(recipe.mainOut.localizedName).get()
                 button.changed { if(i != curRecipeIdx) configure(i) else configure(-1) }
                 button.style.imageUp = TextureRegionDrawable(recipe.mainOut.uiIcon)
-                button.update { button.isChecked = curRecipeIdx >= 0 && currentRecipe.mainOut == recipe.mainOut }
+                button.update { button.isChecked = enabledRecipe && currentRecipe.mainOut == recipe.mainOut }
             }
             val pane = ScrollPane(cont, Styles.smallPane)
             pane.setScrollingDisabled(true, false)
