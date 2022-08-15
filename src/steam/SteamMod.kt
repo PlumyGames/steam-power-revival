@@ -10,6 +10,7 @@ import steam.content.ContentsLoader
 import steam.gen.DebugDialog
 import steam.gen.OreGenerator
 import steam.gen.OreIconGenerator
+import steam.world.fluids.UpdatableFluid
 
 class SteamMod : Mod() {
     companion object {
@@ -30,6 +31,7 @@ class SteamMod : Mod() {
         DebugOnly {
             DebugDialog.show()
         }
+        UpdatableFluid.functionAsClass()
     }
 
     override fun loadContent() {

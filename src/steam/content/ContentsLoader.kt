@@ -16,6 +16,7 @@ object ContentsLoader {
         }
         SteamFluids.apply {
             steam()
+            acid()
         }
         SteamUnitTypes.apply {
             epsilon()
