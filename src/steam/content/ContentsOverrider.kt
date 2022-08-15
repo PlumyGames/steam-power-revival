@@ -9,10 +9,13 @@ import mindustry.content.Blocks.*
 import mindustry.content.Items
 import mindustry.content.UnitTypes.alpha
 import mindustry.content.UnitTypes.beta
+import mindustry.entities.bullet.LiquidBulletType
 import mindustry.entities.part.DrawPart
 import mindustry.entities.part.RegionPart
+import mindustry.graphics.Layer
 import mindustry.type.Category
 import mindustry.type.UnitType
+import mindustry.world.blocks.defense.turrets.LiquidTurret
 import mindustry.world.blocks.production.Drill
 import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.consumers.ConsumeItems
@@ -22,6 +25,7 @@ import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.Attribute
 import mindustry.world.meta.BuildVisibility
+import plumy.core.arc.set
 import steam.utils.NewEffect
 import steam.utils.plus
 import steam.world.distribution.ElectricConveyor
@@ -171,6 +175,23 @@ object ContentsOverrider {
         }
         charr.apply {
             itemDrop = SteamItems.stone
+        }
+    }
+
+    fun tsunami(){
+        (tsunami as LiquidTurret).apply {
+            ammoTypes[SteamFluids.acid] = LiquidBulletType(SteamFluids.acid).apply {
+                lifetime = 49f
+                speed = 4f
+                knockback = 1.3f
+                puddleSize = 8f
+                orbSize = 4f
+                drag = 0.001f
+                ammoMultiplier = 0.4f
+                statusDuration = 60f * 4f
+                damage = 2f
+                layer = Layer.bullet - 2f
+            }
         }
     }
 

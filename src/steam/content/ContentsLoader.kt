@@ -52,6 +52,7 @@ object ContentsLoader {
             beta()
             sand()
             stone()
+            tsunami()
             items()
         }
         EntityRegistry.apply {

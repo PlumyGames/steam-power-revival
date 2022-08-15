@@ -11,9 +11,12 @@ class Acid : UpdatableFluid {
     var damage = 0.2f
     val acidproof = HashSet<Block>()
     override fun Building.update(amount: Float) {
-        if (this !is IAcidProof && block !in acidproof)
-            damageContinuousPierce(damage)
+        if (this is IAcidProof && this.isAcidProof) return
+        if (block in acidproof) return
+        damageContinuousPierce(damage)
     }
 }
 
-interface IAcidProof
+interface IAcidProof {
+    val isAcidProof: Boolean get() = true
+}
