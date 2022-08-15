@@ -6,6 +6,8 @@ import arc.scene.ui.Slider
 import arc.scene.ui.layout.Stack
 import arc.scene.ui.layout.Table
 import arc.struct.IntSeq
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import plumy.world.config
@@ -63,6 +65,16 @@ class PressureSource(name: String) : PressureBlock(name) {
                 )
             ).width(250f).row()
             table.defaults().growX()
+        }
+
+        override fun write(write: Writes) {
+            super.write(write)
+            write.f(pressureProduced)
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            pressureProduced = read.f()
         }
     }
 }

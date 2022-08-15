@@ -21,6 +21,7 @@ import plumy.world.PackedPos
 import plumy.world.castBuild
 import plumy.world.config
 import plumy.world.configNull
+import steam.DebugOnly
 import steam.utils.sheet
 import steam.world.pressure.PressureBlock
 import steam.world.pressure.tryLink
@@ -209,15 +210,17 @@ open class PressureBridge(name: String) : PressureBlock(name) {
                 val y1 = max(y + other.y, t.y - other.y)
                 val y2 = min(y + other.y, t.y - other.y)
                 Lines.line(bridgeTR, x1, y1, x2, y2, false)
-                Lines.stroke(2f)
-                if (bridgeTR == bridgeRegion1)
-                    Draw.color(Color.red)
-                else if (bridgeTR == bridgeRegion2)
-                    Draw.color(Color.yellow)
-                val dir = Geometry.d4[side]
-                Fill.circle(x + dir.x * 2f, y + dir.y * 2f, 1f)
-                Draw.color()
-                Lines.stroke(8f)
+                DebugOnly {
+                    Lines.stroke(2f)
+                    if (bridgeTR == bridgeRegion1)
+                        Draw.color(Color.red)
+                    else if (bridgeTR == bridgeRegion2)
+                        Draw.color(Color.yellow)
+                    val dir = Geometry.d4[side]
+                    Fill.circle(x + dir.x * 2f, y + dir.y * 2f, 1f)
+                    Draw.color()
+                    Lines.stroke(8f)
+                }
             }
 
             Draw.z(Layer.blockUnder + 0.01f)

@@ -3,6 +3,8 @@ package steam.world.effect
 import arc.Core.bundle
 import arc.func.Prov
 import arc.scene.ui.layout.Table
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.gen.Building
 import mindustry.gen.Icon
 import mindustry.graphics.Pal
@@ -47,5 +49,14 @@ class HeatAccumulator(name: String) : Block(name) {
 
         override fun sideHeat() = sideHeat
         override fun heatRequirement() = Float.MAX_VALUE
+        override fun write(write: Writes) {
+            super.write(write)
+            write.f(total)
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            total = read.f()
+        }
     }
 }
