@@ -37,10 +37,7 @@ import steam.UndebugOnly
 import steam.gen.OreGenerator
 import steam.utils.NewEffect
 import steam.utils.plus
-import steam.world.crafting.MultiCrafter
-import steam.world.crafting.Separator
-import steam.world.crafting.TemperatureCrafter
-import steam.world.crafting.addRecipe
+import steam.world.crafting.*
 import steam.world.distribution.PressureBridge
 import steam.world.distribution.PressurePipe
 import steam.world.drawer.DrawBuilding
@@ -74,6 +71,7 @@ object SteamBlocks {
     //crafting - heating
     lateinit var burner: ItemBurner
     lateinit var fluidBurner: FluidCombustor
+    lateinit var heatRegulator: HeatRegulator
     //liquid
     lateinit var reservoir: Block
     //power
@@ -421,6 +419,23 @@ object SteamBlocks {
         }
     }
 
+    fun heatRegulator() {
+        heatRegulator = HeatRegulator("heat-regulator").apply {
+            size = 2
+            health = 530
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.iron + 25, SteamItems.steel + 10, Items.metaglass + 15, Items.graphite + 25
+                )
+            }
+            drawer = DrawMulti(DrawRegion("-bottom"), DrawBlurSpin("-blade", 12f), DrawDefault())
+            consumePower(2.1f)
+            coolDownSpeed = 0.2f / 60f
+        }
+    }
+
     fun reservoir() {
         reservoir = Pump("reservoir").apply {
             liquidCapacity = 80f
@@ -453,8 +468,8 @@ object SteamBlocks {
             health = 400
             consumeLiquid(SteamFluids.steam, 0.1f)
             liquidCapacity = 40f
-            powerProduction = 3.1f
-            warmupSpeed = 0.03f
+            powerProduction = 3.5f
+            warmupSpeed = 0.02f
             drawer = DrawMulti(
                 DrawRegion("-bottom"),
                 DrawParticles().apply {

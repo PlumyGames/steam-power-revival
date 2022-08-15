@@ -29,6 +29,7 @@ object ContentsLoader {
             industrialBoiler()
             burner()
             fluidBurner()
+            heatRegulator()
             reservoir()
             turbine()
             well()
