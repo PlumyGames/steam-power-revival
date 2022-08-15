@@ -22,6 +22,7 @@ import plumy.world.castBuild
 import plumy.world.config
 import plumy.world.configNull
 import steam.DebugOnly
+import steam.utils.drawTextEasy
 import steam.utils.sheet
 import steam.world.pressure.PressureBlock
 import steam.world.pressure.tryLink
@@ -161,7 +162,13 @@ open class PressureBridge(name: String) : PressureBlock(name) {
         }
 
         fun emptyLinkFromRemote() {
-            bridgeLinks.fill(-1)
+            bridgeLinks.copyOf().forEachIndexed { side, pos ->
+                val bridge = pos.castBuild<PressureBridgeBuild>() ?: return@forEachIndexed
+                bridge.bridgeLinks[side.reflect] = -1
+                this.bridgeLinks[side] = -1
+                bridge.updateRegion()
+            }
+            unlink(this)
             updateRegion()
         }
 
@@ -224,10 +231,12 @@ open class PressureBridge(name: String) : PressureBlock(name) {
                     Lines.stroke(8f)
                 }
             }
-
+            DebugOnly {
+                Draw.z(Layer.endPixeled)
+                drawTextEasy("${graph.id}", x, y + 5f)
+            }
             Draw.z(Layer.blockUnder + 0.01f)
             Draw.rect(underRegion, x, y)
-
             Draw.reset()
         }
 
@@ -236,6 +245,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
                 val bridge = pos.castBuild<PressureBridgeBuild>() ?: return@forEachIndexed
                 bridge.unlink(this)
                 bridge.bridgeLinks[side.reflect] = -1
+                this.bridgeLinks[side] = -1
             }
             removeFromGraph()
         }

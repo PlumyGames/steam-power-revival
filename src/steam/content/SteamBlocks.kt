@@ -247,9 +247,9 @@ object SteamBlocks {
             )
             effect = NewEffect(60f) {
                 Draw.color(Pal.darkerGray)
-                for(i in 0 until 4){
+                for (i in 0 until 4) {
                     Angles.randLenVectors(
-                        this.id.toLong() + i, 8, 16f * this.finpow(),45f + i * 90f, 10f
+                        this.id.toLong() + i, 8, 16f * this.finpow(), 45f + i * 90f, 10f
                     ) { x, y ->
                         Draw.alpha(fout())
                         Fill.circle(this.x + x + (7f * Geometry.d8edge[i].x), this.y + y + (7f * Geometry.d8edge[i].y), this.fin() * 3f)
@@ -301,7 +301,12 @@ object SteamBlocks {
             recipes.oreRecipe(4, 50f, 0.05f * 1.6f)
             addRecipe(45f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
             addRecipe(80f * 0.625f, inItem = arrayOf(Items.scrap + 1), outLiquid = arrayOf(Liquids.slag + 0.16f))
-            addRecipe(260f, inItem = arrayOf(SteamItems.iron + 2, Items.coal + 3), outItem = arrayOf(SteamItems.steel + 1), outLiquid = arrayOf(Liquids.slag + 0.04f))
+            addRecipe(
+                260f,
+                inItem = arrayOf(SteamItems.iron + 2, Items.coal + 3),
+                outItem = arrayOf(SteamItems.steel + 1),
+                outLiquid = arrayOf(Liquids.slag + 0.04f)
+            )
             drawer = DrawMulti(
                 DrawDefault(),
                 DrawLiquidWarmup(Liquids.slag),
@@ -368,9 +373,12 @@ object SteamBlocks {
             results = arrayOf(SteamItems.depletedThorium + 10, Items.thorium + 1)
             drawer = DrawMulti(
                 DrawRegion("-bottom"),
-                DrawRegion("-rotor").apply { spinSprite = true; rotateSpeed = 5f },
+                DrawBlurSpin("-rotor", 5f).apply {
+                    blurThresh = 0.99f
+                },
                 DrawDefault()
             )
+            SteamFluids.acid.acidproof += this
         }
     }
 
