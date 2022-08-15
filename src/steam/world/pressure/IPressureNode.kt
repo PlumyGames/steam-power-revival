@@ -83,7 +83,7 @@ interface IPressureNode : Buildingc {
     }
 
     fun removeFromGraph() {
-        unlink(this)
+        graph.unlink(this)
     }
 
     fun Writes.writePressureNode() {
