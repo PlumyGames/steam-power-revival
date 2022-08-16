@@ -97,7 +97,9 @@ open class TemperatureBlock(name: String) : Block(name) {
 
     override fun setStats() {
         super.setStats()
-        stats.add(SteamStat.tempConvert, bundle["stat.convertTemp"], convertSpeed, StatUnit.heatUnits.localized())
-        stats.add(SteamStat.tempLose, bundle["stat.loseTemp"], coolDownSpeed * 6000) //60 * 100
+        if(hasTemp) {
+            stats.add(SteamStat.tempConvert, bundle["stat.convertTemp"], convertSpeed, StatUnit.heatUnits.localized())
+            stats.add(SteamStat.tempLose, bundle["stat.loseTemp"], coolDownSpeed * 6000) //60 * 100
+        }
     }
 }

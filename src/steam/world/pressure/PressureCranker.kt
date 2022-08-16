@@ -1,15 +1,18 @@
 package steam.world.pressure
 
 import arc.func.Prov
+import arc.graphics.g2d.TextureRegion
 import arc.scene.ui.layout.Table
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Icon
+import mindustry.graphics.Pal
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
 import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawRegion
+import steam.utils.drawTextEasy
 
 class PressureCranker(name: String) : PressureBlock(name) {
     var generateAmount = 3f
@@ -33,6 +36,10 @@ class PressureCranker(name: String) : PressureBlock(name) {
     override fun load() {
         super.load()
         drawer.load(this)
+    }
+
+    override fun icons(): Array<TextureRegion> {
+        return drawer.finalIcons(this)
     }
 
     inner class PressureCrankerBuild : PressureBuild(), IPressureProducer {
@@ -59,7 +66,7 @@ class PressureCranker(name: String) : PressureBlock(name) {
 
         override fun drawSelect() {
             super.drawSelect()
-            drawPlaceText("${(lastCrank / generateTime) * 100f}%", x.toInt(), y.toInt(), lastCrank > 0)
+            drawTextEasy("${(lastCrank / generateTime) * 100f}%", x, y, Pal.accent)
         }
 
         override fun draw() {
