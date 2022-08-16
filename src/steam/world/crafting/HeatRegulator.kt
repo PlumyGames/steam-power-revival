@@ -65,7 +65,7 @@ class HeatRegulator(name: String) : TemperatureBlock(name) {
                 setColor(Pal.darkestGray)
                 slider(25f, tempCap, 1f, ventAmount, false) { configure(it) }.row()
                 label { ventAmount.toString() }
-            }.grow().pad(10f)
+            }.pad(10f).grow()
         }
 
         override fun onProximityUpdate() {

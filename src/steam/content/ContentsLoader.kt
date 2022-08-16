@@ -32,6 +32,7 @@ object ContentsLoader {
             heatRegulator()
             reservoir()
             turbine()
+            pneumaticEngine()
             well()
             pressurizer()
             pressureNode()

@@ -48,6 +48,7 @@ import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
 import steam.world.mech.MechPad
+import steam.world.power.PressureGenerator
 import steam.world.pressure.PressureProducer
 import steam.world.pressure.PressureSource
 import steam.world.pressure.PressureVoid
@@ -76,6 +77,7 @@ object SteamBlocks {
     lateinit var reservoir: Block
     //power
     lateinit var turbine: Block
+    lateinit var pneumaticEngine: Block
     //pressure
     lateinit var pressureNode: Block
     lateinit var pressureBridge: Block
@@ -126,7 +128,8 @@ object SteamBlocks {
                     width = 7f
                     height = 9f
                     lifetime = 60f
-                    ammoMultiplier = 1f
+                    ammoMultiplier = 3f
+                    reloadMultiplier = 2.0f
                 },
                 Items.copper, BasicBulletType(4.5f, 6f).apply {
                     width = 7f
@@ -228,6 +231,7 @@ object SteamBlocks {
                     SteamItems.steel + 25, Items.titanium + 50, Items.metaglass + 15, Items.plastanium + 25
                 )
             }
+            health = 800
             liquidCapacity = 200f
             size = 3
             hasLiquids = true
@@ -498,6 +502,36 @@ object SteamBlocks {
         }
     }
 
+    fun pneumaticEngine() {
+        pneumaticEngine = PressureGenerator("pneumatic-engine").apply {
+            category = Category.power
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.steel + 15, Items.titanium + 35, Items.silicon + 25
+                )
+            }
+            size = 2
+            squareSprite = false
+            powerProduction = 3f
+            drawer = DrawMulti(
+                DrawRegion("-bottom"),
+                DrawBuilding().apply {
+                    for ((i, d) in Geometry.d8edge.withIndex()) {
+                        parts.add(RegionPart("-piston$i").apply {
+                            x = 4.25f * d.x
+                            y = 4.25f * d.y
+                            moveX = d.x.toFloat()
+                            moveY = d.y.toFloat()
+                            progress = PartProgress.constant(0f).absin(15f, 1f).mul(PartProgress.warmup)
+                            outline = false
+                        })
+                    }
+                },
+                DrawDefault()
+            )
+        }
+    }
     fun well() {
         well = SolidPump("well").apply {
             liquidCapacity = 80f
@@ -521,6 +555,11 @@ object SteamBlocks {
         pressurizer = PressureProducer("pressurizer").apply {
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    SteamItems.stone + 35, SteamItems.iron + 25, Items.copper + 30
+                )
+            }
             consumeLiquid(SteamFluids.steam, 0.1f)
             pressureOutput = 5f
             size = 2

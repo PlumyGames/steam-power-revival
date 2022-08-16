@@ -99,7 +99,7 @@ object ContentsOverrider {
                 arrayOf(
                     SteamItems.stone + 40,
                     Items.copper + 32,
-                    SteamItems.iron + 25,
+                    Items.lead + 25,
                 )
             )
             size = 2

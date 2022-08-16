@@ -1,36 +1,42 @@
-package steam.world.pressure
+package steam.world.power
 
 import arc.func.Prov
 import arc.math.Mathf
 import arc.struct.IntSeq
 import arc.util.io.Reads
 import arc.util.io.Writes
-import mindustry.world.blocks.production.GenericCrafter
+import mindustry.world.blocks.power.PowerGenerator
+import steam.world.pressure.*
 
-class PressureCrafter(name: String) : GenericCrafter(name) {
-    var pressureCapacity: Pressure = 0.5f
-    var pressureRequired: Pressure = 4f
-    var maxEfficiency = 4f
+class PressureGenerator(name: String) : PowerGenerator(name) {
+    var pressureRequired = 2.5f
+    var pressureCapacity = 0.5f
+    var maxEfficiency = 2f
+    var warmupSpeed = 0.15f
 
     init {
-        buildType = Prov { PressureCrafterBuild() }
+        update = true
+        solid = true
+        buildType = Prov { PressureGeneratorBuild() }
     }
 
     override fun setBars() {
         super.setBars()
-        addPressureBar<PressureCrafterBuild>()
-        addPressureRequiredBar<PressureCrafterBuild>(pressureRequired)
+        addPressureBar<PressureGeneratorBuild>()
+        addPressureRequiredBar<PressureGeneratorBuild>(pressureRequired)
     }
 
-    inner class PressureCrafterBuild : GenericCrafterBuild(), IPressureConsumer {
+    inner class PressureGeneratorBuild : GeneratorBuild(), IPressureConsumer {
         override var flash: Float = 0f
-        override var pressureRequired: Pressure = this@PressureCrafter.pressureRequired
+        override var pressureRequired: Pressure = this@PressureGenerator.pressureRequired
         override var graph: PressureGraph = PressureGraph()
         override var graphInitialized = false
         override var currentPressure: Pressure = 0f
         override val links = IntSeq()
-        override val pressureCapacity: Pressure = this@PressureCrafter.pressureCapacity
+        override val pressureCapacity: Pressure = this@PressureGenerator.pressureCapacity
         override val pressureWarmupSpeed = warmupSpeed
+        var totalProgress = 0f
+
         override fun created() {
             super.created()
             graph.initNode(this)
@@ -47,8 +53,11 @@ class PressureCrafter(name: String) : GenericCrafter(name) {
         }
 
         override fun updateTile() {
-            updatePressure()
             super.updateTile()
+
+            updatePressure()
+            productionEfficiency = Mathf.clamp(graph.currentPressure, 0f, maxEfficiency) * efficiency
+            totalProgress += efficiency * productionEfficiency
         }
 
         override fun drawSelect() {
@@ -66,15 +75,13 @@ class PressureCrafter(name: String) : GenericCrafter(name) {
             write.writePressureNode()
         }
 
+        override fun totalProgress() = totalProgress
+
         override fun read(read: Reads, revision: Byte) {
             super.read(read, revision)
             read.readPressureNode()
         }
 
-        override fun updateEfficiencyMultiplier() {
-            val eff = Mathf.clamp(graph.currentPressure, 0f, maxEfficiency)
-            efficiency *= eff
-            potentialEfficiency *= eff
-        }
+        override fun warmup() = Mathf.clamp(productionEfficiency)
     }
 }
