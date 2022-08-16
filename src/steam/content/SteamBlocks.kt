@@ -16,6 +16,7 @@ import mindustry.entities.part.RegionPart
 import mindustry.entities.pattern.ShootAlternate
 import mindustry.entities.pattern.ShootMulti
 import mindustry.entities.pattern.ShootSpread
+import mindustry.gen.Sounds
 import mindustry.graphics.Pal
 import mindustry.type.Category
 import mindustry.type.LiquidStack
@@ -534,6 +535,7 @@ object SteamBlocks {
             )
         }
     }
+
     fun well() {
         well = SolidPump("well").apply {
             liquidCapacity = 80f
@@ -552,15 +554,24 @@ object SteamBlocks {
             }
         }
     }
+
     fun pressureCranker() {
         pressureCranker = PressureCranker("crank-pressurizer").apply {
             requirements(
                 Category.crafting,
                 arrayOf(SteamItems.stone + 20, Items.lead + 15)
             )
+            drawer = DrawMulti(
+                DrawDefault(),
+                DrawRegion("-cranker").apply { rotateSpeed = 5f; spinSprite = true },
+                DrawRegion("-top")
+            )
             health = 120
+            generateTime = 240f
+            loopSound = Sounds.grinding
         }
     }
+
     fun pressurizer() {
         pressurizer = PressureProducer("pressurizer").apply {
             requirements(

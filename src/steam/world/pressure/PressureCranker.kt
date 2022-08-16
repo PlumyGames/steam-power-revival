@@ -1,26 +1,31 @@
 package steam.world.pressure
 
+import arc.Graphics.Cursor
+import arc.Graphics.Cursor.SystemCursor
+import arc.audio.Sound
 import arc.func.Prov
 import arc.graphics.g2d.TextureRegion
 import arc.scene.ui.layout.Table
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
+import mindustry.Vars
 import mindustry.gen.Icon
-import mindustry.graphics.Pal
+import mindustry.gen.Sounds
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
-import mindustry.world.draw.DrawMulti
-import mindustry.world.draw.DrawRegion
+import plumy.world.configNull
+import steam.DebugOnly
 import steam.utils.drawTextEasy
 
 class PressureCranker(name: String) : PressureBlock(name) {
     var generateAmount = 3f
     var generateTime = 90f
-    var drawer: DrawBlock = DrawMulti(DrawDefault(), DrawRegion("-cranker").apply { rotateSpeed = 5f; spinSprite = true }, DrawRegion("-top"))
+    var drawer: DrawBlock = DrawDefault()
+    var crankSound: Sound = Sounds.click
 
     init {
-        configurable = true
+        // configurable = true
         solid = true
         update = true
         warmupSpeed = 1f
@@ -28,8 +33,8 @@ class PressureCranker(name: String) : PressureBlock(name) {
     }
 
     override fun init() {
-        configClear<PressureCrankerBuild> {
-            it.lastCrank = generateTime
+        configNull<PressureCrankerBuild> {
+            lastCrank = generateTime
         }
     }
 
@@ -45,32 +50,47 @@ class PressureCranker(name: String) : PressureBlock(name) {
     inner class PressureCrankerBuild : PressureBuild(), IPressureProducer {
         override var pressureProduced: Pressure = 0f
         var lastCrank = 0f
+            set(value) {
+                field = value.coerceAtLeast(0f)
+            }
         var totalProgress = 0f
-
         override fun updateTile() {
             super.updateTile()
             lastCrank -= Time.delta
-             if (lastCrank > 0) {
+            if (lastCrank > 0) {
                 pressureProduced = generateAmount
                 totalProgress++
             } else pressureProduced = 0f
         }
 
-        override fun totalProgress() = totalProgress
+        override fun shouldActiveSound(): Boolean {
+            return lastCrank > 0f
+        }
 
+        override fun tapped() {
+            configure(null)
+            crankSound.at(this)
+        }
+
+        override fun getCursor(): Cursor =
+            if (interactable(Vars.player.team())) SystemCursor.hand else SystemCursor.arrow
+
+        override fun totalProgress() = totalProgress
         override fun buildConfiguration(table: Table) {
             //insert joke
             val butt = table.button(Icon.wrench) { configure(null) }.get()
             butt.setDisabled { lastCrank > 0f }
         }
 
-        override fun drawSelect() {
-            super.drawSelect()
-            drawTextEasy("${(lastCrank / generateTime) * 100f}%", x, y, Pal.accent)
-        }
-
         override fun draw() {
             drawer.draw(this)
+            DebugOnly {
+                drawTextEasy("${((lastCrank / generateTime) * 100f).toInt()}%", x, y + 6f)
+            }
+        }
+
+        override fun drawSelect() {
+            super.drawSelect()
         }
 
         override fun write(write: Writes) {
