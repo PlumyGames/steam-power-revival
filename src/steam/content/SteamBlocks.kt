@@ -49,6 +49,7 @@ import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
 import steam.world.mech.MechPad
 import steam.world.power.PressureGenerator
+import steam.world.pressure.PressureCranker
 import steam.world.pressure.PressureProducer
 import steam.world.pressure.PressureSource
 import steam.world.pressure.PressureVoid
@@ -81,6 +82,7 @@ object SteamBlocks {
     //pressure
     lateinit var pressureNode: Block
     lateinit var pressureBridge: Block
+    lateinit var pressureCranker: Block
     //effect
     lateinit var coreFragment: Block
     lateinit var mechPad: Block
@@ -550,16 +552,21 @@ object SteamBlocks {
             }
         }
     }
-
+    fun pressureCranker() {
+        pressureCranker = PressureCranker("crank-pressurizer").apply {
+            requirements(
+                Category.crafting,
+                arrayOf(SteamItems.stone + 20, Items.lead + 15)
+            )
+            health = 120
+        }
+    }
     fun pressurizer() {
         pressurizer = PressureProducer("pressurizer").apply {
-            category = Category.crafting
-            buildVisibility = BuildVisibility.shown
-            UndebugOnly {
-                requirements = arrayOf(
-                    SteamItems.stone + 35, SteamItems.iron + 25, Items.copper + 30
-                )
-            }
+            requirements(
+                Category.crafting,
+                arrayOf(SteamItems.stone + 35, SteamItems.iron + 25, Items.copper + 30, Items.graphite + 15)
+            )
             consumeLiquid(SteamFluids.steam, 0.1f)
             pressureOutput = 5f
             size = 2

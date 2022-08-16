@@ -9,7 +9,7 @@ import mindustry.world.Block
 
 open class PressureBlock(name: String) : Block(name) {
     var pressureCapacity: Pressure = 0.5f
-    val warmupSpeed = 0.02f
+    var warmupSpeed = 0.02f
 
     init {
         solid = true

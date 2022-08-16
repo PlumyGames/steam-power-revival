@@ -34,6 +34,7 @@ object ContentsLoader {
             turbine()
             pneumaticEngine()
             well()
+            pressureCranker()
             pressurizer()
             pressureNode()
             pressureBridge()
