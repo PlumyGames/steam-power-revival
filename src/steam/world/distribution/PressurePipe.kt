@@ -37,7 +37,7 @@ class PressurePipe(name: String) : PressureBlock(name) {
 
     override fun load() {
         super.load()
-        regions = "$name-tile".sheet(size * 256, size * 64)
+        regions = "$name-tile".sheet(size * 8, size * 2)
         blendRegion = Core.atlas.find("$name-blend")
     }
 

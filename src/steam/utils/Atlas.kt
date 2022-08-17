@@ -23,25 +23,24 @@ fun String.sheet(
 fun TextureRegion.sheet(
     tileWidth: Int,
     tileHeight: Int = tileWidth,
+    texSize: Int = 32
 ): Array<TextureRegion> {
-    val w = tileWidth / 32
-    val h = tileHeight / 32
-    val size = w * h
-    val sheetW = (u2 - u) / w
-    val sheetH = (v2 - v) / h
+    val size = tileWidth * tileHeight
+    val sheetW = (u2 - u) / tileWidth
+    val sheetH = (v2 - v) / tileHeight
     return Array(size) {
-        val x = ((it % w) / w).toFloat()
-        val y = ((it / w) / h).toFloat()
+        val x = ((it % tileWidth).toFloat() / tileWidth)
+        val y = ((it / tileWidth).toFloat() / tileHeight)
         val r = TextureRegion(this)
 
-        //add a small amount of margin to prevent anti-aliasing causing weird lines
+        //small amount of margin to prevent anti-aliasing causing weird lines
         r.u = Mathf.map(x, u, u2) + sheetW * 0.01f
         r.v = Mathf.map(y, v, v2) + sheetH * 0.01f
 
         r.u2 = r.u + sheetW * 0.98f
         r.v2 = r.v + sheetH * 0.98f
-        r.width = w
-        r.height = h
+        r.width = texSize
+        r.height = texSize
         r
     }
 }
