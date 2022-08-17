@@ -24,9 +24,9 @@ import mindustry.world.draw.DrawDefault
 import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.Attribute
-import mindustry.world.meta.BuildVisibility
 import plumy.core.arc.set
 import steam.utils.NewEffect
+import steam.utils.hide
 import steam.utils.plus
 import steam.world.distribution.ElectricConveyor
 import steam.world.drawer.DrawBuilding
@@ -52,10 +52,10 @@ object ContentsOverrider {
     }
 
     fun conveyor() {
-        conveyor.buildVisibility = BuildVisibility.hidden
-        titaniumConveyor.buildVisibility = BuildVisibility.hidden
-        plastaniumConveyor.buildVisibility = BuildVisibility.hidden
-        armoredConveyor.buildVisibility = BuildVisibility.hidden
+        conveyor.hide()
+        titaniumConveyor.hide()
+        plastaniumConveyor.hide()
+        armoredConveyor.hide()
         conveyor = ElectricConveyor("electric-conveyor").apply {
             requirements(Category.distribution, arrayOf(Items.copper + 1, Items.lead + 1, SteamItems.iron + 1), true)
             health = 60
@@ -91,7 +91,7 @@ object ContentsOverrider {
     }
 
     fun graphitePress() {
-        graphitePress.buildVisibility = BuildVisibility.hidden
+        graphitePress.hide()
         graphitePress = PressureCrafter("graphite-compressor").apply {
             maxEfficiency = 1.5f
             requirements(
