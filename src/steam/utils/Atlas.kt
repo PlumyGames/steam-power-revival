@@ -2,6 +2,7 @@ package steam.utils
 
 import arc.Core
 import arc.graphics.g2d.TextureRegion
+import arc.math.Mathf
 
 fun String.frames(number: Int, suffix: String = "-") =
     Array<TextureRegion>(number) {
@@ -23,11 +24,25 @@ fun TextureRegion.sheet(
     tileWidth: Int,
     tileHeight: Int = tileWidth,
 ): Array<TextureRegion> {
-    val row = height / tileWidth
-    val column = width / tileHeight
-    return Array(row * column) { i ->
-        val rowByColumn = split(tileWidth, tileHeight)
-        rowByColumn[i % column][i / column]
+    val w = tileWidth / 32
+    val h = tileHeight / 32
+    val size = w * h
+    val sheetW = (u2 - u) / w
+    val sheetH = (v2 - v) / h
+    return Array(size) {
+        val x = ((it % w) / w).toFloat()
+        val y = ((it / w) / h).toFloat()
+        val r = TextureRegion(this)
+
+        //add a small amount of margin to prevent anti-aliasing causing weird lines
+        r.u = Mathf.map(x, u, u2) + sheetW * 0.01f
+        r.v = Mathf.map(y, v, v2) + sheetH * 0.01f
+
+        r.u2 = r.u + sheetW * 0.98f
+        r.v2 = r.v + sheetH * 0.98f
+        r.width = w
+        r.height = h
+        r
     }
 }
 

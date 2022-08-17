@@ -60,7 +60,7 @@ open class PressureBridge(name: String) : PressureBlock(name) {
 
     override fun load() {
         super.load()
-        regions = "$name-tile".sheet(32 * size, 32 * size)
+        regions = "$name-tile".sheet(size * 256, size * 64)
         bridgeRegion1 = Core.atlas.find("$name-bridge1")
         bridgeRegion2 = Core.atlas.find("$name-bridge2")
         underRegion = Core.atlas.find("$name-under")
