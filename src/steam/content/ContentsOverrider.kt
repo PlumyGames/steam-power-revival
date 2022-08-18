@@ -28,15 +28,16 @@ import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.Attribute
 import plumy.core.arc.set
+import plumy.dsl.NewEffect
+import plumy.dsl.plus
 import steam.entities.bullets.ConeBulletType
-import steam.utils.NewEffect
 import steam.utils.hide
-import steam.utils.plus
 import steam.world.distribution.ElectricConveyor
 import steam.world.drawer.DrawBuilding
 import steam.world.pressure.PressureCrafter
 
 object ContentsOverrider {
+    lateinit var menderTurret: ContinuousTurret
     fun mechanicalDrill() {
         (mechanicalDrill as Drill).apply {
             removeConsumer(findConsumer { it is ConsumeLiquid })
@@ -128,12 +129,16 @@ object ContentsOverrider {
             }, DrawDefault())
             craftEffect = NewEffect(60f) {
                 Draw.color(this.color)
-                for(i in 0 until 4){
+                for (i in 0 until 4) {
                     Angles.randLenVectors(
-                        this.id.toLong() + i, 8, 10f * this.finpow(),45f + i * 90f, 10f
+                        this.id.toLong() + i, 8, 10f * this.finpow(), 45f + i * 90f, 10f
                     ) { x, y ->
                         Draw.alpha(fout())
-                        Fill.circle(this.x + x + (3.75f * Geometry.d8edge[i].x), this.y + y + (3.75f * Geometry.d8edge[i].y), this.fin() * 3f)
+                        Fill.circle(
+                            this.x + x + (3.75f * Geometry.d8edge[i].x),
+                            this.y + y + (3.75f * Geometry.d8edge[i].y),
+                            this.fin() * 3f
+                        )
                     }
                 }
             }
@@ -182,7 +187,7 @@ object ContentsOverrider {
         }
     }
 
-    fun tsunami(){
+    fun tsunami() {
         (tsunami as LiquidTurret).apply {
             ammoTypes[SteamFluids.acid] = LiquidBulletType(SteamFluids.acid).apply {
                 lifetime = 49f
@@ -201,7 +206,7 @@ object ContentsOverrider {
 
     fun mender() {
         mender.hide()
-        mender = ContinuousTurret("mender").apply {
+        menderTurret = ContinuousTurret("mender").apply {
             requirements(
                 Category.effect,
                 arrayOf(
@@ -231,6 +236,7 @@ object ContentsOverrider {
             }
         }
     }
+
     fun items() {
         Items.titanium.hardness = 4
         Items.thorium.hardness = 5

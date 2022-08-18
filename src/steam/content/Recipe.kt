@@ -1,12 +1,12 @@
 package steam.content
 
 import mindustry.content.Liquids
+import plumy.dsl.plus
 import steam.gen.OreGenerator
-import steam.utils.plus
 import steam.world.crafting.MultiCrafter.Recipe
 
 fun ArrayList<Recipe>.oreRecipe(hardness: Int, time: Float, slag: Float) {
-    for ((raw, ore) in OreGenerator.all) {
+    for ((raw, ore) in OreGenerator.rawOres) {
         if (raw.radioactivity <= 0f && raw.hardness <= hardness)
             this.add(
                 Recipe(

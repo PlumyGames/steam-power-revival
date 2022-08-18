@@ -1,9 +1,8 @@
 package steam.content
 
-import steam.utils.NewEffect
+import plumy.dsl.NewEffect
 
-object SteamFx{
-    val evaporation = NewEffect(120f){
-
+object SteamFx {
+    val evaporation = NewEffect(120f) {
     }
 }

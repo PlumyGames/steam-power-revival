@@ -33,11 +33,10 @@ import mindustry.world.draw.*
 import mindustry.world.meta.Attribute
 import mindustry.world.meta.BuildVisibility
 import mindustry.world.meta.Env
+import plumy.dsl.*
 import steam.R
 import steam.UndebugOnly
 import steam.gen.OreGenerator
-import steam.utils.NewEffect
-import steam.utils.plus
 import steam.world.crafting.*
 import steam.world.distribution.PressureBridge
 import steam.world.distribution.PressurePipe
@@ -110,38 +109,38 @@ object SteamBlocks {
             velocityRnd = 0.2f
             shootY = 6.75f
             size = 2
-
-            drawer = DrawTurret().apply {
-                parts.addAll(
-                    RegionPart("-barrel-l").apply {
-                        moveY = -1.5f
-                        progress = PartProgress.recoil
-                        under = true
-                    },
-                    RegionPart("-barrel-r").apply {
-                        moveY = -1.5f
-                        progress = PartProgress.recoil.delay(0.5f)
-                        under = true
-                    }
-                )
+            drawTurret {
+                regionPart("-barrel-l") {
+                    moveY = -1.5f
+                    progress = PartProgress.recoil
+                    under = true
+                }
+                regionPart("-barrel-r") {
+                    moveY = -1.5f
+                    progress = PartProgress.recoil.delay(0.5f)
+                    under = true
+                }
             }
-
-            ammo(
-                SteamItems.stone, BasicBulletType(3.5f, 3f).apply {
-                    width = 7f
-                    height = 9f
-                    lifetime = 60f
-                    ammoMultiplier = 3f
-                    reloadMultiplier = 2.0f
-                },
-                Items.copper, BasicBulletType(4.5f, 6f).apply {
+            addAmmo(SteamItems.stone, BasicBulletType(3.5f, 3f).apply {
+                width = 7f
+                height = 9f
+                lifetime = 60f
+                ammoMultiplier = 3f
+                reloadMultiplier = 2.0f
+            })
+            addAmmo(
+                Items.copper,
+                BasicBulletType(4.5f, 6f).apply {
                     width = 7f
                     height = 9f
                     lifetime = 60f
                     trailColor = backColor
                     trailLength = 6
                 },
-                Items.graphite, BasicBulletType(5.5f, 12f).apply {
+            )
+            addAmmo(
+                Items.graphite,
+                BasicBulletType(5.5f, 12f).apply {
                     width = 9f
                     height = 12f
                     reloadMultiplier = 0.6f
@@ -151,19 +150,19 @@ object SteamBlocks {
                     trailLength = 7
                     rangeChange = 18f
                 },
-                Items.coal, BasicBulletType(4.5f, 8f).apply {
-                    width = 8f
-                    height = 12f
-                    lifetime = 60f
-                    makeFire = true
-                    status = StatusEffects.burning
-                    statusDuration = 5 * 60f
-                    backColor = Pal.lightOrange
-                    frontColor = Pal.lightishOrange
-                    trailColor = backColor
-                    trailLength = 6
-                }
             )
+            addAmmo(Items.coal, BasicBulletType(4.5f, 8f).apply {
+                width = 8f
+                height = 12f
+                lifetime = 60f
+                makeFire = true
+                status = StatusEffects.burning
+                statusDuration = 5 * 60f
+                backColor = Pal.lightOrange
+                frontColor = Pal.lightishOrange
+                trailColor = backColor
+                trailLength = 6
+            })
             limitRange()
         }
     }
@@ -374,7 +373,7 @@ object SteamBlocks {
             squareSprite = false
             health = 520
             craftTime = 50f
-            consumeItem(OreGenerator.all[Items.thorium])
+            consumeItem(OreGenerator.rawOres[Items.thorium])
             consumeLiquid(SteamFluids.acid, 0.1f)
             consumePower(1.2f)
             results = arrayOf(SteamItems.depletedThorium + 10, Items.thorium + 1)

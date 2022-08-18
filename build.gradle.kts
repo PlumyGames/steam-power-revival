@@ -27,15 +27,20 @@ repositories {
     mindustryRepo()
 }
 val MKUtilsVersion :String by project
-
+fun DependencyHandlerScope.mkutils(vararg modules: String) {
+    for (module in modules) {
+        implementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
+        testImplementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
+    }
+}
 dependencies {
     importMindustry()
-    implementation("com.github.plumygame.mkutils:core:$MKUtilsVersion")
-    implementation("com.github.plumygame.mkutils:texture:$MKUtilsVersion")
-    implementation("com.github.plumygame.mkutils:world:$MKUtilsVersion")
-    testImplementation("com.github.plumygame.mkutils:core:$MKUtilsVersion")
-    testImplementation("com.github.plumygame.mkutils:texture:$MKUtilsVersion")
-    testImplementation("com.github.plumygame.mkutils:world:$MKUtilsVersion")
+    mkutils(
+        "core",
+        "texture",
+        "world",
+        "dsl"
+    )
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
 }

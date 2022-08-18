@@ -12,22 +12,27 @@ import steam.Res
 import steam.SteamMod
 import steam.steam
 
-private typealias RawItem = Item
+private typealias OreItem = Item
 
 object OreGenerator {
-    val all = HashMap<RawItem, GeneratedOre>()
-    val blacklist = HashSet<RawItem>()
-    val extra = HashSet<RawItem>()
+    val all = ArrayList<Item>()
+    val rawOres = HashMap<OreItem, RawOre>()
+    val powders = HashMap<OreItem, OrePowder>()
+    val blacklist = HashSet<OreItem>()
+    val extra = HashSet<OreItem>()
     fun generateAll() {
         val steamMod = SteamMod.mod
-        for (ore in (Item.getAllOres().toList() + extra).filter {
+        val allOres = (Item.getAllOres().toList() + extra).filter {
             val mod = it.minfo.mod
             !it.isHidden && (mod == null || mod == steamMod) && it !in blacklist
-        }.distinctBy {
-            it.name
-        }) {
-            val generated = generate(ore)
-            all[ore] = generated
+        }.distinctBy { it.name }
+        for (ore in allOres) {
+            val rawOre = generateRawOre(ore)
+            rawOres[ore] = rawOre
+            all += rawOre
+            val powder = generatePowder(ore)
+            powders[ore] = powder
+            all += powder
         }
     }
 
@@ -35,16 +40,19 @@ object OreGenerator {
         Vars.content.blocks().toList().filterIsInstance<OreBlock>().forEach {
             val original: Item? = it.itemDrop
             if (original != null) {
-                val ore = all[original]
+                val ore = rawOres[original]
                 if (ore != null)
                     it.itemDrop = ore
             }
         }
     }
 
-    fun generate(ore: RawItem): GeneratedOre {
-        val generated = GeneratedOre(ore)
-        return generated
+    fun generateRawOre(ore: OreItem): RawOre {
+        return RawOre(ore)
+    }
+
+    fun generatePowder(ore: OreItem): OrePowder {
+        return OrePowder(ore)
     }
 }
 
@@ -54,11 +62,14 @@ object OreIconGenerator {
     val rand = Rand()
     var baseNumber = 1
     var patchNumber = 1
+    var powderNumber = 1
     var baseTextures = ArrayList<Pixmap>()
     var patchTextures = ArrayList<Pixmap>()
+    var powderTextures = ArrayList<Pixmap>()
     var alpha = 0.662f
     fun base(index: Int) = "/sprites/template/ore-base$index.png"
     fun patch(index: Int) = "/sprites/template/ore-patch$index.png"
+    fun powder(index: Int) = "/sprites/template/ore-powder$index.png"
     fun loadPixmap(internalName: String) = Res.load(name = internalName).use { it.toPixmap() }
     fun load() {
         for (i in 0 until baseNumber) {
@@ -67,10 +78,13 @@ object OreIconGenerator {
         for (i in 0 until patchNumber) {
             patchTextures += loadPixmap(patch(i))
         }
+        for (i in 0 until powderNumber) {
+            powderTextures += loadPixmap(powder(i))
+        }
     }
 
     val baseLayerProcess = PlainLayerProcessor()
-    fun generate(ore: GeneratedOre): TextureRegion {
+    fun generate(ore: RawOre): TextureRegion {
         rand.setSeed(ore.name.hashCode().toLong())
         val baseLayer = RawPixmapModelLayer(baseTextures[rand.random(0, baseTextures.size - 1)])
         val patchLayer = RawPixmapModelLayer(patchTextures[rand.random(0, patchTextures.size - 1)])
@@ -79,10 +93,17 @@ object OreIconGenerator {
         val baked = bakery.bake(baseLayer, patchLayer)
         return baked.toTextureRegion()
     }
+
+    fun generate(ore: OrePowder): TextureRegion {
+        rand.setSeed(ore.name.hashCode().toLong())
+        val powderLayer = RawPixmapModelLayer(powderTextures[rand.random(0, powderTextures.size - 1)])
+        powderLayer += TintBlendLayerProcessor(ore.color.cpy().a(alpha))
+        val baked = bakery.bake(powderLayer)
+        return baked.toTextureRegion()
+    }
 }
 
-
-class GeneratedOre(
+class RawOre(
     original: Item,
 ) : Item("oregen-${original.name}") {
     init {
@@ -94,6 +115,30 @@ class GeneratedOre(
         charge = original.charge
         radioactivity = original.radioactivity
         cost = original.cost
+        cost = original.cost * 0.8f
+        healthScaling = original.healthScaling * 0.5f
+    }
+
+    override fun loadIcon() {
+        val icon = OreIconGenerator.generate(this)
+        fullIcon = icon
+        uiIcon = icon
+    }
+}
+
+class OrePowder(
+    original: Item,
+) : Item("powder-${original.name}") {
+    init {
+        localizedName = "${original.localizedName} ${bundle["powder".steam]}"
+        color = original.color
+        flammability = original.flammability
+        explosiveness = original.explosiveness
+        hardness = original.hardness
+        charge = original.charge
+        radioactivity = original.radioactivity
+        cost = original.cost * 0.3f
+        healthScaling = original.healthScaling * 0.3f
     }
 
     override fun loadIcon() {
