@@ -6,6 +6,7 @@ import arc.math.Angles
 import arc.math.Interp.pow2Out
 import arc.math.geom.Geometry
 import mindustry.content.Blocks.*
+import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.UnitTypes.alpha
 import mindustry.content.UnitTypes.beta
@@ -13,8 +14,10 @@ import mindustry.entities.bullet.LiquidBulletType
 import mindustry.entities.part.DrawPart
 import mindustry.entities.part.RegionPart
 import mindustry.graphics.Layer
+import mindustry.graphics.Pal
 import mindustry.type.Category
 import mindustry.type.UnitType
+import mindustry.world.blocks.defense.turrets.ContinuousTurret
 import mindustry.world.blocks.defense.turrets.LiquidTurret
 import mindustry.world.blocks.production.Drill
 import mindustry.world.blocks.production.GenericCrafter
@@ -25,6 +28,7 @@ import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.Attribute
 import plumy.core.arc.set
+import steam.entities.bullets.ConeBulletType
 import steam.utils.NewEffect
 import steam.utils.hide
 import steam.utils.plus
@@ -195,6 +199,38 @@ object ContentsOverrider {
         }
     }
 
+    fun mender() {
+        mender.hide()
+        mender = ContinuousTurret("mender").apply {
+            requirements(
+                Category.effect,
+                arrayOf(
+                    SteamItems.stone + 40,
+                    Items.silicon + 20,
+                    SteamItems.iron + 25,
+                )
+            )
+            health = 400
+            range = 110f
+            heatColor = Pal.heal.cpy().a(0.4f)
+            shootWarmupSpeed = 0.07f
+            shootCone = 360f
+            rotateSpeed = 2f
+            targetAir = false
+            targetGround = false
+            targetHealing = true
+            recoil = 0f
+            consumePower(1.2f)
+            shootY = 1.5f
+            shootType = ConeBulletType().apply {
+                damage = 0.1f
+                collidesTeam = true
+                healAmount = 20f
+                layer = Layer.buildBeam
+                hitEffect = Fx.none
+            }
+        }
+    }
     fun items() {
         Items.titanium.hardness = 4
         Items.thorium.hardness = 5

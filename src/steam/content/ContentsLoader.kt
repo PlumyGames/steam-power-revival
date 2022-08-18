@@ -58,6 +58,7 @@ object ContentsLoader {
             sand()
             stone()
             tsunami()
+            mender()
             items()
         }
         EntityRegistry.apply {
