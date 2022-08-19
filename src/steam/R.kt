@@ -2,7 +2,7 @@ package steam
 
 import arc.graphics.Color
 import mindustry.graphics.Pal
-import steam.utils.Color
+import plumy.core.arc.Color
 
 object R {
     object C {

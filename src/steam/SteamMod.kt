@@ -21,6 +21,7 @@ class SteamMod : Mod() {
         OreIconGenerator.apply {
             baseNumber = 1
             patchNumber = 3
+            powderNumber = 2
         }
         Events.on(FileTreeInitEvent::class.java) {
             OreIconGenerator.load()

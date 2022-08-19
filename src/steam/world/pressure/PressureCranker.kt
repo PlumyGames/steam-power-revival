@@ -36,6 +36,7 @@ class PressureCranker(name: String) : PressureBlock(name) {
         configNull<PressureCrankerBuild> {
             lastCrank = generateTime
         }
+        super.init()
     }
 
     override fun load() {
