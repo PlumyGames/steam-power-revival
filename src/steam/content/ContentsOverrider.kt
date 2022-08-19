@@ -175,15 +175,19 @@ object ContentsOverrider {
     fun stone() {
         stone.apply {
             itemDrop = SteamItems.stone
+            attributes.set(SteamAttribute.stone, 0.6f)
         }
         basalt.apply {
             itemDrop = SteamItems.stone
+            attributes.set(SteamAttribute.stone, 0.6f)
         }
         craters.apply {
             itemDrop = SteamItems.stone
+            attributes.set(SteamAttribute.stone, 0.6f)
         }
         charr.apply {
             itemDrop = SteamItems.stone
+            attributes.set(SteamAttribute.stone, 0.6f)
         }
     }
 

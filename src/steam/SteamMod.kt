@@ -7,6 +7,7 @@ import mindustry.game.EventType.FileTreeInitEvent
 import mindustry.mod.Mod
 import mindustry.mod.Mods.LoadedMod
 import steam.content.ContentsLoader
+import steam.content.SteamAttribute
 import steam.gen.DebugDialog
 import steam.gen.OreGenerator
 import steam.gen.OreIconGenerator
@@ -26,6 +27,7 @@ class SteamMod : Mod() {
         Events.on(FileTreeInitEvent::class.java) {
             OreIconGenerator.load()
         }
+        SteamAttribute.load()
     }
 
     override fun init() {
