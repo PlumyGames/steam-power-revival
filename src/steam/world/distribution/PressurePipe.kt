@@ -54,13 +54,13 @@ class PressurePipe(name: String) : PressureBlock(name) {
             if (world.build(pt.x, pt.y) is IPressureNode) {
                 drawIndex += 1 shl i
             } else {
-                val f = booleanArrayOf(false)
+                var b = false
                 list.each { p ->
-                    if (!f[0] && p.x == pt.x && p.y == pt.y) {
-                        f[0] = true
+                    if (!b && p.x == pt.x && p.y == pt.y) {
+                        b = true
                     }
                 }
-                if (f[0]) {
+                if (b) {
                     drawIndex += 1 shl i
                 }
             }

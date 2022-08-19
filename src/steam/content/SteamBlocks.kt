@@ -542,8 +542,8 @@ object SteamBlocks {
             requirements(
                 Category.production,
                 arrayOf(
-                    OreGenerator.all[Items.copper]?.plus(35),
-                    OreGenerator.all[Items.lead]?.plus(25)
+                    OreGenerator.rawOres[Items.copper]!! + 35,
+                    OreGenerator.rawOres[Items.lead]!! + 25
                 )
             )
             size = 2

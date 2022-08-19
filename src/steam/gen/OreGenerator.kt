@@ -1,12 +1,12 @@
 package steam.gen
 
-import arc.Core.bundle
 import arc.graphics.Pixmap
 import arc.graphics.g2d.TextureRegion
 import arc.math.Rand
 import mindustry.Vars
 import mindustry.type.Item
 import mindustry.world.blocks.environment.OreBlock
+import plumy.dsl.bundle
 import plumy.texture.*
 import steam.Res
 import steam.SteamMod
@@ -107,7 +107,7 @@ class RawOre(
     original: Item,
 ) : Item("oregen-${original.name}") {
     init {
-        localizedName = "${original.localizedName} ${bundle["ore".steam]}"
+        localizedName = "${original.localizedName} ${"ore".steam.bundle}"
         color = original.color
         flammability = original.flammability
         explosiveness = original.explosiveness
@@ -130,7 +130,7 @@ class OrePowder(
     original: Item,
 ) : Item("powder-${original.name}") {
     init {
-        localizedName = "${original.localizedName} ${bundle["powder".steam]}"
+        localizedName = "${original.localizedName} ${"powder".steam.bundle}"
         color = original.color
         flammability = original.flammability
         explosiveness = original.explosiveness
