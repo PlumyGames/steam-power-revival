@@ -190,13 +190,13 @@ object SteamBlocks {
             consumeLiquid(SteamFluids.steam, 0.05f)
             craftTime = 240f
             outputItem = SteamItems.quartz + 3
-            drawer = DrawMulti(
-                DrawDefault(),
-                DrawRegion("-rotator").apply {
+            drawMulti {
+                +DrawDefault()
+                +DrawRegion("-rotator").apply {
                     rotateSpeed = 3f; spinSprite = true
-                },
-                DrawRegion("-top")
-            )
+                }
+                +DrawRegion("-top")
+            }
         }
     }
 
@@ -214,15 +214,15 @@ object SteamBlocks {
             hasLiquids = true
             consumeLiquid(Liquids.water, 0.2f)
             outputFluid = LiquidStack(SteamFluids.steam, 0.2f)
-            drawer = DrawMulti(
-                DrawRegion("-bottom"),
-                DrawLiquidRegion(Liquids.water),
-                DrawSteamInside(),
-                DrawLiquidTile(SteamFluids.steam),
-                DrawDefault(),
-                DrawHeatInput().apply { heatColor = R.C.burnerFlame },
-                DrawOverheat()
-            )
+            drawer = DrawMulti {
+                +DrawRegion("-bottom")
+                +DrawLiquidRegion(Liquids.water)
+                +DrawSteamInside()
+                +DrawLiquidTile(SteamFluids.steam)
+                +DrawDefault()
+                +DrawHeatInput().apply { heatColor = R.C.burnerFlame }
+                +DrawOverheat()
+            }
         }
     }
 
@@ -244,15 +244,15 @@ object SteamBlocks {
             tempCap = 750f.celsius
             consumeLiquid(Liquids.water, 0.2f)
             outputFluid = LiquidStack(SteamFluids.steam, 0.2f)
-            drawer = DrawMulti(
-                DrawRegion("-bottom"),
-                DrawLiquidTile(Liquids.water, 1f),
-                DrawSteamInside(1.4f),
-                DrawLiquidTile(SteamFluids.steam, 1f),
-                DrawDefault(),
-                DrawHeatInput().apply { heatColor = R.C.burnerFlame },
-                DrawOverheat()
-            )
+            drawer = DrawMulti {
+                +DrawRegion("-bottom")
+                +DrawLiquidTile(Liquids.water, 1f)
+                +DrawSteamInside(1.4f)
+                +DrawLiquidTile(SteamFluids.steam, 1f)
+                +DrawDefault()
+                +DrawHeatInput().apply { heatColor = R.C.burnerFlame }
+                +DrawOverheat()
+            }
             effect = NewEffect(60f) {
                 Draw.color(Pal.darkerGray)
                 for (i in 0 until 4) {
@@ -279,11 +279,11 @@ object SteamBlocks {
             recipes.oreRecipe(3, 80f, 0.05f)
             addRecipe(60f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
             addRecipe(80f, inItem = arrayOf(Items.scrap + 1), outLiquid = arrayOf(Liquids.slag + 0.1f))
-            drawer = DrawMulti(
-                DrawDefault(),
-                DrawGlowRegion().apply { color = R.C.burnerFlame },
-                DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
-            )
+            drawer = DrawMulti {
+                +DrawDefault()
+                +DrawGlowRegion().apply { color = R.C.burnerFlame }
+                +DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
+            }
             consume(ConsumeItemFlammable(1f))
             craftTime = 210f
             squareSprite = false
@@ -316,13 +316,13 @@ object SteamBlocks {
                 outItem = arrayOf(SteamItems.steel + 1),
                 outLiquid = arrayOf(Liquids.slag + 0.04f)
             )
-            drawer = DrawMulti(
-                DrawDefault(),
-                DrawLiquidWarmup(Liquids.slag),
-                DrawRegion("-top1"),
-                DrawGlowRegion().apply { color = R.C.burnerFlame },
-                DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
-            )
+            drawer = DrawMulti {
+                +DrawDefault()
+                +DrawLiquidWarmup(Liquids.slag)
+                +DrawRegion("-top1")
+                +DrawGlowRegion().apply { color = R.C.burnerFlame }
+                +DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
+            }
             consumePower(2.5f)
             craftTime = 210f
             category = Category.crafting
@@ -354,11 +354,11 @@ object SteamBlocks {
             craftTime = 100f
             craftFx = Fx.smeltsmoke
             consumeLiquid(Liquids.slag, 0.1f)
-            drawer = DrawMulti(
-                DrawRegion("-bottom"),
-                DrawLiquidTile(Liquids.slag),
-                DrawDefault(),
-            )
+            drawer = DrawMulti {
+                +DrawRegion("-bottom")
+                +DrawLiquidTile(Liquids.slag)
+                +DrawDefault()
+            }
         }
     }
 
@@ -380,13 +380,13 @@ object SteamBlocks {
             consumeLiquid(SteamFluids.acid, 0.1f)
             consumePower(1.2f)
             results = arrayOf(SteamItems.depletedThorium + 10, Items.thorium + 1)
-            drawer = DrawMulti(
-                DrawRegion("-bottom"),
-                DrawBlurSpin("-rotor", 5f).apply {
+            drawer = DrawMulti {
+                +DrawRegion("-bottom")
+                +DrawBlurSpin("-rotor", 5f).apply {
                     blurThresh = 0.99f
-                },
-                DrawDefault()
-            )
+                }
+                +DrawDefault()
+            }
             SteamFluids.acid.acidproof += this
         }
     }
@@ -401,12 +401,12 @@ object SteamBlocks {
                     SteamItems.stone + 30, Items.copper + 15
                 )
             }
-            drawer = DrawMulti(
-                DrawRegion("-bottom"),
-                DrawDefault(),
-                DrawHeatOutput().apply { heatColor = R.C.burnerFlame },
-                DrawWarmupRegion()
-            )
+            drawer = DrawMulti {
+                +DrawRegion("-bottom")
+                +DrawDefault()
+                +DrawHeatOutput().apply { heatColor = R.C.burnerFlame }
+                +DrawWarmupRegion()
+            }
             heatConvertFactor = 8f
             heatingTimeFactor = 90f
             health = 90
@@ -426,13 +426,13 @@ object SteamBlocks {
             heatConvertFactor = 8f
             size = 2
             health = 350
-            drawer = DrawMulti(
-                DrawRegion("-bottom"),
-                DrawLiquidRegion(),
-                DrawDefault(),
-                DrawHeatOutput().apply { heatColor = R.C.burnerFlame },
-                DrawWarmupRegion()
-            )
+            drawer = DrawMulti {
+                +DrawRegion("-bottom")
+                +DrawLiquidRegion()
+                +DrawDefault()
+                +DrawHeatOutput().apply { heatColor = R.C.burnerFlame }
+                +DrawWarmupRegion()
+            }
         }
     }
 
@@ -447,7 +447,11 @@ object SteamBlocks {
                     SteamItems.iron + 25, SteamItems.steel + 10, Items.metaglass + 15, Items.graphite + 25
                 )
             }
-            drawer = DrawMulti(DrawRegion("-bottom"), DrawBlurSpin("-blade", 12f), DrawDefault())
+            drawer = DrawMulti {
+                +DrawRegion("-bottom")
+                +DrawBlurSpin("-blade", 12f)
+                +DrawDefault()
+            }
             consumePower(2.1f)
             coolDownSpeed = 0.2f / 60f
         }
@@ -467,11 +471,11 @@ object SteamBlocks {
                     SteamItems.stone + 80, SteamItems.glass + 10
                 )
             }
-            drawer = DrawMulti(
-                DrawDefault(),
-                DrawReservoir(null),
-                DrawRegion("-top")
-            )
+            drawMulti {
+                +DrawDefault()
+                +DrawReservoir(null)
+                +DrawRegion("-top")
+            }
         }
     }
 
@@ -487,9 +491,9 @@ object SteamBlocks {
             liquidCapacity = 40f
             powerProduction = 3.5f
             warmupSpeed = 0.02f
-            drawer = DrawMulti(
-                DrawRegion("-bottom"),
-                DrawParticles().apply {
+            drawMulti {
+                +DrawRegion("-bottom")
+                +DrawParticles().apply {
                     color = R.C.steam
                     alpha = 0.9f
                     particleSize = 3f
@@ -499,11 +503,11 @@ object SteamBlocks {
                     particleLife = 80f
                     reverse = true
                     particleSizeInterp = Interp.exp5Out
-                },
-                DrawBlurSpin("-rotor", 12f).apply { blurThresh = 0.95f },
-                DrawDefault(),
-                DrawRegion("-top1")
-            )
+                }
+                +DrawBlurSpin("-rotor", 12f).apply { blurThresh = 0.95f }
+                +DrawDefault()
+                +DrawRegion("-top1")
+            }
         }
     }
 
@@ -519,9 +523,9 @@ object SteamBlocks {
             size = 2
             squareSprite = false
             powerProduction = 3f
-            drawer = DrawMulti(
-                DrawRegion("-bottom"),
-                DrawBuilding().apply {
+            drawMulti{
+                +DrawRegion("-bottom")
+                +DrawBuilding().apply {
                     for ((i, d) in Geometry.d8edge.withIndex()) {
                         parts.add(RegionPart("-piston$i").apply {
                             x = 4.25f * d.x
@@ -532,9 +536,9 @@ object SteamBlocks {
                             outline = false
                         })
                     }
-                },
-                DrawDefault()
-            )
+                }
+                +DrawDefault()
+            }
         }
     }
 
@@ -555,10 +559,11 @@ object SteamBlocks {
             consume(ConsumeItemFlammable(1f))
             outputItem = SteamItems.stone + 3
             craftTime = 200f
-            drawer = DrawMulti(DrawDefault(),
-                DrawGlowRegion().apply { color = R.C.burnerFlame },
-                DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
-            )
+            drawMulti {
+                +DrawDefault()
+                +DrawGlowRegion().apply { color = R.C.burnerFlame }
+                +DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
+            }
         }
     }
 
@@ -587,11 +592,11 @@ object SteamBlocks {
                 Category.crafting,
                 arrayOf(SteamItems.stone + 20, Items.lead + 15)
             )
-            drawer = DrawMulti(
-                DrawDefault(),
-                DrawRegion("-cranker").apply { rotateSpeed = 5f; spinSprite = true },
-                DrawRegion("-top")
-            )
+            drawer = DrawMulti {
+                +DrawDefault()
+                +DrawRegion("-cranker").apply { rotateSpeed = 5f; spinSprite = true }
+                +DrawRegion("-top")
+            }
             health = 120
             generateTime = 240f
             loopSound = Sounds.grinding
@@ -609,11 +614,11 @@ object SteamBlocks {
             size = 2
             craftTime = 45f
             squareSprite = false
-            drawer = DrawMulti(
-                DrawRegion("-bottom"),
-                DrawLiquidTile(SteamFluids.steam, 1f),
-                DrawSteamInside(),
-                DrawBuilding().apply {
+            drawMulti{
+                +DrawRegion("-bottom")
+                +DrawLiquidTile(SteamFluids.steam, 1f)
+                +DrawSteamInside()
+                +DrawBuilding().apply {
                     for (i in Mathf.signs) {
                         parts.add(RegionPart("-piston").apply {
                             x = 2f * i
@@ -623,9 +628,9 @@ object SteamBlocks {
                             outline = false
                         })
                     }
-                },
-                DrawDefault()
-            )
+                }
+                +DrawDefault()
+            }
         }
     }
 

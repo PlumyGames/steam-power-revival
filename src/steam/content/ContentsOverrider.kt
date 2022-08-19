@@ -12,7 +12,6 @@ import mindustry.content.UnitTypes.alpha
 import mindustry.content.UnitTypes.beta
 import mindustry.entities.bullet.LiquidBulletType
 import mindustry.entities.part.DrawPart
-import mindustry.entities.part.RegionPart
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.type.Category
@@ -24,16 +23,18 @@ import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.consumers.ConsumeItems
 import mindustry.world.consumers.ConsumeLiquid
 import mindustry.world.draw.DrawDefault
-import mindustry.world.draw.DrawMulti
 import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.Attribute
 import plumy.core.arc.set
 import plumy.dsl.NewEffect
+import plumy.dsl.addAmmo
+import plumy.dsl.drawMulti
 import plumy.dsl.plus
 import steam.entities.bullets.ConeBulletType
 import steam.utils.hide
 import steam.world.distribution.ElectricConveyor
 import steam.world.drawer.DrawBuilding
+import steam.world.drawer.regionPart
 import steam.world.pressure.PressureCrafter
 
 object ContentsOverrider {
@@ -72,7 +73,6 @@ object ContentsOverrider {
             conductivePower = true
             consumePower(0.01f)
         }
-        //}
     }
 
     fun conduit() {
@@ -112,21 +112,25 @@ object ContentsOverrider {
             outputItem = Items.graphite + 2
             craftTime = 190f
             pressureRequired = 2f
-            drawer = DrawMulti(DrawRegion("-bottom"), DrawBuilding().apply {
-                for (i in 0 until 4) {
-                    parts.add(RegionPart("-piston-$i").apply {
-                        outline = false
-                        val xd = Geometry.d8edge[i].x
-                        val yd = Geometry.d8edge[i].y
-                        x = xd * (22f / 4f)
-                        y = yd * (22f / 4f)
-                        moveX = xd * -1.25f
-                        moveY = yd * -1.25f
-                        //bad?
-                        progress = DrawPart.PartProgress.reload.curve(pow2Out)
-                    })
+            drawMulti {
+                +DrawRegion("-bottom")
+                +DrawBuilding().apply {
+                    for (i in 0 until 4) {
+                        regionPart("-piston-$i") {
+                            outline = false
+                            val xd = Geometry.d8edge[i].x
+                            val yd = Geometry.d8edge[i].y
+                            x = xd * (22f / 4f)
+                            y = yd * (22f / 4f)
+                            moveX = xd * -1.25f
+                            moveY = yd * -1.25f
+                            //bad?
+                            progress = DrawPart.PartProgress.reload.curve(pow2Out)
+                        }
+                    }
                 }
-            }, DrawDefault())
+                +DrawDefault()
+            }
             craftEffect = NewEffect(60f) {
                 Draw.color(this.color)
                 for (i in 0 until 4) {
@@ -193,7 +197,7 @@ object ContentsOverrider {
 
     fun tsunami() {
         (tsunami as LiquidTurret).apply {
-            ammoTypes[SteamFluids.acid] = LiquidBulletType(SteamFluids.acid).apply {
+            addAmmo(SteamFluids.acid, LiquidBulletType(SteamFluids.acid).apply {
                 lifetime = 49f
                 speed = 4f
                 knockback = 1.3f
@@ -204,20 +208,18 @@ object ContentsOverrider {
                 statusDuration = 60f * 4f
                 damage = 2f
                 layer = Layer.bullet - 2f
-            }
+            })
         }
     }
 
     fun mender() {
         mender.hide()
         menderTurret = ContinuousTurret("mender").apply {
-            requirements(
-                Category.effect,
-                arrayOf(
-                    SteamItems.stone + 40,
-                    Items.silicon + 20,
-                    SteamItems.iron + 25,
-                )
+            category = Category.effect
+            requirements = arrayOf(
+                SteamItems.stone + 40,
+                Items.silicon + 20,
+                SteamItems.iron + 25,
             )
             health = 400
             range = 110f
@@ -231,7 +233,7 @@ object ContentsOverrider {
             recoil = 0f
             consumePower(1.2f)
             shootY = 1.5f
-            shootType = ConeBulletType().apply {
+            shootType = ConeBulletType {
                 damage = 0.1f
                 collidesTeam = true
                 healAmount = 20f

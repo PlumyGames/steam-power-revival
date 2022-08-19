@@ -37,7 +37,6 @@ class ConeBulletType : BulletType() {
 
     override fun draw(b: Bullet) {
         super.draw(b)
-
         val curLen = currentLength(b)
 
         Draw.z(layer)
@@ -66,14 +65,19 @@ class ConeBulletType : BulletType() {
     fun tryHit(b: Bullet, t: Healthc) = b.run {
         val ang = rotation()
         val angToTarget = angleTo(t)
-        if(Angles.within(ang, angToTarget, rad / 2f))
+        if (Angles.within(ang, angToTarget, rad / 2f))
             Damage.collidePoint(this, team, hitEffect, t.x, t.y)
     }
 
     override fun update(b: Bullet) = b.run {
         super.update(b)
-        if(timer(0, damageInterval)) {
+        if (timer(0, damageInterval)) {
             applyDamage(this)
         }
+    }
+
+    companion object {
+        inline operator fun invoke(config: ConeBulletType.() -> Unit) =
+            ConeBulletType().apply(config)
     }
 }
