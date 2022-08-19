@@ -25,6 +25,7 @@ import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.blocks.environment.OreBlock
 import mindustry.world.blocks.power.ConsumeGenerator
 import mindustry.world.blocks.production.AttributeCrafter
+import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.production.Pump
 import mindustry.world.blocks.production.SolidPump
 import mindustry.world.blocks.storage.CoreBlock
@@ -62,6 +63,7 @@ object SteamBlocks {
     //turret
     lateinit var rifle: Block
     //drill - production
+    lateinit var stoneExcavator: Block
     lateinit var well: Block
     lateinit var quartzExtractor: Block
     //crafting
@@ -532,6 +534,30 @@ object SteamBlocks {
                     }
                 },
                 DrawDefault()
+            )
+        }
+    }
+
+    fun stoneExcavator() {
+        stoneExcavator = GenericCrafter("stone-excavator").apply {
+            requirements(
+                Category.production,
+                arrayOf(
+                    OreGenerator.all[Items.copper]?.plus(35),
+                    OreGenerator.all[Items.lead]?.plus(25)
+                )
+            )
+            size = 2
+            health = 500
+            squareSprite = false
+            updateEffect = Fx.coalSmeltsmoke
+            updateEffectChance = 0.09f
+            consume(ConsumeItemFlammable(1f))
+            outputItem = SteamItems.stone + 3
+            craftTime = 200f
+            drawer = DrawMulti(DrawDefault(),
+                DrawGlowRegion().apply { color = R.C.burnerFlame },
+                DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
             )
         }
     }

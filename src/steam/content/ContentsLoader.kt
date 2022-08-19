@@ -68,6 +68,7 @@ object ContentsLoader {
 
     fun loadAfterOreGenerated() {
         SteamBlocks.apply {
+            stoneExcavator()
             blastFurnace()
             advancedFurnace()
             crystallizer()
