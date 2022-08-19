@@ -28,8 +28,8 @@ import mindustry.ui.LiquidDisplay
 import mindustry.ui.Styles
 import mindustry.world.consumers.Consume
 import mindustry.world.meta.Stat
-import plumy.world.AddBar
-import plumy.world.config
+import plumy.dsl.AddBar
+import plumy.dsl.config
 import steam.utils.addTable
 import kotlin.math.min
 

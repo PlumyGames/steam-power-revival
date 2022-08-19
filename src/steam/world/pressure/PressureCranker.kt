@@ -14,7 +14,7 @@ import mindustry.gen.Icon
 import mindustry.gen.Sounds
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
-import plumy.world.configNull
+import plumy.dsl.*
 import steam.DebugOnly
 import steam.utils.drawTextEasy
 

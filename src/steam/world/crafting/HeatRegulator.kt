@@ -8,7 +8,7 @@ import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import plumy.core.arc.retain
 import plumy.core.math.lerp
-import plumy.world.config
+import plumy.dsl.config
 import steam.utils.addTable
 
 class HeatRegulator(name: String) : TemperatureBlock(name) {

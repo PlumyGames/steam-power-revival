@@ -10,7 +10,7 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
-import plumy.world.config
+import plumy.dsl.*
 
 class PressureVoid(name: String) : PressureBlock(name) {
     var maxRequirement = 10f

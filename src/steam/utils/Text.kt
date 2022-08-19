@@ -9,7 +9,7 @@ import arc.util.pooling.Pools
 import mindustry.Vars
 import mindustry.graphics.Pal
 import mindustry.ui.Fonts
-import plumy.world.WorldXY
+import plumy.dsl.WorldXY
 
 /**
  * Draw text and underline in default size
