@@ -307,7 +307,7 @@ object SteamBlocks {
             configurable = true
 
             recipes.oreRecipe(4, 50f, 0.05f * 1.6f)
-            recipes.orePowderRecipe(4, 40f)
+            recipes.orePowderRecipe(4, 100f, 0.03f)
             addRecipe(45f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
             addRecipe(80f * 0.625f, inItem = arrayOf(Items.scrap + 1), outLiquid = arrayOf(Liquids.slag + 0.16f))
             addRecipe(

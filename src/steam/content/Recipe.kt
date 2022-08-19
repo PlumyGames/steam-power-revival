@@ -19,7 +19,7 @@ fun ArrayList<Recipe>.oreRecipe(hardness: Int, time: Float, slag: Float, inAmoun
     }
 }
 
-fun ArrayList<Recipe>.orePowderRecipe(hardness: Int, time: Float, inAmount: Int = 2, outAmount: Int = 3) {
+fun ArrayList<Recipe>.orePowderRecipe(hardness: Int, time: Float, slag: Float, inAmount: Int = 3, outAmount: Int = 2) {
     for ((raw, ore) in OreGenerator.powders) {
         if (raw.radioactivity <= 0f && raw.hardness <= hardness)
             this.add(
@@ -27,6 +27,7 @@ fun ArrayList<Recipe>.orePowderRecipe(hardness: Int, time: Float, inAmount: Int 
                     craftTime = time,
                     inItem = arrayOf(ore + inAmount),
                     outItem = arrayOf(raw + outAmount),
+                    outLiquid = arrayOf(Liquids.slag + slag)
                 )
             )
     }
