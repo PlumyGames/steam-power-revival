@@ -27,7 +27,7 @@ class SteamMod : Mod() {
         Events.on(FileTreeInitEvent::class.java) {
             OreIconGenerator.load()
         }
-        SteamAttribute.load()
+        SteamAttribute.load() //attribute have to be loaded before content
     }
 
     override fun init() {

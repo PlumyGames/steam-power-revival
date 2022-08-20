@@ -25,8 +25,7 @@ import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.blocks.environment.OreBlock
 import mindustry.world.blocks.power.ConsumeGenerator
 import mindustry.world.blocks.production.AttributeCrafter
-import mindustry.world.blocks.production.GenericCrafter
-import mindustry.world.blocks.production.Pump
+    import mindustry.world.blocks.production.Pump
 import mindustry.world.blocks.production.SolidPump
 import mindustry.world.blocks.storage.CoreBlock
 import mindustry.world.consumers.ConsumeItemFlammable
@@ -543,7 +542,7 @@ object SteamBlocks {
     }
 
     fun stoneExcavator() {
-        stoneExcavator = GenericCrafter("stone-excavator").apply {
+        stoneExcavator = AttributeCrafter("stone-excavator").apply {
             requirements(
                 Category.production,
                 arrayOf(
@@ -551,6 +550,8 @@ object SteamBlocks {
                     OreGenerator.rawOres[Items.lead]!! + 25
                 )
             )
+            attribute = SteamAttribute.stone
+            maxBoost = 4f
             size = 2
             health = 500
             squareSprite = false
