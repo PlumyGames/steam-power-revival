@@ -4,9 +4,9 @@ import mindustry.world.meta.StatUnit
 
 typealias SUnit = SteamStatUnit
 object SteamStatUnit {
-    val celsius = StatUnit("unit.celsius")
-    val celsiusSecond = StatUnit("unit.celsiusSecond")
+    val celsius = StatUnit("celsius")
+    val celsiusSecond = StatUnit("celsius-second")
 
-    val atm = StatUnit("unit.atm")
-    val atmSecond = StatUnit("unit.atmSecond")
+    val atm = StatUnit("atm")
+    val atmSecond = StatUnit("atm-second")
 }

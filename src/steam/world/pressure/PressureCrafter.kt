@@ -7,9 +7,9 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.world.blocks.production.GenericCrafter
 
-class PressureCrafter(name: String) : GenericCrafter(name) {
-    var pressureCapacity: Pressure = 0.5f
-    var pressureRequired: Pressure = 4f
+class PressureCrafter(name: String) : GenericCrafter(name), IPressureConsumerBlock {
+    override var pressureCapacity: Pressure = 0.5f
+    override var pressureRequired: Pressure = 4f
     var maxEfficiency = 4f
 
     init {

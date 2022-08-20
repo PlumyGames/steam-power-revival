@@ -6,9 +6,9 @@ import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.world.blocks.production.GenericCrafter
 
-open class PressureProducer(name: String) : GenericCrafter(name) {
-    var pressureCapacity: Pressure = 0.5f
-    var pressureOutput: Pressure = 10f
+open class PressureProducer(name: String) : GenericCrafter(name), IPressureProducerBlock {
+    override var pressureCapacity: Pressure = 0.5f
+    override var pressureOutput: Pressure = 10f
     override fun setBars() {
         super.setBars()
         addPressureProducedBar<PressureProducerBuild>(pressureOutput)
