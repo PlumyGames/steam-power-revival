@@ -25,7 +25,6 @@ import mindustry.world.consumers.ConsumeLiquid
 import mindustry.world.draw.DrawDefault
 import mindustry.world.draw.DrawRegion
 import mindustry.world.meta.Attribute
-import plumy.core.arc.set
 import plumy.dsl.NewEffect
 import plumy.dsl.addAmmo
 import plumy.dsl.drawMulti
@@ -246,5 +245,17 @@ object ContentsOverrider {
     fun items() {
         Items.titanium.hardness = 4
         Items.thorium.hardness = 5
+    }
+
+    fun water() {
+        water.attributes.set(SteamAttribute.sporeGrow, 0.25f)
+        deepwater.attributes.set(SteamAttribute.sporeGrow, 0.25f)
+
+        sandWater.attributes.set(SteamAttribute.sporeGrow, 0.175f)
+        darksandWater.attributes.set(SteamAttribute.sporeGrow, 0.175f)
+
+        taintedWater.attributes.set(SteamAttribute.sporeGrow, 1f)
+        darksandTaintedWater.attributes.set(SteamAttribute.sporeGrow, 1f)
+        deepTaintedWater.attributes.set(SteamAttribute.sporeGrow, 1f)
     }
 }

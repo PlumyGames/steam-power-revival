@@ -60,6 +60,7 @@ object ContentsLoader {
             tsunami()
             mender()
             items()
+            water()
         }
         EntityRegistry.apply {
             register<PressureGraphUpdater>(::PressureGraphUpdater)
@@ -68,6 +69,7 @@ object ContentsLoader {
 
     fun loadAfterOreGenerated() {
         SteamBlocks.apply {
+            sporePlanter()
             stoneExcavator()
             blastFurnace()
             advancedFurnace()

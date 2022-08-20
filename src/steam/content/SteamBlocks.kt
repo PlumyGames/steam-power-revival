@@ -25,7 +25,7 @@ import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.blocks.environment.OreBlock
 import mindustry.world.blocks.power.ConsumeGenerator
 import mindustry.world.blocks.production.AttributeCrafter
-    import mindustry.world.blocks.production.Pump
+import mindustry.world.blocks.production.Pump
 import mindustry.world.blocks.production.SolidPump
 import mindustry.world.blocks.storage.CoreBlock
 import mindustry.world.consumers.ConsumeItemFlammable
@@ -64,6 +64,7 @@ object SteamBlocks {
     lateinit var stoneExcavator: Block
     lateinit var well: Block
     lateinit var quartzExtractor: Block
+    lateinit var sporePlanter: Block
     //crafting
     lateinit var boiler: Block
     lateinit var industrialBoiler: Block
@@ -165,6 +166,33 @@ object SteamBlocks {
                 trailLength = 6
             })
             limitRange()
+        }
+    }
+
+    fun sporePlanter() {
+        sporePlanter = AttributeCrafter("planter").apply {
+            requirements(
+                Category.production,
+                arrayOf(
+                    OreGenerator.rawOres[Items.copper]!! + 40,
+                    OreGenerator.rawOres[Items.lead]!! + 25
+                )
+            )
+            size = 2
+            health = 200
+            floating = true
+
+            envRequired = envRequired or Env.spores
+            attribute = SteamAttribute.sporeGrow
+
+            drawMulti {
+                +DrawCultivator()
+                +DrawDefault()
+            }
+
+            maxBoost = 2f
+            craftTime = 240f
+            outputItem = Items.sporePod + 1
         }
     }
 

@@ -5,8 +5,7 @@ import mindustry.type.Liquid
 import mindustry.world.blocks.liquid.LiquidBlock
 import mindustry.world.draw.DrawBlock
 
-class DrawLiquidWarmup(var drawLiquid: Liquid) : DrawBlock() {
-    var padding = 0f
+class DrawLiquidWarmup(var drawLiquid: Liquid, var padding: Float = 0f) : DrawBlock() {
 
     override fun draw(build: Building) {
         LiquidBlock.drawTiledFrames(
