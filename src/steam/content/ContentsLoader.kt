@@ -27,6 +27,7 @@ object ContentsLoader {
         }
         SteamBlocks.apply {
             rifle()
+            frostbite()
             quartzExtractor()
             boiler()
             industrialBoiler()
@@ -43,6 +44,7 @@ object ContentsLoader {
             pressureBridge()
             coreFragment()
             mechPad()
+            menderTurret()
             heatAccumulator()
             pressureSource()
             pressureVoid()

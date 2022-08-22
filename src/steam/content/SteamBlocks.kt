@@ -1,5 +1,6 @@
 package steam.content
 
+import arc.func.Prov
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.math.Angles
@@ -17,11 +18,14 @@ import mindustry.entities.pattern.ShootAlternate
 import mindustry.entities.pattern.ShootMulti
 import mindustry.entities.pattern.ShootSpread
 import mindustry.gen.Sounds
+import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.type.Category
 import mindustry.type.LiquidStack
 import mindustry.world.Block
+import mindustry.world.blocks.defense.turrets.ContinuousTurret
 import mindustry.world.blocks.defense.turrets.ItemTurret
+import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.blocks.environment.OreBlock
 import mindustry.world.blocks.power.ConsumeGenerator
 import mindustry.world.blocks.production.AttributeCrafter
@@ -36,6 +40,7 @@ import mindustry.world.meta.Env
 import plumy.dsl.*
 import steam.R
 import steam.UndebugOnly
+import steam.entities.bullets.ConeBulletType
 import steam.gen.OreGenerator
 import steam.world.crafting.*
 import steam.world.distribution.PressureBridge
@@ -60,6 +65,7 @@ object SteamBlocks {
     //should be listed all at once
     //turret
     lateinit var rifle: Block
+    lateinit var frostbite: Block
     //drill - production
     lateinit var stoneExcavator: Block
     lateinit var well: Block
@@ -88,6 +94,7 @@ object SteamBlocks {
     //effect
     lateinit var coreFragment: Block
     lateinit var mechPad: Block
+    lateinit var menderTurret: Block
     //sandbox
     lateinit var heatAccumulator: HeatAccumulator
     //env
@@ -103,7 +110,7 @@ object SteamBlocks {
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
                 requirements = arrayOf(
-                    SteamItems.stone + 40, Items.copper + 35, SteamItems.iron + 20
+                    SteamItems.stone + 40, Items.copper + 35, SteamItems.iron + 10
                 )
             }
             consumeLiquid(SteamFluids.steam, 0.05f)
@@ -169,6 +176,71 @@ object SteamBlocks {
         }
     }
 
+    fun frostbite() {
+        frostbite = PowerTurret("frostbite").apply {
+            requirements(
+                Category.turret,
+                arrayOf(
+                    SteamItems.iron + 20, SteamItems.stone + 25, Items.graphite + 10
+                )
+            )
+
+            buildType = Prov { object : PowerTurret.PowerTurretBuild() {
+                override fun baseReloadSpeed(): Float {
+                    return efficiency * warmup()
+                }
+            }}
+
+            size = 2
+            health = 840
+            consumePower(3.5f)
+            linearWarmup = true
+            shootWarmupSpeed = 0.005f
+            shootCone = 15f
+            inaccuracy = 15f
+            recoil = 0f
+            drawer = DrawTurret().apply {
+                parts.addAll(
+                    RegionPart("-barrel").apply {
+                        progress = PartProgress.recoil
+                        y = 15 / 4f
+                        moveY = -1f
+                        heatColor = Pal.lancerLaser
+                    },
+                    RegionPart("-part").apply {
+                        mirror = true
+                        under = true
+                        progress = PartProgress.warmup
+                        heatProgress = PartProgress.warmup
+                        heatColor = Pal.lancerLaser
+                        y = -16 / 4f
+                        x = 24 / 4f
+                        moveX = 0.5f
+                        moveY = -0.5f
+                    }
+                )
+            }
+            shootType = BasicBulletType(5.5f, 8f, "circle-bullet").apply {
+                lifetime = 60f
+                hitColor = Pal.lancerLaser.also { heatColor = it.cpy().a(0.4f); backColor = it; trailColor = it } //heh
+                width = 5f.also { height = it; trailWidth = it / 2f }
+                shrinkY = 0f
+                hitEffect = Fx.hitLaserColor
+                despawnEffect = Fx.hitLancer
+                smokeEffect = Fx.colorSpark.also { shootEffect = it }
+                homingPower = 0.075f
+                trailLength = 7
+                despawnHit = true
+                status = StatusEffects.freezing
+                pierceArmor = true
+            }
+            shootY = 2f
+            reload = 6.5f
+            range = 140f
+            limitRange(3f)
+        }
+    }
+
     fun sporePlanter() {
         sporePlanter = AttributeCrafter("planter").apply {
             requirements(
@@ -190,6 +262,7 @@ object SteamBlocks {
                 +DrawDefault()
             }
 
+            baseEfficiency = 0f
             maxBoost = 2f
             craftTime = 240f
             outputItem = Items.sporePod + 1
@@ -721,6 +794,36 @@ object SteamBlocks {
                 requirements = arrayOf(
                     SteamItems.stone + 120, Items.copper + 80, Items.lead + 50, Items.graphite + 35
                 )
+            }
+        }
+    }
+
+    fun menderTurret() {
+        menderTurret = ContinuousTurret("mender").apply {
+            category = Category.effect
+            requirements = arrayOf(
+                SteamItems.stone + 40,
+                Items.silicon + 20,
+                SteamItems.iron + 25,
+            )
+            health = 400
+            range = 110f
+            heatColor = Pal.heal.cpy().a(0.4f)
+            shootWarmupSpeed = 0.07f
+            shootCone = 360f
+            rotateSpeed = 2f
+            targetAir = false
+            targetGround = false
+            targetHealing = true
+            recoil = 0f
+            consumePower(1.2f)
+            shootY = 1.5f
+            shootType = ConeBulletType {
+                damage = 0.1f
+                collidesTeam = true
+                healAmount = 20f
+                layer = Layer.buildBeam
+                hitEffect = Fx.none
             }
         }
     }

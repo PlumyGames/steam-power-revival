@@ -5,12 +5,10 @@ import arc.Graphics.Cursor.SystemCursor
 import arc.audio.Sound
 import arc.func.Prov
 import arc.graphics.g2d.TextureRegion
-import arc.scene.ui.layout.Table
 import arc.util.Time
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.Vars
-import mindustry.gen.Icon
 import mindustry.gen.Sounds
 import mindustry.world.draw.DrawBlock
 import mindustry.world.draw.DrawDefault
@@ -77,11 +75,6 @@ class PressureCranker(name: String) : PressureBlock(name) {
             if (interactable(Vars.player.team())) SystemCursor.hand else SystemCursor.arrow
 
         override fun totalProgress() = totalProgress
-        override fun buildConfiguration(table: Table) {
-            //insert joke
-            val butt = table.button(Icon.wrench) { configure(null) }.get()
-            butt.setDisabled { lastCrank > 0f }
-        }
 
         override fun draw() {
             drawer.draw(this)
