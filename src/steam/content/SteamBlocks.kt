@@ -181,7 +181,7 @@ object SteamBlocks {
             requirements(
                 Category.turret,
                 arrayOf(
-                    SteamItems.iron + 20, SteamItems.stone + 25, Items.graphite + 10
+                    SteamItems.iron + 20, SteamItems.stone + 25, Items.graphite + 15, Items.lead + 35
                 )
             )
 
@@ -213,14 +213,14 @@ object SteamBlocks {
                         progress = PartProgress.warmup
                         heatProgress = PartProgress.warmup
                         heatColor = Pal.lancerLaser
-                        y = -16 / 4f
-                        x = 24 / 4f
+                        y = -21 / 4f
+                        x = 21 / 4f
                         moveX = 0.5f
                         moveY = -0.5f
                     }
                 )
             }
-            shootType = BasicBulletType(5.5f, 8f, "circle-bullet").apply {
+            shootType = BasicBulletType(5.5f, 22f, "circle-bullet").apply {
                 lifetime = 60f
                 hitColor = Pal.lancerLaser.also { heatColor = it.cpy().a(0.4f); backColor = it; trailColor = it } //heh
                 width = 5f.also { height = it; trailWidth = it / 2f }
@@ -799,7 +799,7 @@ object SteamBlocks {
     }
 
     fun menderTurret() {
-        menderTurret = ContinuousTurret("mender").apply {
+        menderTurret = ContinuousTurret("healer").apply {
             category = Category.effect
             requirements = arrayOf(
                 SteamItems.stone + 40,
