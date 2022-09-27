@@ -54,13 +54,13 @@ tasks.withType<Test> {
 mindustry {
     dependency {
         mindustry mirror "155b381"
-        arc on "v137"
+        arc on "v138"
     }
     client {
-        mindustry official "v137"
+        mindustry official "v138"
     }
     server {
-        mindustry official "v137"
+        mindustry official "v138"
     }
     deploy {
         baseName = project.name

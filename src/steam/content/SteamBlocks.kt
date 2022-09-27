@@ -262,7 +262,7 @@ object SteamBlocks {
                 +DrawDefault()
             }
 
-            baseEfficiency = 0f
+            baseEfficiency = 0.25f
             maxBoost = 2f
             craftTime = 240f
             outputItem = Items.sporePod + 1
@@ -287,7 +287,8 @@ object SteamBlocks {
             health = 340
             attribute = Attribute.sand
             baseEfficiency = 0f
-            consumeLiquid(SteamFluids.steam, 0.05f)
+            consumeLiquid(Liquids.water, 0.1f)
+            consumePower(0.5f)
             craftTime = 240f
             outputItem = SteamItems.quartz + 3
             drawMulti {
@@ -658,6 +659,8 @@ object SteamBlocks {
             squareSprite = false
             updateEffect = Fx.coalSmeltsmoke
             updateEffectChance = 0.09f
+            boostScale = 0.2f
+
             consume(ConsumeItemFlammable(1f))
             outputItem = SteamItems.stone + 3
             craftTime = 200f
