@@ -114,7 +114,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         fun recipeIdx(): Int {
             return processes.indexOfFirst {
                 it.recipes.all { recipe ->
-                    canCraftRecipe(recipe)
+                    if (recipe.required) canCraftRecipe(recipe) else true
                 }
             }
         }
@@ -187,7 +187,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         }
 
         fun canCraftRecipe(recipe: Recipe): Boolean {
-            return items.has(recipe.inItem) || !recipe.required
+            return items.has(recipe.inItem)
         }
 
         override fun progress() = progress[0]

@@ -31,7 +31,8 @@ fun ArrayList<MultiCrafter.Process>.oreRecipe(
                     Recipe(
                         30f,
                         arrayOf(Items.titanium+1),
-                        arrayOf(Items.pyratite+1)
+                        arrayOf(Items.pyratite+1),
+                        required = false
                     )
                 )
             )
