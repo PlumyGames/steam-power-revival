@@ -43,13 +43,15 @@ import steam.R
 import steam.UndebugOnly
 import steam.entities.bullets.ConeBulletType
 import steam.gen.OreGenerator
-import steam.world.crafting.*
+import steam.world.crafting.HeatRegulator
+import steam.world.crafting.MultiCrafter
+import steam.world.crafting.Separator
+import steam.world.crafting.TemperatureCrafter
 import steam.world.distribution.PressureBridge
 import steam.world.distribution.PressurePipe
-import steam.world.drawer.part.DrawBuilding
-import steam.world.drawer.DrawLiquidWarmup
 import steam.world.drawer.DrawReservoir
 import steam.world.drawer.DrawSteamInside
+import steam.world.drawer.part.DrawBuilding
 import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
@@ -378,12 +380,11 @@ object SteamBlocks {
             size = 3
             health = 800
             hasTemp = false
-            itemCapacity = 80
+            itemCapacity = 40
             configurable = false
-
-            recipes.oreRecipe(3, 80f, 0.05f)
-            addRecipe(60f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
-            addRecipe(80f, inItem = arrayOf(Items.scrap + 1), outLiquid = arrayOf(Liquids.slag + 0.1f))
+            processes.oreRecipe(3, 80f, 0.05f)
+            /*addRecipe(60f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
+            addRecipe(80f, inItem = arrayOf(Items.scrap + 1), outLiquid = arrayOf(Liquids.slag + 0.1f))*/
             drawer = DrawMulti {
                 +DrawDefault()
                 +DrawGlowRegion().apply { color = R.C.burnerFlame }
@@ -403,12 +404,13 @@ object SteamBlocks {
     }
 
     fun advancedFurnace() {
+        /* still testing multi-processing
         advancedFurnace = MultiCrafter("advanced-furnace").apply {
             warmupSpeed = 0.012f
             size = 3
             health = 1200
             hasTemp = false
-            itemCapacity = 80
+            itemCapacity = 40
             configurable = true
 
             recipes.oreRecipe(4, 50f, 0.05f * 1.6f)
@@ -438,6 +440,7 @@ object SteamBlocks {
                 )
             }
         }
+         */
     }
 
     fun crystallizer() {
