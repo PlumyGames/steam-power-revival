@@ -9,7 +9,6 @@ import arc.scene.ui.ImageButton
 import arc.scene.ui.ScrollPane
 import arc.scene.ui.layout.Scl
 import arc.scene.ui.layout.Table
-import arc.struct.Seq
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.content.Fx
@@ -56,7 +55,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         val inItem: Array<ItemStack> = emptyArray(),
         val outItem: Array<ItemStack> = emptyArray(),
         val outLiquid: Array<LiquidStack> = emptyArray(),
-        val required: Boolean = false //whether this recipe is required for the process
+        val required: Boolean = true //whether this recipe is required for the process
     ) {
         val allInItems = inItem.map { it.item }
         val allOutItems = outItem.map { it.item }
@@ -90,7 +89,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             val new = it
             if (curProcessIdx != new) {
                 curProcessIdx = if (new < 0) -1 else new.coerceIn(0, processes.size - 1)
-                progress = emptyArray()
+                progress = Array(processes.size) { 0f }
                 warmup = 0f
             }
         }
@@ -102,7 +101,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
     }
 
     inner class MultiCrafterBuild : TemperatureBuild() {
-        var progress = emptyArray<Float>()
+        var progress = Array(processes.size) { 0f }
         var totalProgress = 0f
         var warmup = 0f
         var curProcessIdx = -1
