@@ -14,6 +14,7 @@ import mindustry.entities.part.DrawPart
 import mindustry.graphics.Layer
 import mindustry.type.Category
 import mindustry.type.UnitType
+import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.LiquidTurret
 import mindustry.world.blocks.production.Drill
 import mindustry.world.blocks.production.GenericCrafter
@@ -28,11 +29,12 @@ import plumy.dsl.drawMulti
 import plumy.dsl.plus
 import steam.utils.hide
 import steam.world.distribution.ElectricConveyor
-import steam.world.drawer.DrawBuilding
-import steam.world.drawer.regionPart
+import steam.world.drawer.part.DrawBuilding
+import steam.world.drawer.part.regionPart
 import steam.world.pressure.PressureCrafter
 
 object ContentsOverrider {
+    lateinit var pressurePress: Block
     fun mechanicalDrill() {
         (mechanicalDrill as Drill).apply {
             removeConsumer(findConsumer { it is ConsumeLiquid })
@@ -70,9 +72,7 @@ object ContentsOverrider {
     }
 
     fun conduit() {
-        conduit.apply {
-            requirements = arrayOf(SteamItems.glass + 1)
-        }
+        conduit.requirements = arrayOf(SteamItems.glass + 1)
     }
 
     fun siliconSmelter() {
@@ -90,8 +90,7 @@ object ContentsOverrider {
     }
 
     fun graphitePress() {
-        graphitePress.hide()
-        graphitePress = PressureCrafter("graphite-compressor").apply {
+        pressurePress = PressureCrafter("graphite-compressor").apply {
             maxEfficiency = 1.5f
             requirements(
                 Category.crafting,

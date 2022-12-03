@@ -15,6 +15,7 @@ object ContentsLoader {
             glass()
             iron()
             quartz()
+            sulfur()
             steel()
             depletedThorium()
         }
@@ -38,6 +39,7 @@ object ContentsLoader {
             turbine()
             pneumaticEngine()
             well()
+            extractor()
             pressureCranker()
             pressurizer()
             pressureNode()
@@ -49,6 +51,7 @@ object ContentsLoader {
             pressureSource()
             pressureVoid()
             ironOre()
+            sulfurCrystal()
         }
         ContentsOverrider.apply {
             mechanicalDrill()

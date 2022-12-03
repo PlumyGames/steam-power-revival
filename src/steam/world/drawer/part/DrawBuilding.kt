@@ -1,4 +1,4 @@
-package steam.world.drawer
+package steam.world.drawer.part
 
 import arc.struct.Seq
 import mindustry.entities.part.DrawPart
@@ -6,7 +6,7 @@ import mindustry.entities.part.RegionPart
 import mindustry.gen.Building
 import mindustry.world.Block
 import mindustry.world.draw.DrawBlock
-
+//make draw part usable for buildings
 class DrawBuilding : DrawBlock() {
     val parts = Seq<DrawPart>()
     override fun load(block: Block) {

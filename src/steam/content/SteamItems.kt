@@ -9,6 +9,7 @@ object SteamItems {
     lateinit var iron: Item
     lateinit var quartz: Item
     lateinit var steel: Item
+    lateinit var sulfur: Item
     lateinit var depletedThorium: Item
 
     fun stone() {
@@ -30,6 +31,11 @@ object SteamItems {
     fun quartz() {
         quartz = Item("quartz").apply {
             color = Color.valueOf("c9b6ab")
+        }
+    }
+    fun sulfur() {
+        sulfur = Item("sulfur").apply {
+            color = Color.valueOf("d3b458")
         }
     }
     fun steel() {

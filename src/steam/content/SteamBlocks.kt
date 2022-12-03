@@ -27,6 +27,7 @@ import mindustry.world.blocks.defense.turrets.ContinuousTurret
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.blocks.environment.OreBlock
+import mindustry.world.blocks.environment.TallBlock
 import mindustry.world.blocks.power.ConsumeGenerator
 import mindustry.world.blocks.production.AttributeCrafter
 import mindustry.world.blocks.production.Pump
@@ -45,7 +46,7 @@ import steam.gen.OreGenerator
 import steam.world.crafting.*
 import steam.world.distribution.PressureBridge
 import steam.world.distribution.PressurePipe
-import steam.world.drawer.DrawBuilding
+import steam.world.drawer.part.DrawBuilding
 import steam.world.drawer.DrawLiquidWarmup
 import steam.world.drawer.DrawReservoir
 import steam.world.drawer.DrawSteamInside
@@ -53,11 +54,11 @@ import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
 import steam.world.mech.MechPad
-import steam.world.power.PressureGenerator
 import steam.world.pressure.PressureCranker
 import steam.world.pressure.PressureProducer
 import steam.world.pressure.PressureSource
 import steam.world.pressure.PressureVoid
+import steam.world.production.ExtractionDrill
 import steam.world.temp.DrawOverheat
 import steam.world.temp.celsius
 
@@ -68,6 +69,7 @@ object SteamBlocks {
     lateinit var frostbite: Block
     //drill - production
     lateinit var stoneExcavator: Block
+    lateinit var extractor: Block
     lateinit var well: Block
     lateinit var quartzExtractor: Block
     lateinit var sporePlanter: Block
@@ -97,11 +99,13 @@ object SteamBlocks {
     lateinit var menderTurret: Block
     //sandbox
     lateinit var heatAccumulator: HeatAccumulator
-    //env
-    lateinit var oreIron: OreBlock
     lateinit var pressureSource: PressureSource
     lateinit var pressureVoid: PressureVoid
     lateinit var pressurizer: PressureProducer
+    //env
+    lateinit var oreIron: OreBlock
+    lateinit var sulfurCrystal: TallBlock
+
     fun rifle() {
         rifle = ItemTurret("rifle").apply {
             reload = 25f
@@ -613,7 +617,7 @@ object SteamBlocks {
     }
 
     fun pneumaticEngine() {
-        pneumaticEngine = PressureGenerator("pneumatic-engine").apply {
+        pneumaticEngine = PressureProducer("pneumatic-engine").apply {
             category = Category.power
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
@@ -623,7 +627,8 @@ object SteamBlocks {
             }
             size = 2
             squareSprite = false
-            powerProduction = 3f
+            consumePower(2f)
+            pressureOutput = 8f
             drawMulti{
                 +DrawRegion("-bottom")
                 +DrawBuilding().apply {
@@ -642,14 +647,13 @@ object SteamBlocks {
             }
         }
     }
-
     fun stoneExcavator() {
         stoneExcavator = AttributeCrafter("stone-excavator").apply {
             requirements(
                 Category.production,
                 arrayOf(
                     OreGenerator.rawOres[Items.copper]!! + 35,
-                    OreGenerator.rawOres[Items.lead]!! + 25
+                    OreGenerator.rawOres[Items.lead]!! + 40
                 )
             )
             attribute = SteamAttribute.stone
@@ -662,7 +666,7 @@ object SteamBlocks {
             boostScale = 0.2f
 
             consume(ConsumeItemFlammable(1f))
-            outputItem = SteamItems.stone + 3
+            outputItem = SteamItems.stone + 2
             craftTime = 200f
             drawMulti {
                 +DrawDefault()
@@ -688,6 +692,16 @@ object SteamBlocks {
                     SteamItems.stone + 80
                 )
             }
+        }
+    }
+
+    fun extractor() {
+        extractor = ExtractionDrill("extraction-drill").apply {
+            requirements(
+                Category.crafting,
+                arrayOf(SteamItems.stone + 35, Items.copper + 15, SteamItems.iron + 12)
+            )
+            health = 550
         }
     }
 
@@ -810,7 +824,7 @@ object SteamBlocks {
                 SteamItems.iron + 25,
             )
             health = 400
-            range = 110f
+            range = 60f
             heatColor = Pal.heal.cpy().a(0.4f)
             shootWarmupSpeed = 0.07f
             shootCone = 360f
@@ -822,7 +836,7 @@ object SteamBlocks {
             consumePower(1.2f)
             shootY = 1.5f
             shootType = ConeBulletType {
-                damage = 0.1f
+                damage = 0.5f
                 collidesTeam = true
                 healAmount = 20f
                 layer = Layer.buildBeam
@@ -860,6 +874,16 @@ object SteamBlocks {
             oreDefault = true
             oreThreshold = 0.864f
             oreScale = 24.904762f
+        }
+    }
+
+    fun sulfurCrystal() {
+        sulfurCrystal = TallBlock("sulfur-crystal").apply {
+            variants = 3
+            clipSize = 42f
+            shadowOffset = -0.7f
+            shadowAlpha = 0.27f
+            itemDrop = SteamItems.sulfur
         }
     }
 }

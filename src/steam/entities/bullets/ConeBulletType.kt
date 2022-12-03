@@ -17,7 +17,7 @@ class ConeBulletType : BulletType() {
     var damageInterval = 20f
     var coneAmt = 50
     var rad = 20f
-    var length = 110f
+    var length = 65f
     var lengthInterp = Interp.linear
 
     init {
