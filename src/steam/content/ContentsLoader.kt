@@ -45,6 +45,7 @@ object ContentsLoader {
             pressureNode()
             pressureBridge()
             coreFragment()
+            crate()
             mechPad()
             menderTurret()
             heatAccumulator()

@@ -31,8 +31,10 @@ import mindustry.world.blocks.environment.TallBlock
 import mindustry.world.blocks.power.ConsumeGenerator
 import mindustry.world.blocks.production.AttributeCrafter
 import mindustry.world.blocks.production.Pump
+import mindustry.world.blocks.production.Separator
 import mindustry.world.blocks.production.SolidPump
 import mindustry.world.blocks.storage.CoreBlock
+import mindustry.world.blocks.storage.StorageBlock
 import mindustry.world.consumers.ConsumeItemFlammable
 import mindustry.world.draw.*
 import mindustry.world.meta.Attribute
@@ -45,7 +47,6 @@ import steam.entities.bullets.ConeBulletType
 import steam.gen.OreGenerator
 import steam.world.crafting.HeatRegulator
 import steam.world.crafting.MultiCrafter
-import steam.world.crafting.Separator
 import steam.world.crafting.TemperatureCrafter
 import steam.world.distribution.PressureBridge
 import steam.world.distribution.PressurePipe
@@ -97,6 +98,7 @@ object SteamBlocks {
     lateinit var pressureCranker: Block
     //effect
     lateinit var coreFragment: Block
+    lateinit var crate: Block
     lateinit var mechPad: Block
     lateinit var menderTurret: Block
     //sandbox
@@ -460,7 +462,6 @@ object SteamBlocks {
                 SteamItems.iron + 3,
             )
             craftTime = 100f
-            craftFx = Fx.smeltsmoke
             consumeLiquid(Liquids.slag, 0.1f)
             drawer = DrawMulti {
                 +DrawRegion("-bottom")
@@ -795,9 +796,22 @@ object SteamBlocks {
             buildVisibility = BuildVisibility.shown
             UndebugOnly {
                 requirements = arrayOf(
-                    SteamItems.stone + 1200, Items.copper + 1200, Items.lead + 500
+                    SteamItems.stone + 1200, Items.copper + 800, Items.lead + 500, SteamItems.iron + 450
                 )
             }
+        }
+    }
+
+    fun crate() {
+        crate = StorageBlock("crate").apply {
+            size = 2
+            health = 650
+            requirements = arrayOf(
+                SteamItems.stone + 75, SteamItems.iron + 25
+            )
+            itemCapacity = 60
+            coreMerge = false
+            separateItemCapacity = false
         }
     }
 

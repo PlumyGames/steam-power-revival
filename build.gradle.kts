@@ -53,7 +53,7 @@ tasks.withType<Test> {
 }
 mindustry {
     dependency {
-        mindustry mirror "155b381"
+        mindustry mirror "9762ae3"
         arc on "v140.4"
     }
     client {

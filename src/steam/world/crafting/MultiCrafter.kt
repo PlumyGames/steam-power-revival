@@ -43,7 +43,8 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
     var craftTime = 100f
 
     class Process(
-        val recipes: ArrayList<Recipe>
+        val recipes: ArrayList<Recipe>,
+        val name: String = ""
     ) {
         val allInItems = recipes.flatMap { it.allInItems }
         val allOutItems = recipes.flatMap { it.allOutItems }
