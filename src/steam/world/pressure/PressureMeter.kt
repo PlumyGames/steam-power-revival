@@ -20,8 +20,16 @@ class PressureMeter(name: String) : PressureBlock(name) {
             Bar(
                 { bundle.format("bar.pressure-total-consume",
                     Strings.autoFixed(entity.graph.consuming, 1)) },
-                { Pal.redDust },
-                { entity.graph.currentPressure }
+                { Pal.redderDust },
+                { 1f - entity.graph.currentPressure }
+            )
+        }
+        addBar("satisfaction") { entity: PressureBuild ->
+            Bar(
+                { bundle.format("bar.pressure-satisfaction",
+                    Strings.autoFixed(entity.graph.currentPressure.coerceAtMost(1f) * 100f, 1)) },
+                { Pal.redderDust.cpy().lerp(Pal.heal, entity.graph.currentPressure.coerceAtMost(1f)) },
+                { 1f }
             )
         }
     }
