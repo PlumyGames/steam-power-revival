@@ -9,7 +9,7 @@ import mindustry.world.blocks.production.GenericCrafter
 
 class PressureCrafter(name: String) : GenericCrafter(name), IPressureConsumerBlock {
     override var pressureCapacity: Pressure = 0.5f
-    override var pressureRequired: Pressure = 4f
+    override var pressureConsumption: Pressure = 4f
     var maxEfficiency = 4f
 
     init {
@@ -19,12 +19,12 @@ class PressureCrafter(name: String) : GenericCrafter(name), IPressureConsumerBlo
     override fun setBars() {
         super.setBars()
         addPressureBar<PressureCrafterBuild>()
-        addPressureRequiredBar<PressureCrafterBuild>(pressureRequired)
+        addPressureRequiredBar<PressureCrafterBuild>(pressureConsumption)
     }
 
     inner class PressureCrafterBuild : GenericCrafterBuild(), IPressureConsumer {
         override var flash: Float = 0f
-        override var pressureRequired: Pressure = this@PressureCrafter.pressureRequired
+        override var pressureRequired: Pressure = this@PressureCrafter.pressureConsumption
         override var graph: PressureGraph = PressureGraph()
         override var graphInitialized = false
         override var currentPressure: Pressure = 0f
@@ -47,18 +47,13 @@ class PressureCrafter(name: String) : GenericCrafter(name), IPressureConsumerBlo
         }
 
         override fun updateTile() {
-            updatePressure()
             super.updateTile()
+            pressureRequired = if (enabled)  pressureConsumption else 0f
         }
 
         override fun drawSelect() {
             super.drawSelect()
             drawWholeGraphForDebug()
-        }
-
-        override fun updatePressure() {
-            super.updatePressure()
-            pressureRequired = if (efficiency > 0f) pressureRequired * efficiency else 0f
         }
 
         override fun write(write: Writes) {
@@ -71,10 +66,8 @@ class PressureCrafter(name: String) : GenericCrafter(name), IPressureConsumerBlo
             read.readPressureNode()
         }
 
-        override fun updateEfficiencyMultiplier() {
-            val eff = Mathf.clamp(graph.currentPressure, 0f, maxEfficiency)
-            efficiency *= eff
-            potentialEfficiency *= eff
+        override fun efficiencyScale(): Float {
+            return Mathf.clamp(graph.currentPressure, 0f, maxEfficiency)
         }
     }
 }

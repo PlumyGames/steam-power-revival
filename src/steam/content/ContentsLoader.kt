@@ -25,6 +25,7 @@ object ContentsLoader {
         }
         SteamUnitTypes.apply {
             epsilon()
+            tau()
         }
         SteamBlocks.apply {
             rifle()
@@ -43,11 +44,13 @@ object ContentsLoader {
             pressureCranker()
             pressurizer()
             pressureNode()
+            pressureMeter()
             pressureBridge()
             coreFragment()
             crate()
             mechPad()
-            menderTurret()
+            tauPad()
+            healer()
             heatAccumulator()
             pressureSource()
             pressureVoid()
@@ -105,7 +108,7 @@ object ContentsLoader {
                 is IPressurizedBlock -> it.run{
                         stats.add(SteamStat.pressureCapacity, pressureCapacity, SteamStatUnit.atm)
                     if (it is IPressureConsumerBlock)
-                        stats.add(SteamStat.pressureConsume, it.pressureRequired, SteamStatUnit.atmSecond)
+                        stats.add(SteamStat.pressureConsume, it.pressureConsumption, SteamStatUnit.atmSecond)
                     if (it is IPressureProducerBlock)
                         stats.add(SteamStat.pressureProduce, it.pressureOutput, SteamStatUnit.atmSecond)
                 }

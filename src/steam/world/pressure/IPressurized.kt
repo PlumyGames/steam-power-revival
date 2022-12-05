@@ -9,5 +9,5 @@ interface IPressureProducerBlock : IPressurizedBlock {
 }
 
 interface IPressureConsumerBlock : IPressurizedBlock {
-    var pressureRequired: Pressure
+    var pressureConsumption: Pressure
 }

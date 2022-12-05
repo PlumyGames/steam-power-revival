@@ -57,10 +57,7 @@ import steam.world.effect.HeatAccumulator
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
 import steam.world.mech.MechPad
-import steam.world.pressure.PressureCranker
-import steam.world.pressure.PressureProducer
-import steam.world.pressure.PressureSource
-import steam.world.pressure.PressureVoid
+import steam.world.pressure.*
 import steam.world.production.ExtractionDrill
 import steam.world.temp.DrawOverheat
 import steam.world.temp.celsius
@@ -94,13 +91,15 @@ object SteamBlocks {
     lateinit var pneumaticEngine: Block
     //pressure
     lateinit var pressureNode: Block
+    lateinit var pressureMeter: Block
     lateinit var pressureBridge: Block
     lateinit var pressureCranker: Block
     //effect
     lateinit var coreFragment: Block
     lateinit var crate: Block
     lateinit var mechPad: Block
-    lateinit var menderTurret: Block
+    lateinit var tauPad: Block
+    lateinit var healer: Block
     //sandbox
     lateinit var heatAccumulator: HeatAccumulator
     lateinit var pressureSource: PressureSource
@@ -457,9 +456,8 @@ object SteamBlocks {
 
             health = 90
             results = arrayOf(
-                Items.copper + 5,
-                Items.lead + 4,
-                SteamItems.iron + 3,
+                SteamItems.stone + 20,
+                Items.copper + 10,
             )
             craftTime = 100f
             consumeLiquid(Liquids.slag, 0.1f)
@@ -771,6 +769,20 @@ object SteamBlocks {
         }
     }
 
+    fun pressureMeter() {
+        pressureNode = PressureMeter("pressure-meter").apply {
+            health = 220
+            category = Category.distribution
+            buildVisibility = BuildVisibility.shown
+
+            UndebugOnly {
+                requirements = arrayOf(
+                    Items.silicon + 20, Items.graphite + 12, SteamItems.steel + 5
+                )
+            }
+        }
+    }
+
     fun pressureBridge() {
         pressureBridge = PressureBridge("pressure-bridge").apply {
             requirements(
@@ -832,16 +844,36 @@ object SteamBlocks {
         }
     }
 
-    fun menderTurret() {
-        menderTurret = ContinuousTurret("healer").apply {
+    fun tauPad() {
+        tauPad = MechPad("tau-mech-pad").apply {
+            size = 2
+            health = 800
+
+            mech = SteamUnitTypes.tau
+            consumePower(1.2f)
             category = Category.effect
-            requirements = arrayOf(
-                SteamItems.stone + 40,
-                Items.silicon + 20,
-                SteamItems.iron + 25,
+            buildVisibility = BuildVisibility.shown
+            UndebugOnly {
+                requirements = arrayOf(
+                    Items.silicon + 80, SteamItems.steel + 25, SteamItems.iron + 50, Items.graphite + 35
+                )
+            }
+        }
+    }
+
+    fun healer() {
+        healer = ContinuousTurret("healer").apply {
+            requirements(
+                Category.effect,
+                arrayOf(
+                    SteamItems.stone + 40,
+                    Items.silicon + 20,
+                    SteamItems.iron + 25,
+                )
             )
+            buildVisibility = BuildVisibility.shown
             health = 400
-            range = 60f
+            range = 40f
             heatColor = Pal.heal.cpy().a(0.4f)
             shootWarmupSpeed = 0.07f
             shootCone = 360f
@@ -858,6 +890,7 @@ object SteamBlocks {
                 healAmount = 20f
                 layer = Layer.buildBeam
                 hitEffect = Fx.none
+                length = 45f
             }
         }
     }

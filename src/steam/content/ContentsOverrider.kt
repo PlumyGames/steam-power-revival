@@ -104,7 +104,7 @@ object ContentsOverrider {
             consumeItem(Items.coal, 5)
             outputItem = Items.graphite + 2
             craftTime = 190f
-            pressureRequired = 2f
+            pressureConsumption = 2f
             drawMulti {
                 +DrawRegion("-bottom")
                 +DrawBuilding().apply {
@@ -206,7 +206,9 @@ object ContentsOverrider {
     }
 
     fun mender() {
-        mender.hide()
+        mender.requirements = arrayOf(
+            SteamItems.iron + 15, Items.copper + 5, Items.metaglass + 5, Items.silicon + 3
+        )
     }
 
     fun items() {

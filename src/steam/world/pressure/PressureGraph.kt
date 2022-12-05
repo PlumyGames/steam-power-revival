@@ -30,18 +30,22 @@ class PressureGraph {
      */
     var maxPressure = 2f
         private set
+
+    var consuming: Float = 0f
+    var producing: Float = 0f
+
     fun update() {
         // accumulate the pressure produced from all producers
-        val produced = producers.sumOf(IPressureProducer::pressureProduced)
+        producing = producers.sumOf(IPressureProducer::pressureProduced)
         currentPressure = if (consumers.isEmpty) {
-            produced
+            producing
         } else {
             // accumulate the pressure required from all consumers
-            val required = consumers.sumOf(IPressureConsumer::pressureRequired)
-            if (required.isZero)
-                produced
+            consuming = consumers.sumOf(IPressureConsumer::pressureRequired)
+            if (consuming.isZero)
+                producing
             else
-                produced / required
+                producing / consuming
         }
     }
     /**
