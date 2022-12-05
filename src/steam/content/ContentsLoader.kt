@@ -21,6 +21,7 @@ object ContentsLoader {
         }
         SteamFluids.apply {
             steam()
+            oxygen()
             acid()
         }
         SteamUnitTypes.apply {

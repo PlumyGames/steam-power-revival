@@ -158,7 +158,7 @@ object SteamUnitTypes {
                         homingPower = 0.055f
                         lifetime = 120f
                         speed = 1.85f
-                        healAmount = 25f
+                        healAmount = 12f
                         collidesTeam = true
                         hitSound = Sounds.none
                         shootEffect = Fx.shootHeal
