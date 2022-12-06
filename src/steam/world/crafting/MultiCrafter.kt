@@ -40,10 +40,9 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
     lateinit var recipeList: RecipeList
     var warmupSpeed = 0.025f
     var craftEffect = Fx.smeltsmoke
-    var craftTime = 100f
 
-    class Process(
-        val recipes: ArrayList<Recipe>,
+    open class Process(
+        val recipes: ArrayList<Recipe> = arrayListOf(),
         val name: String = ""
     ) {
         val allInItems = recipes.flatMap { it.allInItems }
