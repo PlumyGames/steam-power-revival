@@ -1,6 +1,7 @@
 package steam.content
 
 import arc.func.Prov
+import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.math.Angles
@@ -45,6 +46,7 @@ import steam.R
 import steam.UndebugOnly
 import steam.entities.bullets.ConeBulletType
 import steam.gen.OreGenerator
+import steam.world.crafting.AreaCrafter
 import steam.world.crafting.HeatRegulator
 import steam.world.crafting.MultiCrafter
 import steam.world.crafting.TemperatureCrafter
@@ -67,12 +69,13 @@ object SteamBlocks {
     //turret
     lateinit var rifle: Block
     lateinit var frostbite: Block
-    //drill - production
+    //production
     lateinit var stoneExcavator: Block
     lateinit var extractor: Block
     lateinit var well: Block
     lateinit var quartzExtractor: Block
     lateinit var sporePlanter: Block
+    lateinit var atmosphereConcentrator: Block
     //crafting
     lateinit var boiler: Block
     lateinit var industrialBoiler: Block
@@ -273,6 +276,37 @@ object SteamBlocks {
             maxBoost = 2f
             craftTime = 240f
             outputItem = Items.sporePod + 1
+        }
+    }
+
+    fun atmosphereConcentrator() {
+        atmosphereConcentrator = AreaCrafter("atmosphere-concentrator").apply {
+            requirements(
+                Category.production,
+                arrayOf(
+                    Items.graphite + 45, Items.silicon + 30, SteamItems.steel + 15, Items.titanium + 25
+                )
+            )
+            size = 3
+            health = 750
+            outputLiquid = Liquids.nitrogen + 4 / 60f
+            consumePower(1.2f)
+            liquidCapacity = 40f
+            drawMulti {
+                +DrawRegion("-bottom")
+                +DrawBlurSpin("-fan", 10f).apply { blurThresh = 0.85f }
+                +DrawLiquidTile(Liquids.nitrogen, 1f)
+                +DrawDefault()
+                +DrawParticles().apply {
+                    color = Color.valueOf("d4f0ff")
+                    rotateScl = 5.5f
+                    alpha = 0.45f
+                    particleSize = 3.5f
+                    particles = 10
+                    particleRad = 18f
+                    particleLife = 180f
+                }
+            }
         }
     }
 
@@ -699,7 +733,7 @@ object SteamBlocks {
     fun extractor() {
         extractor = ExtractionDrill("extraction-drill").apply {
             requirements(
-                Category.crafting,
+                Category.production,
                 arrayOf(SteamItems.stone + 35, Items.copper + 15, SteamItems.iron + 12)
             )
             health = 550

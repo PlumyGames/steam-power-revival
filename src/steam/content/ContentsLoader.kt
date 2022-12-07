@@ -42,6 +42,7 @@ object ContentsLoader {
             pneumaticEngine()
             well()
             extractor()
+            atmosphereConcentrator()
             pressureCranker()
             pressurizer()
             pressureNode()
