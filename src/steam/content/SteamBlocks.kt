@@ -299,7 +299,7 @@ object SteamBlocks {
                 +DrawDefault()
                 +DrawParticles().apply {
                     color = Color.valueOf("d4f0ff")
-                    rotateScl = 12.5f
+                    rotateScl = 0.7f
                     alpha = 0.45f
                     particleSize = 3.5f
                     particles = 10
