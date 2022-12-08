@@ -11,7 +11,7 @@ import mindustry.ui.Bar
 import mindustry.world.blocks.production.GenericCrafter
 
 class AreaCrafter(name: String) : GenericCrafter(name) {
-    var area = 3
+    var area = 6
     var updateDelay = 180f
 
     init {
@@ -36,7 +36,7 @@ class AreaCrafter(name: String) : GenericCrafter(name) {
             if(valid) Pal.accent else Pal.remove,
             x * tilesize.toFloat(),
             y * tilesize.toFloat(),
-            (area * 2f + (size / 2f) % 1f) * tilesize
+            (area + (size / 2f) % 1f) * tilesize
         )
     }
     inner class AreaCrafterBuild : GenericCrafterBuild() {
@@ -47,7 +47,7 @@ class AreaCrafter(name: String) : GenericCrafter(name) {
             updateTimer += delta()
             if (updateTimer >= updateDelay) {
                 updateTimer %= updateDelay
-                val efficiencyPerBlock = 1f / Mathf.pow(area * 2 + 1, 2)
+                val efficiencyPerBlock = 1f / Mathf.pow(area + 1, 2)
                 lastEfficiency = 0f
                 for (x in -area..area) {
                     for (y in -area..area) {
@@ -64,7 +64,7 @@ class AreaCrafter(name: String) : GenericCrafter(name) {
         override fun drawSelect() {
             super.drawSelect()
             Drawf.dashSquare(
-                Pal.accent, x, y, (area * 2f + (size / 2f) % 1f) * tilesize
+                Pal.accent, x, y, (area + (size / 2f) % 1f) * tilesize
             )
         }
 

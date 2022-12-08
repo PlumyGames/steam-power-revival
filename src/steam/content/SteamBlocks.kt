@@ -289,17 +289,23 @@ object SteamBlocks {
             )
             size = 3
             health = 750
-            outputLiquid = Liquids.nitrogen + 4 / 60f
-            consumePower(1.2f)
+            outputLiquids = arrayOf(Liquids.nitrogen + 4 / 60f, SteamFluids.oxygen + 1 / 60f)
+            liquidOutputDirections = intArrayOf(1, 3)
+            consumePower(1.6f)
             liquidCapacity = 40f
+            rotate = true
+            rotateDraw = false
+            invertFlip = true
+            squareSprite = false
             drawMulti {
                 +DrawRegion("-bottom")
                 +DrawBlurSpin("-fan", 10f).apply { blurThresh = 0.85f }
                 +DrawLiquidTile(Liquids.nitrogen, 1f)
                 +DrawDefault()
+                +DrawLiquidOutputs()
                 +DrawParticles().apply {
                     color = Color.valueOf("d4f0ff")
-                    rotateScl = 0.7f
+                    rotateScl = 1.7f
                     alpha = 0.45f
                     particleSize = 3.5f
                     particles = 10
@@ -307,6 +313,7 @@ object SteamBlocks {
                     particleLife = 180f
                 }
             }
+            regionRotated1 = 3
         }
     }
 
