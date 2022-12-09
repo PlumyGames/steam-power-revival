@@ -496,8 +496,10 @@ object SteamBlocks {
 
             health = 90
             results = arrayOf(
-                SteamItems.stone + 20,
+                SteamItems.stone + 2,
                 Items.copper + 10,
+                Items.lead + 15,
+                SteamItems.iron + 15
             )
             craftTime = 100f
             consumeLiquid(Liquids.slag, 0.1f)

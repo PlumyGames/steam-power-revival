@@ -17,6 +17,7 @@ fun MultiCrafter.oreRecipe (
     fuelEfficiency: Float = 1f,
     minFlammability: Float = 1f
 ) {
+    val grouped = ++groupSize
     for ((raw, ore) in OreGenerator.rawOres) {
         if (raw.radioactivity <= 0f && raw.hardness <= hardness) {
             processes.add(
@@ -29,13 +30,21 @@ fun MultiCrafter.oreRecipe (
                             outLiquid = arrayOf(Liquids.slag + slag)
                         ),
                         //testing
-                        Recipe(
+                        //todo replace with actual fueling
+                        if(raw != Items.copper) Recipe(
                             30f,
-                            arrayOf(Items.titanium + 1),
+                            arrayOf(Items.titanium + 2, Items.plastanium + 1),
                             arrayOf(Items.pyratite + 1),
                             required = false
+                        ) else Recipe(
+                            30f,
+                            arrayOf(Items.silicon + 1),
+                            arrayOf(Items.graphite + 1, Items.metaglass + 2),
+                            required = false
                         )
-                    )
+                    ),
+                    raw.localizedName + " Ore Smelting",
+                    grouped
                 )
             )
         }
