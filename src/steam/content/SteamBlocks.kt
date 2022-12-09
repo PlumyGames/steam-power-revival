@@ -810,7 +810,7 @@ object SteamBlocks {
     }
 
     fun pressureMeter() {
-        pressureNode = PressureMeter("pressure-meter").apply {
+        pressureMeter = PressureMeter("pressure-meter").apply {
             health = 220
             category = Category.distribution
             buildVisibility = BuildVisibility.shown
