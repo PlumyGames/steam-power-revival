@@ -18,6 +18,7 @@ import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.type.ItemStack
+import mindustry.type.Liquid
 import mindustry.type.LiquidStack
 import mindustry.ui.Styles
 import mindustry.world.meta.Stat
@@ -39,15 +40,21 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
     var processes = ArrayList<Process>()
     lateinit var recipeList: RecipeList
     var warmupSpeed = 0.025f
-    var craftEffect = Fx.smeltsmoke
+    var craftEffect = Fx.none
 
     open class Process(
         val recipes: ArrayList<Recipe> = arrayListOf(),
         val name: String = ""
     ) {
-        val allInItems = recipes.flatMap { it.allInItems }
-        val allOutItems = recipes.flatMap { it.allOutItems }
-        val allOutLiquids = recipes.flatMap { it.allOutLiquids }
+        lateinit var allInItems: List<Item>
+        lateinit var allOutItems: List<Item>
+        lateinit var allOutLiquids: List<Liquid>
+
+        fun initialize() {
+            allInItems = recipes.flatMap { it.allInItems }
+            allOutItems = recipes.flatMap { it.allOutItems }
+            allOutLiquids = recipes.flatMap { it.allOutLiquids }
+        }
     }
     //recipe of a Process
     class Recipe(
@@ -97,6 +104,9 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
 
     override fun init() {
         super.init()
+        processes.forEach {
+            it.initialize()
+        }
         recipeList = RecipeList(processes)
     }
 
