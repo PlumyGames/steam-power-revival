@@ -2,6 +2,7 @@ package steam.world.crafting
 
 import arc.Core.bundle
 import arc.func.Prov
+import arc.graphics.Color
 import arc.math.Mathf
 import arc.scene.style.TextureRegionDrawable
 import arc.scene.ui.ButtonGroup
@@ -9,18 +10,20 @@ import arc.scene.ui.ImageButton
 import arc.scene.ui.ScrollPane
 import arc.scene.ui.layout.Scl
 import arc.scene.ui.layout.Table
-import arc.util.Time
+import arc.util.Strings.autoFixed
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.content.Fx
 import mindustry.ctype.UnlockableContent
 import mindustry.gen.Building
+import mindustry.gen.Icon
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.type.ItemStack
 import mindustry.type.Liquid
 import mindustry.type.LiquidStack
+import mindustry.ui.ItemDisplay
 import mindustry.ui.Styles
 import mindustry.world.meta.Stat
 import plumy.dsl.AddBar
@@ -31,7 +34,7 @@ import kotlin.math.min
 /* todo
 *  add better liquid support
 *  add temp support
-*  add stats
+*  add power support
 *  better canCraft()
 *  add booster support
 * rewrite the whole thing
@@ -64,11 +67,13 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         val craftTime: Float = 60f,
         val inItem: Array<ItemStack> = emptyArray(),
         val outItem: Array<ItemStack> = emptyArray(),
+        val inLiquid: Array<LiquidStack> = emptyArray(),
         val outLiquid: Array<LiquidStack> = emptyArray(),
         val required: Boolean = true //whether this recipe is required for the process
     ) {
         val allInItems = inItem.map { it.item }
         val allOutItems = outItem.map { it.item }
+        val allInLiquids = inLiquid.map { it.liquid }
         val allOutLiquids = outLiquid.map { it.liquid }
         val allItems = (allInItems + allOutItems).distinct()
         val mainOut: UnlockableContent by lazy {
@@ -254,20 +259,47 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
 
     override fun setStats() {
         super.setStats()
-        stats.add(Stat.output) {
-            it.row()
+        stats.add(Stat.output) { stat ->
+            stat.row()
             processList.indexedProcess.forEachIndexed { i, p ->
-                val process = p[i]
-                it.addTable {
-                    background(Tex.whiteui)
-                    setColor(Pal.darkestGray)
-                    addTable {
-                        if(process.name.isNotEmpty()) {
-                            add(process.name)
-                        }
-                    }.visible {
-                        (Time.time / 60f).toInt() % p.size == i
-                    }.grow().pad(5f).row()
+                p.forEach { process ->
+                    stat.addTable {
+                        background(Tex.whiteui)
+                        setColor(Pal.darkestGray)
+                        addTable {
+                            if (process.name.isNotEmpty()) {
+                                add(process.name).left().row()
+                                image().growX().pad(7f).padLeft(5f).padRight(0f).height(4f).color(Color.darkGray).row()
+                            }
+                            addTable {
+                                if (process.allInItems.isNotEmpty()) {
+                                    addTable {
+                                        process.recipes.forEach { recipe ->
+                                            addTable {
+                                                background(Tex.whiteui)
+                                                setColor(Pal.darkerGray)
+                                                addTable {
+                                                    addTable {
+                                                        recipe.inItem.forEach {
+                                                            add(ItemDisplay(it.item, it.amount, recipe.craftTime, false).left())
+                                                        }
+                                                        image(Icon.right).padLeft(10f).padRight(10f)
+                                                        recipe.outItem.forEach {
+                                                            add(ItemDisplay(it.item, it.amount, recipe.craftTime, false).left())
+                                                        }
+                                                    }.padBottom(7f).row()
+                                                    add("${bundle["stat.productiontime"]}: ${autoFixed(recipe.craftTime / 60f, 1)} ${bundle["unit.seconds"]}")
+                                                        .color(Color.lightGray).growX().left().row()
+                                                    add("${bundle["stat.optional"]}: ${if(!recipe.required) bundle["yes"] else bundle["no"]}")
+                                                        .color(Color.lightGray).growX().left().row()
+                                                }.growX().pad(10f)
+                                            }.growX().padBottom(7f).row()
+                                        }
+                                    }.grow().left().row()
+                                }
+                            }.grow().row()
+                        }.grow().pad(10f)
+                    }.growX().padBottom(10f).row()
                 }
             }
         }
