@@ -54,11 +54,13 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
     ) {
         lateinit var allInItems: List<Item>
         lateinit var allOutItems: List<Item>
+        lateinit var allInLiquids: List<Liquid>
         lateinit var allOutLiquids: List<Liquid>
 
         fun initialize() {
             allInItems = recipes.flatMap { it.allInItems }
             allOutItems = recipes.flatMap { it.allOutItems }
+            allInLiquids = recipes.flatMap { it.allInLiquids }
             allOutLiquids = recipes.flatMap { it.allOutLiquids }
         }
     }
@@ -88,6 +90,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
 
         val allInItems = process.flatMap { it.allInItems }
         val allOutItems = process.flatMap { it.allOutItems }
+        val allInLiquids = process.flatMap { it.allInLiquids }
         val allOutLiquids = process.flatMap { it.allOutLiquids }
         val allItems = (allInItems + allOutItems).distinct()
         val indexedProcess = List(groupSize) { i ->
