@@ -5,7 +5,8 @@ import mindustry.content.Liquids
 import plumy.dsl.plus
 import steam.gen.OreGenerator
 import steam.world.crafting.MultiCrafter
-import steam.world.crafting.MultiCrafter.Recipe
+import steam.world.crafting.recipe.Process
+import steam.world.crafting.recipe.Recipe
 
 fun MultiCrafter.oreRecipe (
     hardness: Int,
@@ -21,7 +22,7 @@ fun MultiCrafter.oreRecipe (
     for ((raw, ore) in OreGenerator.rawOres) {
         if (raw.radioactivity <= 0f && raw.hardness <= hardness) {
             processes.add(
-                MultiCrafter.Process(
+                Process(
                     arrayListOf(
                         Recipe(
                             craftTime = time,
@@ -31,7 +32,7 @@ fun MultiCrafter.oreRecipe (
                         ),
                         //testing
                         //todo replace with actual fueling
-                        if(raw != Items.copper) Recipe(
+                        if (raw != Items.copper) Recipe(
                             30f,
                             arrayOf(Items.titanium + 2, Items.plastanium + 1),
                             arrayOf(Items.pyratite + 1),

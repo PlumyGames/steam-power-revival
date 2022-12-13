@@ -14,14 +14,12 @@ import arc.util.Strings.autoFixed
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.content.Fx
-import mindustry.ctype.UnlockableContent
 import mindustry.gen.Building
 import mindustry.gen.Icon
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.type.ItemStack
-import mindustry.type.Liquid
 import mindustry.type.LiquidStack
 import mindustry.ui.ItemDisplay
 import mindustry.ui.Styles
@@ -29,6 +27,9 @@ import mindustry.world.meta.Stat
 import plumy.dsl.AddBar
 import plumy.dsl.config
 import steam.utils.addTable
+import steam.world.crafting.recipe.Process
+import steam.world.crafting.recipe.ProcessList
+import steam.world.crafting.recipe.Recipe
 import kotlin.math.min
 
 /* todo
@@ -46,57 +47,6 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
     var warmupSpeed = 0.025f
     var craftEffect = Fx.none
     var groupSize = 0
-
-    open class Process(
-        val recipes: ArrayList<Recipe> = arrayListOf(),
-        val name: String = "",
-        val group: Int = -1 //group of process, for displaying stats in groups
-    ) {
-        lateinit var allInItems: List<Item>
-        lateinit var allOutItems: List<Item>
-        lateinit var allInLiquids: List<Liquid>
-        lateinit var allOutLiquids: List<Liquid>
-
-        fun initialize() {
-            allInItems = recipes.flatMap { it.allInItems }
-            allOutItems = recipes.flatMap { it.allOutItems }
-            allInLiquids = recipes.flatMap { it.allInLiquids }
-            allOutLiquids = recipes.flatMap { it.allOutLiquids }
-        }
-    }
-    //recipe of a Process
-    class Recipe(
-        val craftTime: Float = 60f,
-        val inItem: Array<ItemStack> = emptyArray(),
-        val outItem: Array<ItemStack> = emptyArray(),
-        val inLiquid: Array<LiquidStack> = emptyArray(),
-        val outLiquid: Array<LiquidStack> = emptyArray(),
-        val required: Boolean = true //whether this recipe is required for the process
-    ) {
-        val allInItems = inItem.map { it.item }
-        val allOutItems = outItem.map { it.item }
-        val allInLiquids = inLiquid.map { it.liquid }
-        val allOutLiquids = outLiquid.map { it.liquid }
-        val allItems = (allInItems + allOutItems).distinct()
-        val mainOut: UnlockableContent by lazy {
-            (outItem.getOrNull(0)?.item ?: outLiquid.getOrNull(0)?.liquid) as UnlockableContent
-        }
-    }
-
-    class ProcessList(
-        process: List<Process>,
-        groupSize: Int
-    ) {
-
-        val allInItems = process.flatMap { it.allInItems }
-        val allOutItems = process.flatMap { it.allOutItems }
-        val allInLiquids = process.flatMap { it.allInLiquids }
-        val allOutLiquids = process.flatMap { it.allOutLiquids }
-        val allItems = (allInItems + allOutItems).distinct()
-        val indexedProcess = List(groupSize) { i ->
-            return@List process.filter { it.group == i + 1 }
-        }
-    }
 
     init {
         solid = true
@@ -321,13 +271,15 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             }*/
     }
 }
-fun MultiCrafter.Process.addRecipe(
+fun Process.addRecipe(
     craftTime: Float,
     inItem: Array<ItemStack> = emptyArray(),
     outItem: Array<ItemStack> = emptyArray(),
     outLiquid: Array<LiquidStack> = emptyArray(),
 ) {
-    recipes.add(MultiCrafter.Recipe(
-        craftTime, inItem, outItem, outLiquid
-    ))
+    recipes.add(
+        Recipe(
+            craftTime, inItem, outItem, outLiquid
+        )
+    )
 }
