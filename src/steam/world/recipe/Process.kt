@@ -1,22 +1,22 @@
-package steam.world.crafting.recipe
+package steam.world.recipe
 
 import mindustry.type.Item
 import mindustry.type.Liquid
+import mindustry.world.Block
 
 class Process(
-    val recipes: ArrayList<Recipe> = arrayListOf(),
+    val recipes: ArrayList<CrafterRecipe> = arrayListOf(),
     val name: String = "",
     val group: Int = -1 //group of process, for displaying stats in groups
 ) {
-    lateinit var allInItems: List<Item>
+    lateinit var allConsumer: List<RecipeConsume>
     lateinit var allOutItems: List<Item>
-    lateinit var allInLiquids: List<Liquid>
     lateinit var allOutLiquids: List<Liquid>
 
-    fun initialize() {
-        allInItems = recipes.flatMap { it.allInItems }
+    fun initialize(block: Block) {
+        recipes.forEach { it.initialize(block) }
+        allConsumer = recipes.flatMap { it.consumer.toList() }
         allOutItems = recipes.flatMap { it.allOutItems }
-        allInLiquids = recipes.flatMap { it.allInLiquids }
         allOutLiquids = recipes.flatMap { it.allOutLiquids }
     }
 }

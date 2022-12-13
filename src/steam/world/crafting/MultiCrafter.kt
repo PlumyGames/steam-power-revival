@@ -14,22 +14,18 @@ import arc.util.Strings.autoFixed
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.content.Fx
-import mindustry.gen.Building
 import mindustry.gen.Icon
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
-import mindustry.type.Item
-import mindustry.type.ItemStack
-import mindustry.type.LiquidStack
 import mindustry.ui.ItemDisplay
 import mindustry.ui.Styles
 import mindustry.world.meta.Stat
 import plumy.dsl.AddBar
 import plumy.dsl.config
 import steam.utils.addTable
-import steam.world.crafting.recipe.Process
-import steam.world.crafting.recipe.ProcessList
-import steam.world.crafting.recipe.Recipe
+import steam.world.recipe.CrafterRecipe
+import steam.world.recipe.Process
+import steam.world.recipe.ProcessList
 import kotlin.math.min
 
 /* todo
@@ -69,7 +65,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
     override fun init() {
         super.init()
         processes.forEach {
-            it.initialize()
+            it.initialize(this)
         }
         processList = ProcessList(processes, groupSize)
     }
@@ -114,10 +110,6 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             }
         }
 
-        override fun acceptItem(source: Building, item: Item): Boolean {
-            return this.items.get(item) < this.getMaximumAccepted(item) && (processList.allInItems.contains(item) || block.consumesItem(item))
-        }
-
         fun dumpOutputs() {
             if (!configurable) for (output in processList.allOutItems) dump(output)
             else currentProcess.recipes.forEach { it.outItem.forEach { i -> dump(i.item) } }
@@ -126,8 +118,10 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             else currentProcess.recipes.forEach { it.outLiquid.forEach { i -> dumpLiquid(i.liquid) } }
         }
 
-        fun craft(r: Recipe, idx: Int) {
-            items.remove(r.inItem)
+        fun craft(r: CrafterRecipe, idx: Int) {
+            r.consumer.forEach {
+                it.trigger(this)
+            }
 
             for (output in r.outItem) {
                 for (i in 0 until output.amount) {
@@ -140,7 +134,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             progress[idx] %= 1f
         }
 
-        fun craftFluid(recipe: Recipe) {
+        fun craftFluid(recipe: CrafterRecipe) {
             //continuously output based on efficiency
             if (recipe.outLiquid.isNotEmpty()) {
                 val inc = getProgressIncrease(1f)
@@ -160,8 +154,8 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             }
         }
 
-        fun canCraftRecipe(recipe: Recipe): Boolean {
-            return items.has(recipe.inItem)
+        fun canCraftRecipe(recipe: CrafterRecipe): Boolean {
+            return recipe.consumer.all { it.valid(this) }
         }
 
         override fun progress() = progress[0]
@@ -209,7 +203,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             { efficiency * warmup }
         )
     }
-
+    @Suppress("LABEL_NAME_CLASH")
     override fun setStats() {
         super.setStats()
         stats.add(Stat.output) { stat ->
@@ -225,7 +219,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                                 image().growX().pad(7f).padLeft(5f).padRight(0f).height(4f).color(Color.darkGray).row()
                             }
                             addTable {
-                                if (process.allInItems.isNotEmpty()) {
+                                if (process.allConsumer.isNotEmpty()) {
                                     addTable {
                                         process.recipes.forEach { recipe ->
                                             addTable {
@@ -233,8 +227,8 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                                                 setColor(Pal.darkerGray)
                                                 addTable {
                                                     addTable {
-                                                        recipe.inItem.forEach {
-                                                            add(ItemDisplay(it.item, it.amount, recipe.craftTime, false).left())
+                                                        recipe.consumer.forEach {
+                                                            it.displayTable(this@addTable, recipe)
                                                         }
                                                         image(Icon.right).padLeft(10f).padRight(10f)
                                                         recipe.outItem.forEach {
@@ -256,30 +250,5 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                 }
             }
         }
-            /*recipes.forEach { r ->
-                table.addTable {
-                    background(Tex.whiteui)
-                    setColor(Pal.darkestGray)
-                    addTable {
-                        r.inItem.forEach { add(ItemDisplay(it.item, it.amount, r.craftTime, false)).padRight(5f).padLeft(5f) }
-                        image(Icon.right)
-                        r.outItem.forEach { add(ItemDisplay(it.item, it.amount, r.craftTime, false)).padRight(5f).padLeft(5f) }
-                        r.outLiquid.forEach { add(LiquidDisplay(it.liquid, it.amount * 60f, true)).padRight(5f).padLeft(5f) }
-                    }.expandX().left().pad(10f)
-                    add("${Strings.autoFixed(r.craftTime / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray).right().padRight(10f)
-                }.grow().padBottom(5f).row()
-            }*/
     }
-}
-fun Process.addRecipe(
-    craftTime: Float,
-    inItem: Array<ItemStack> = emptyArray(),
-    outItem: Array<ItemStack> = emptyArray(),
-    outLiquid: Array<LiquidStack> = emptyArray(),
-) {
-    recipes.add(
-        Recipe(
-            craftTime, inItem, outItem, outLiquid
-        )
-    )
 }

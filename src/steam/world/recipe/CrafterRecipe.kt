@@ -1,23 +1,23 @@
-package steam.world.crafting.recipe
+package steam.world.recipe
 
 import mindustry.ctype.UnlockableContent
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
+import mindustry.world.Block
 
-class Recipe(
+class CrafterRecipe(
     val craftTime: Float = 60f,
-    val inItem: Array<ItemStack> = emptyArray(),
+    val consumer: Array<RecipeConsume> = emptyArray(),
     val outItem: Array<ItemStack> = emptyArray(),
-    val inLiquid: Array<LiquidStack> = emptyArray(),
     val outLiquid: Array<LiquidStack> = emptyArray(),
     val required: Boolean = true //whether this recipe is required for the process
 ) {
-    val allInItems = inItem.map { it.item }
     val allOutItems = outItem.map { it.item }
-    val allInLiquids = inLiquid.map { it.liquid }
     val allOutLiquids = outLiquid.map { it.liquid }
-    val allItems = (allInItems + allOutItems).distinct()
     val mainOut: UnlockableContent by lazy {
         (outItem.getOrNull(0)?.item ?: outLiquid.getOrNull(0)?.liquid) as UnlockableContent
+    }
+    fun initialize(block: Block) {
+        consumer.forEach { it.initialize(block) }
     }
 }

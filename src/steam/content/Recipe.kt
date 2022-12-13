@@ -1,12 +1,12 @@
 package steam.content
 
-import mindustry.content.Items
 import mindustry.content.Liquids
 import plumy.dsl.plus
 import steam.gen.OreGenerator
 import steam.world.crafting.MultiCrafter
-import steam.world.crafting.recipe.Process
-import steam.world.crafting.recipe.Recipe
+import steam.world.recipe.CrafterRecipe
+import steam.world.recipe.Process
+import steam.world.recipe.RecipeConsumeItem
 
 fun MultiCrafter.oreRecipe (
     hardness: Int,
@@ -24,24 +24,11 @@ fun MultiCrafter.oreRecipe (
             processes.add(
                 Process(
                     arrayListOf(
-                        Recipe(
-                            craftTime = time,
-                            inItem = arrayOf(ore + inAmount),
+                        CrafterRecipe(
+                            time,
+                            arrayOf(RecipeConsumeItem(ore + 1)),
                             outItem = arrayOf(raw + outAmount),
                             outLiquid = arrayOf(Liquids.slag + slag)
-                        ),
-                        //testing
-                        //todo replace with actual fueling
-                        if (raw != Items.copper) Recipe(
-                            30f,
-                            arrayOf(Items.titanium + 2, Items.plastanium + 1),
-                            arrayOf(Items.pyratite + 1),
-                            required = false
-                        ) else Recipe(
-                            30f,
-                            arrayOf(Items.silicon + 1),
-                            arrayOf(Items.graphite + 1, Items.metaglass + 2),
-                            required = false
                         )
                     ),
                     raw.localizedName + " Ore Smelting",

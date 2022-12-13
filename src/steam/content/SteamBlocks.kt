@@ -425,7 +425,6 @@ object SteamBlocks {
             itemCapacity = 40
             configurable = false
             oreRecipe(3, 80f, 0.05f, requireFuel = true)
-
             /*addRecipe(60f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
             addRecipe(80f, inItem = arrayOf(Items.scrap + 1), outLiquid = arrayOf(Liquids.slag + 0.1f))*/
             drawer = DrawMulti {
