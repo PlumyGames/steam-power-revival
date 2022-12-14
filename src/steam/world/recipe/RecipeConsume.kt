@@ -7,12 +7,9 @@ import mindustry.world.Block
 abstract class RecipeConsume(
     val required: Boolean = true
 ) {
-    //efficiency added when the recipe is active
-    var bonusEfficiency = 0f
-
     //process efficiency factor
-    fun efficiency(): Float {
-        return 1f
+    open fun efficiencyBonus(build: Building): Float {
+        return 0f
     }
     //consume display
     open fun build(build: Building, table: Table) {}

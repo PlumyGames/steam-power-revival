@@ -64,6 +64,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
 
     override fun init() {
         super.init()
+        hasConsumers = true
         processes.forEach {
             it.initialize(this)
         }
@@ -108,6 +109,17 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                 } else warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed)
                 dumpOutputs()
             }
+        }
+
+        override fun efficiencyScale(): Float {
+            if(enabledRecipe) {
+                var efficiency = 1f
+                currentProcess.allConsumer.forEach {
+                    efficiency += it.efficiencyBonus(this)
+                }
+                return efficiency
+            }
+            return 1f
         }
 
         fun dumpOutputs() {
@@ -246,7 +258,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                                 }
                             }.grow().row()
                         }.grow().pad(10f)
-                    }.growX().padBottom(10f).row()
+                    }.padBottom(10f).row()
                 }
             }
         }
