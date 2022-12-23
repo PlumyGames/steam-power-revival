@@ -66,7 +66,7 @@ object OreIconGenerator {
     var baseTextures = ArrayList<Pixmap>()
     var patchTextures = ArrayList<Pixmap>()
     var powderTextures = ArrayList<Pixmap>()
-    var alpha = 0.662f
+    var alpha = 0.59f
     fun base(index: Int) = "/sprites/template/ore-base$index.png"
     fun patch(index: Int) = "/sprites/template/ore-patch$index.png"
     fun powder(index: Int) = "/sprites/template/ore-powder$index.png"

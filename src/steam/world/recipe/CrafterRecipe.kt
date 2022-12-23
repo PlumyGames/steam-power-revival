@@ -20,4 +20,8 @@ class CrafterRecipe(
     fun initialize(block: Block) {
         consumer.forEach { it.initialize(block) }
     }
+
+    fun haveOutput(): Boolean {
+        return allOutItems.isNotEmpty() && allOutLiquids.isNotEmpty()
+    }
 }

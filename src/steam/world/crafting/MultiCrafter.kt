@@ -242,7 +242,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                                                         recipe.consumer.forEach {
                                                             it.displayTable(this@addTable, recipe)
                                                         }
-                                                        image(Icon.right).padLeft(10f).padRight(10f)
+                                                        if(recipe.haveOutput()) image(Icon.right).padLeft(10f).padRight(10f)
                                                         recipe.outItem.forEach {
                                                             add(ItemDisplay(it.item, it.amount, recipe.craftTime, false).left())
                                                         }
@@ -258,7 +258,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                                 }
                             }.grow().row()
                         }.grow().pad(10f)
-                    }.padBottom(10f).row()
+                    }.padBottom(10f).padRight(20f).padLeft(20f).row()
                 }
             }
         }

@@ -29,7 +29,7 @@ class RecipeConsumeItem(
 
     override fun displayTable(table: Table, recipe: CrafterRecipe) {
         items.forEach {
-            table.add(ItemDisplay(it.item, it.amount, recipe.craftTime, false).left())
+            table.add(ItemDisplay(it.item, it.amount, recipe.craftTime, false))
         }
     }
 }

@@ -157,15 +157,19 @@ object ContentsOverrider {
     fun sand() {
         sand.apply {
             attributes.set(Attribute.sand, 0.3f)
+            playerUnmineable = false
         }
         darksand.apply {
             attributes.set(Attribute.sand, 0.3f)
+            playerUnmineable = false
         }
         sandWater.apply {
             attributes.set(Attribute.sand, 0.55f)
+            playerUnmineable = false
         }
         darksandTaintedWater.apply {
             attributes.set(Attribute.sand, 0.55f)
+            playerUnmineable = false
         }
     }
 
