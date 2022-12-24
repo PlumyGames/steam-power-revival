@@ -18,6 +18,7 @@ import mindustry.gen.Icon
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.ui.ItemDisplay
+import mindustry.ui.LiquidDisplay
 import mindustry.ui.Styles
 import mindustry.world.meta.Stat
 import plumy.dsl.AddBar
@@ -29,12 +30,7 @@ import steam.world.recipe.ProcessList
 import kotlin.math.min
 
 /* todo
-*  add better liquid support
-*  add temp support
-*  add power support
-*  better canCraft()
-*  add booster support
-* rewrite the whole thing
+*  add grouped stats display
 */
 
 class MultiCrafter(name: String) : TemperatureBlock(name) {
@@ -108,7 +104,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                     totalProgress += edelta()
                 } else warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed)
                 dumpOutputs()
-            }
+            } else warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed)
         }
 
         override fun efficiencyScale(): Float {
@@ -246,6 +242,9 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                                                         recipe.outItem.forEach {
                                                             add(ItemDisplay(it.item, it.amount, recipe.craftTime, false).left())
                                                         }
+                                                        recipe.outLiquid.forEach {
+                                                            add(LiquidDisplay(it.liquid, it.amount * 60f, true).left())
+                                                        }
                                                     }.padBottom(7f).row()
                                                     add("${bundle["stat.productiontime"]}: ${autoFixed(recipe.craftTime / 60f, 1)} ${bundle["unit.seconds"]}")
                                                         .color(Color.lightGray).growX().left().row()
@@ -258,7 +257,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                                 }
                             }.grow().row()
                         }.grow().pad(10f)
-                    }.padBottom(10f).padRight(20f).padLeft(20f).row()
+                    }.growX().padBottom(10f).padRight(20f).padLeft(20f).row()
                 }
             }
         }

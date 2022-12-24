@@ -50,8 +50,10 @@ import steam.world.crafting.AreaCrafter
 import steam.world.crafting.HeatRegulator
 import steam.world.crafting.MultiCrafter
 import steam.world.crafting.TemperatureCrafter
+import steam.world.distribution.LiquidFlowgate
 import steam.world.distribution.PressureBridge
 import steam.world.distribution.PressurePipe
+import steam.world.drawer.DrawLiquidWarmup
 import steam.world.drawer.DrawReservoir
 import steam.world.drawer.DrawSteamInside
 import steam.world.drawer.part.DrawBuilding
@@ -61,6 +63,10 @@ import steam.world.heating.ItemBurner
 import steam.world.mech.MechPad
 import steam.world.pressure.*
 import steam.world.production.ExtractionDrill
+import steam.world.recipe.CrafterRecipe
+import steam.world.recipe.RecipeConsumeFlammable
+import steam.world.recipe.RecipeConsumeFluid
+import steam.world.recipe.RecipeConsumeItem
 import steam.world.temp.DrawOverheat
 import steam.world.temp.celsius
 
@@ -87,8 +93,10 @@ object SteamBlocks {
     lateinit var burner: ItemBurner
     lateinit var fluidBurner: FluidCombustor
     lateinit var heatRegulator: HeatRegulator
+    lateinit var mixer: Block
     //liquid
     lateinit var reservoir: Block
+    lateinit var flowgate: Block
     //power
     lateinit var turbine: Block
     lateinit var pneumaticEngine: Block
@@ -420,11 +428,33 @@ object SteamBlocks {
         blastFurnace = MultiCrafter("blast-furnace").apply {
             warmupSpeed = 0.012f
             size = 3
-            health = 800
+            health = 550
             hasTemp = false
             itemCapacity = 40
             configurable = false
             oreRecipe(3, 80f, 0.05f, requireFuel = true)
+            recipe(arrayListOf(
+                CrafterRecipe(
+                    45f,
+                    arrayOf(RecipeConsumeItem(Items.scrap + 1),),
+                    outLiquid = arrayOf(Liquids.slag + 0.1f)
+                ),
+                CrafterRecipe(
+                    80f,
+                    arrayOf(RecipeConsumeFlammable())
+                )
+            ))
+            recipe(arrayListOf(
+                CrafterRecipe(
+                    160f,
+                    arrayOf(RecipeConsumeItem(Items.sand + 3)),
+                    arrayOf(SteamItems.glass + 2)
+                ),
+                CrafterRecipe(
+                    80f,
+                    arrayOf(RecipeConsumeFlammable())
+                )
+            ))
             drawer = DrawMulti {
                 +DrawDefault()
                 +DrawGlowRegion().apply { color = R.C.burnerFlame }
@@ -442,43 +472,50 @@ object SteamBlocks {
     }
 
     fun advancedFurnace() {
-        /* still testing multi-processing
         advancedFurnace = MultiCrafter("advanced-furnace").apply {
-            warmupSpeed = 0.012f
+            warmupSpeed = 0.010f
             size = 3
-            health = 1200
+            health = 950
             hasTemp = false
             itemCapacity = 40
-            configurable = true
-
-            recipes.oreRecipe(4, 50f, 0.05f * 1.6f)
-            recipes.orePowderRecipe(4, 100f, 0.03f)
-            addRecipe(45f, inItem = arrayOf(Items.sand + 1), outItem = arrayOf(SteamItems.glass + 1))
-            addRecipe(80f * 0.625f, inItem = arrayOf(Items.scrap + 1), outLiquid = arrayOf(Liquids.slag + 0.16f))
-            addRecipe(
-                260f,
-                inItem = arrayOf(SteamItems.iron + 2, Items.coal + 3),
-                outItem = arrayOf(SteamItems.steel + 1),
-                outLiquid = arrayOf(Liquids.slag + 0.04f)
-            )
+            configurable = false
+            oreRecipe(4, 60f, 0.03f)
+            recipe(arrayListOf(
+                CrafterRecipe(
+                    60f,
+                    arrayOf(RecipeConsumeItem(Items.sand + 1)),
+                    arrayOf(SteamItems.glass + 1)
+                )
+            ))
+            recipe(arrayListOf(
+                CrafterRecipe(
+                    30f,
+                    arrayOf(RecipeConsumeItem(Items.scrap + 1)),
+                    outLiquid = arrayOf(Liquids.slag + 0.15f)
+                )
+            ))
+            recipe(arrayListOf(
+                CrafterRecipe(
+                    240f,
+                    arrayOf(RecipeConsumeItem(Items.coal + 3, SteamItems.iron + 2)),
+                    arrayOf(SteamItems.steel + 1),
+                    arrayOf(Liquids.slag + 1f / 60f)
+                )
+            ))
             drawer = DrawMulti {
-                +DrawDefault()
+                +DrawRegion("-bottom")
                 +DrawLiquidWarmup(Liquids.slag)
-                +DrawRegion("-top1")
+                +DrawDefault()
                 +DrawGlowRegion().apply { color = R.C.burnerFlame }
                 +DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
             }
-            consumePower(2.5f)
-            craftTime = 210f
             category = Category.crafting
             buildVisibility = BuildVisibility.shown
-            UndebugOnly {
-                requirements = arrayOf(
-                    Items.copper + 90, Items.lead + 40, Items.graphite + 50, SteamItems.iron + 65
-                )
-            }
+            requirements = arrayOf(
+                SteamItems.iron + 80, SteamItems.glass + 25, Items.lead + 40, Items.silicon + 20
+            )
+            consumePower(3.2f)
         }
-         */
     }
 
     fun crystallizer() {
@@ -603,6 +640,35 @@ object SteamBlocks {
         }
     }
 
+    fun mixer() {
+        mixer = MultiCrafter("mixer").apply {
+            requirements(
+                Category.crafting,
+                arrayOf(Items.silicon + 25, SteamItems.steel + 20, SteamItems.glass + 30)
+            )
+            size = 3
+            health = 850
+            hasTemp = false
+            itemCapacity = 40
+            configurable = true
+            recipe(arrayListOf(CrafterRecipe(
+                200f,
+                arrayOf(RecipeConsumeItem(Items.sand + 3, Items.lead + 2, Items.coal + 3)),
+                arrayOf(Items.pyratite + 4)
+            )))
+            recipe(arrayListOf(CrafterRecipe(
+                180f,
+                arrayOf(
+                    RecipeConsumeItem(Items.pyratite + 3),
+                    RecipeConsumeFluid(Liquids.oil + 0.15f, Liquids.water + 0.1f)
+                ),
+                arrayOf(Items.blastCompound + 2)
+            )))
+            squareSprite = false
+            consumePower(1.2f)
+        }
+    }
+
     fun reservoir() {
         reservoir = Pump("reservoir").apply {
             liquidCapacity = 80f
@@ -622,6 +688,17 @@ object SteamBlocks {
                 +DrawReservoir(null)
                 +DrawRegion("-top")
             }
+        }
+    }
+
+    fun flowgate() {
+        flowgate = LiquidFlowgate("liquid-flowgate").apply {
+            requirements(
+                Category.liquid,
+                arrayOf(SteamItems.iron + 8, Items.metaglass + 4)
+            )
+            health = 90
+            liquidCapacity = 40f
         }
     }
 
@@ -963,6 +1040,7 @@ object SteamBlocks {
             oreDefault = true
             oreThreshold = 0.864f
             oreScale = 24.904762f
+            mapColor = Color.valueOf("ab8772")
         }
     }
 

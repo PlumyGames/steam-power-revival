@@ -9,6 +9,7 @@ import steam.world.recipe.Process
 import steam.world.recipe.RecipeConsumeItem
 import steam.world.recipe.RecipeConsumeFlammable
 
+
 fun MultiCrafter.oreRecipe (
     hardness: Int,
     time: Float,
@@ -25,7 +26,7 @@ fun MultiCrafter.oreRecipe (
             val recipes = arrayListOf(
                 CrafterRecipe(
                     time,
-                    arrayOf(RecipeConsumeItem(ore + 1)),
+                    arrayOf(RecipeConsumeItem(ore + inAmount)),
                     outItem = arrayOf(raw + outAmount),
                     outLiquid = arrayOf(Liquids.slag + slag)
                 )
@@ -45,4 +46,16 @@ fun MultiCrafter.oreRecipe (
             )
         }
     }
+}
+
+fun MultiCrafter.recipe (
+    recipes: ArrayList<CrafterRecipe>,
+    name: String = ""
+) {
+    processes.add(
+        Process(
+            recipes,
+            name
+        )
+    )
 }

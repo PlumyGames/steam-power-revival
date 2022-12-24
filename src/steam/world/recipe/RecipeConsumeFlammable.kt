@@ -9,7 +9,7 @@ import mindustry.type.Item
 import steam.utils.addTable
 
 open class RecipeConsumeFlammable(
-    var minFlammability: Float,
+    var minFlammability: Float = 1f,
     var threshold: Float = 1f
 ) : RecipeConsumeItemFilter() {
     init {

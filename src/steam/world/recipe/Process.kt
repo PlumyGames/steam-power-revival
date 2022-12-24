@@ -7,7 +7,7 @@ import mindustry.world.Block
 class Process(
     val recipes: ArrayList<CrafterRecipe> = arrayListOf(),
     val name: String = "",
-    val group: Int = -1 //group of process, for displaying stats in groups
+    val group: Int = 0 //group of process, for displaying stats in groups
 ) {
     lateinit var allConsumer: List<RecipeConsume>
     lateinit var allOutItems: List<Item>
