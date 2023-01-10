@@ -6,6 +6,7 @@ class ProcessList(
 ) {
     val allOutItems = process.flatMap { it.allOutItems }
     val allOutLiquids = process.flatMap { it.allOutLiquids }
+    val allRecipe = process.flatMap { it.recipes }
     val indexedProcess = List(groupSize + 1) { i ->
         return@List process.filter { it.group == i }
     }

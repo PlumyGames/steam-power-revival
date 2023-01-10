@@ -4,13 +4,15 @@ import mindustry.ctype.UnlockableContent
 import mindustry.type.ItemStack
 import mindustry.type.LiquidStack
 import mindustry.world.Block
+import mindustry.world.draw.DrawBlock
 
 class CrafterRecipe(
     val craftTime: Float = 60f,
     val consumer: Array<RecipeConsume> = emptyArray(),
     val outItem: Array<ItemStack> = emptyArray(),
     val outLiquid: Array<LiquidStack> = emptyArray(),
-    val required: Boolean = true //whether this recipe is required for the process
+    val required: Boolean = true, //whether this recipe is required for the process
+    val drawer: DrawBlock? = null
 ) {
     val allOutItems = outItem.map { it.item }
     val allOutLiquids = outLiquid.map { it.liquid }

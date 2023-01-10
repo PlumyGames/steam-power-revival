@@ -31,6 +31,7 @@ import kotlin.math.min
 
 /* todo
 *  add grouped stats display
+*  rewrite so recipe recursions is possible instead of hardcoded progress?
 */
 
 class MultiCrafter(name: String) : TemperatureBlock(name) {
@@ -52,7 +53,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             val new = it
             if (curProcessIdx != new) {
                 curProcessIdx = if (new < 0) -1 else new.coerceIn(0, processes.size - 1)
-                progress = Array(processes.size) { 0f }
+                progress = Array(processes[it].recipes.size) { 0f }
                 warmup = 0f
             }
         }
@@ -65,6 +66,9 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             it.initialize(this)
         }
         processList = ProcessList(processes, groupSize)
+        processList.allRecipe.forEach {
+            it.drawer?.load(this) ?: return@forEach
+        }
     }
 
     inner class MultiCrafterBuild : TemperatureBuild() {
@@ -200,6 +204,13 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         override fun read(read: Reads) {
             super.read(read)
             curProcessIdx = read.i()
+        }
+
+        override fun draw() {
+            super.draw()
+            processList.allRecipe.forEach {
+                it.drawer?.draw(this) ?: return@forEach
+            }
         }
     }
 
