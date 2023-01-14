@@ -54,7 +54,6 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             if (curProcessIdx != new) {
                 curProcessIdx = if (new < 0) -1 else new.coerceIn(0, processes.size - 1)
                 progress = Array(processes[it].recipes.size) { 0f }
-                warmup = 0f
             }
         }
     }
@@ -97,7 +96,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
                 if (canCraft()){
                     currentProcess.recipes.forEachIndexed { i, r ->
                         if (canCraftRecipe(r)){
-                            warmup = Mathf.approachDelta(warmup, 1f, warmupSpeed)
+                            warmup = Mathf.approachDelta(warmup, efficiency.coerceAtMost(1f), warmupSpeed)
                             progress[i] += getProgressIncrease(r.craftTime) * warmup
                             craftFluid(r)
                             if (progress[i] >= 1f) {

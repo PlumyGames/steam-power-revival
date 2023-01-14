@@ -457,8 +457,8 @@ object SteamBlocks {
             ))
             drawer = DrawMulti {
                 +DrawDefault()
-                +DrawGlowRegion().apply { color = R.C.burnerFlame }
                 +DrawWarmupRegion().apply { color = R.C.burnerFlame; sinMag = 0.2f }
+                +DrawGlowRegion().apply { color = R.C.burnerFlame }
             }
             squareSprite = false
             category = Category.crafting
