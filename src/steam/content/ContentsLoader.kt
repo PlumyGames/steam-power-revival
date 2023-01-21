@@ -15,6 +15,8 @@ object ContentsLoader {
             glass()
             iron()
             quartz()
+            salt()
+            sodiumHydroxide()
             sulfur()
             steel()
             depletedThorium()
@@ -22,9 +24,11 @@ object ContentsLoader {
         SteamFluids.apply {
             steam()
             oxygen()
+            chlorine()
             acid()
         }
         SteamUnitTypes.apply {
+            alphaDrone()
             epsilon()
             tau()
         }
@@ -34,6 +38,7 @@ object ContentsLoader {
             quartzExtractor()
             boiler()
             industrialBoiler()
+            electrolysisPlant()
             burner()
             fluidBurner()
             heatRegulator()
@@ -89,7 +94,7 @@ object ContentsLoader {
             stoneExcavator()
             blastFurnace()
             advancedFurnace()
-            crystallizer()
+            crystallizer() //loaded here, so it display next to furnaces on block selection
             thermalCentrifuge()
         }
     }

@@ -113,8 +113,7 @@ class RawOre(
         explosiveness = original.explosiveness
         hardness = original.hardness
         charge = original.charge
-        radioactivity = original.radioactivity
-        cost = original.cost
+        radioactivity = original.radioactivity * 0.3f
         cost = original.cost * 0.8f
         healthScaling = original.healthScaling * 0.5f
     }
@@ -136,7 +135,7 @@ class OrePowder(
         explosiveness = original.explosiveness
         hardness = original.hardness
         charge = original.charge
-        radioactivity = original.radioactivity
+        radioactivity = original.radioactivity * 0.65f
         cost = original.cost * 0.3f
         healthScaling = original.healthScaling * 0.3f
     }

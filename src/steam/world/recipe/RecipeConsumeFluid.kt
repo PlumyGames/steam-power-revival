@@ -26,7 +26,7 @@ class RecipeConsumeFluid(
 
     override fun valid(build: Building): Boolean {
         return liquids.all {
-            build.edelta() * build.efficiencyScale() * it.amount > build.liquids.get(it.liquid)
+            build.edelta() * build.efficiencyScale() * it.amount <= build.liquids.get(it.liquid)
         }
     }
 

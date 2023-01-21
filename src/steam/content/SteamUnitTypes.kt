@@ -10,6 +10,7 @@ import mindustry.entities.pattern.ShootSpread
 import mindustry.gen.ElevationMoveUnit
 import mindustry.gen.MechUnit
 import mindustry.gen.Sounds
+import mindustry.gen.UnitEntity
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.type.UnitType
@@ -18,8 +19,70 @@ import steam.entities.bullets.ConeBulletType
 import tvakot.entities.bullet.VectorHomingBulletType
 
 object SteamUnitTypes {
+    lateinit var alphaDrone: UnitType
     lateinit var epsilon: UnitType
     lateinit var tau: UnitType
+
+    fun alphaDrone() {
+        alphaDrone = UnitType("alpha-drone").apply {
+            constructor = Prov { UnitEntity.create() }
+            health = 75f
+            speed = 3.2f
+            drag = 0.014f
+            flying = true
+            hitSize = 7f
+            engineOffset = 3f
+            range = 110f
+            circleTarget = true
+            trailLength = 7
+            rotateSpeed = 6.5f
+            trailScl = 0.7f
+            accel = 0.3f
+            weapons.addAll(
+                Weapon().apply {
+                    reload = 13f
+                    x = 0f
+                    mirror = false
+                    ejectEffect = Fx.casing1
+                    bullet = BasicBulletType(2.5f, 9.0f).apply {
+                        width = 7f
+                        height = 9f
+                        lifetime = 60.0f
+                    }
+                },
+                Weapon().apply {
+                    reload = 60f
+                    x = 0f
+                    baseRotation = 180f
+                    shootCone = 360f
+                    bullet = VectorHomingBulletType().apply {
+                        trailColor = Pal.bulletYellowBack
+                        backColor = Pal.bulletYellowBack
+                        frontColor = Pal.bulletYellow
+                        shrinkY = 0f
+                        width = 8f
+                        keepVelocity = false
+                        height = 8f
+                        hitSound = Sounds.explosion
+                        trailLength = 5
+                        homingRange = 110f
+                        homingPower = 0.08f
+                        lifetime = 120f
+                        speed = 2.85f
+                        rangeOverride = 110f
+
+                        hitEffect = Fx.explosion.also { despawnEffect = it; smokeEffect = it }
+                        damage = 10f
+                        splashDamage = 12f
+                        splashDamageRadius = 20f
+
+                        sprite = "missile"
+                    }
+                }
+            )
+        }
+    }
+
     fun epsilon() {
         epsilon = UnitType("epsilon").apply {
             constructor = Prov { MechUnit.create() }

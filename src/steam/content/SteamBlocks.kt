@@ -54,6 +54,7 @@ import steam.world.distribution.LiquidFlowgate
 import steam.world.distribution.PressureBridge
 import steam.world.distribution.PressurePipe
 import steam.world.drawer.DrawLiquidWarmup
+import steam.world.drawer.DrawRecipe
 import steam.world.drawer.DrawReservoir
 import steam.world.drawer.DrawSteamInside
 import steam.world.drawer.part.DrawBuilding
@@ -88,6 +89,7 @@ object SteamBlocks {
     lateinit var blastFurnace: MultiCrafter
     lateinit var advancedFurnace: MultiCrafter
     lateinit var crystallizer: Block
+    lateinit var electrolysisPlant: Block
     lateinit var thermalCentrifuge: Block
     //crafting - heating
     lateinit var burner: ItemBurner
@@ -429,7 +431,6 @@ object SteamBlocks {
             warmupSpeed = 0.012f
             size = 3
             health = 550
-            hasTemp = false
             itemCapacity = 40
             configurable = false
             oreRecipe(3, 80f, 0.05f, requireFuel = true)
@@ -476,9 +477,7 @@ object SteamBlocks {
             warmupSpeed = 0.010f
             size = 3
             health = 950
-            hasTemp = false
             itemCapacity = 40
-            configurable = false
             oreRecipe(4, 60f, 0.03f)
             recipe(arrayListOf(
                 CrafterRecipe(
@@ -541,6 +540,51 @@ object SteamBlocks {
                 +DrawRegion("-bottom")
                 +DrawLiquidTile(Liquids.slag)
                 +DrawDefault()
+            }
+        }
+    }
+
+    fun electrolysisPlant() {
+        electrolysisPlant = MultiCrafter("electrolysis-plant").apply {
+            warmupSpeed = 0.010f
+            size = 3
+            health = 800
+            itemCapacity = 40
+            recipe(
+                arrayListOf(
+                    CrafterRecipe(
+                        60f,
+                        arrayOf(RecipeConsumeFluid(Liquids.water + 0.4f)),
+                        outLiquid = arrayOf(SteamFluids.oxygen + 0.2f, Liquids.hydrogen + 0.4f)
+                    )
+                ),
+                name = "steam-water-electrolysis",
+                icon = true
+            )
+            recipe(
+                arrayListOf(
+                    CrafterRecipe(
+                        120f,
+                        arrayOf(RecipeConsumeFluid(Liquids.water + 0.4f), RecipeConsumeItem(SteamItems.salt + 1)),
+                        arrayOf(SteamItems.sodiumHydroxide + 1),
+                        arrayOf(SteamFluids.chlorine + 0.2f, Liquids.hydrogen + 0.2f)
+                    )
+                ),
+                name = "steam-salt-water-electrolysis",
+                icon = true
+            )
+            category = Category.crafting
+            buildVisibility = BuildVisibility.shown
+            requirements = arrayOf(
+                Items.graphite + 40, SteamItems.glass + 25, Items.lead + 40, Items.silicon + 25, SteamItems.steel + 20
+            )
+            consumePower(2.8f)
+            drawer = DrawMulti {
+                +DrawRegion("-bottom")
+                +DrawLiquidTile(Liquids.water, 2f)
+                +DrawRecipe()
+                +DrawDefault()
+                +DrawGlowRegion().apply { color = Liquids.hydrogen.color; alpha = 0.7f }
             }
         }
     }
@@ -648,7 +692,6 @@ object SteamBlocks {
             )
             size = 3
             health = 850
-            hasTemp = false
             itemCapacity = 40
             configurable = true
             recipe(arrayListOf(CrafterRecipe(
@@ -660,9 +703,9 @@ object SteamBlocks {
                 180f,
                 arrayOf(
                     RecipeConsumeItem(Items.pyratite + 3),
-                    RecipeConsumeFluid(Liquids.oil + 0.15f, Liquids.water + 0.1f)
+                    RecipeConsumeFluid(Liquids.oil + 0.15f)
                 ),
-                arrayOf(Items.blastCompound + 2)
+                arrayOf(Items.blastCompound + 3)
             )))
             squareSprite = false
             consumePower(1.2f)
@@ -989,7 +1032,7 @@ object SteamBlocks {
             )
             buildVisibility = BuildVisibility.shown
             health = 400
-            range = 40f
+            range = 80f
             heatColor = Pal.heal.cpy().a(0.4f)
             shootWarmupSpeed = 0.07f
             shootCone = 360f
@@ -1006,7 +1049,7 @@ object SteamBlocks {
                 healAmount = 20f
                 layer = Layer.buildBeam
                 hitEffect = Fx.none
-                length = 45f
+                length = 85f
             }
         }
     }

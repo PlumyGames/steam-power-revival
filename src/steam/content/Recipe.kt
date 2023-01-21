@@ -18,7 +18,7 @@ fun MultiCrafter.oreRecipe (
     outAmount: Int = 1,
     requireFuel: Boolean = false,
     fuelTime: Float = 120f,
-    minFlammability: Float = 1f
+    minFlammability: Float = 0.7f
 ) {
     val grouped = ++groupSize
     for ((raw, ore) in OreGenerator.rawOres) {
@@ -50,12 +50,16 @@ fun MultiCrafter.oreRecipe (
 
 fun MultiCrafter.recipe (
     recipes: ArrayList<CrafterRecipe>,
-    name: String = ""
+    name: String = "",
+    group: Int = 0,
+    icon: Boolean = false
 ) {
     processes.add(
         Process(
             recipes,
-            name
+            name,
+            group,
+            icon
         )
     )
 }

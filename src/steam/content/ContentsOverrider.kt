@@ -211,13 +211,14 @@ object ContentsOverrider {
 
     fun mender() {
         mender.requirements = arrayOf(
-            SteamItems.iron + 15, Items.copper + 5, Items.metaglass + 5, Items.silicon + 3
+            SteamItems.steel + 5, Items.graphite + 12, Items.metaglass + 15, Items.silicon + 3
         )
     }
 
     fun items() {
-        Items.titanium.hardness = 4
-        Items.thorium.hardness = 5
+        Items.titanium.hardness++
+        Items.thorium.hardness++
+        Items.sporePod.flammability = 0.7f
     }
 
     fun water() {

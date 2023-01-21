@@ -14,12 +14,16 @@ import arc.util.Strings.autoFixed
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.content.Fx
+import mindustry.gen.Building
 import mindustry.gen.Icon
 import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.ui.ItemDisplay
 import mindustry.ui.LiquidDisplay
 import mindustry.ui.Styles
+import mindustry.world.Block
+import mindustry.world.draw.DrawBlock
+import mindustry.world.draw.DrawDefault
 import mindustry.world.meta.Stat
 import plumy.dsl.AddBar
 import plumy.dsl.config
@@ -34,12 +38,14 @@ import kotlin.math.min
 *  rewrite so recipe recursions is possible instead of hardcoded progress?
 */
 
-class MultiCrafter(name: String) : TemperatureBlock(name) {
+class MultiCrafter(name: String) : Block(name) {
     var processes = ArrayList<Process>()
-    lateinit var processList: ProcessList
+    var drawer: DrawBlock = DrawDefault()
     var warmupSpeed = 0.025f
     var craftEffect = Fx.none
     var groupSize = 0
+
+    lateinit var processList: ProcessList
 
     init {
         solid = true
@@ -52,8 +58,12 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         config<MultiCrafterBuild, Int> {
             val new = it
             if (curProcessIdx != new) {
-                curProcessIdx = if (new < 0) -1 else new.coerceIn(0, processes.size - 1)
-                progress = Array(processes[it].recipes.size) { 0f }
+                if (new < 0) {
+                    curProcessIdx = -1
+                    progress = emptyArray()
+                    return@config
+                } else curProcessIdx = new
+                progress = Array(processes[new].recipes.size) { 0f }
             }
         }
     }
@@ -65,12 +75,13 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             it.initialize(this)
         }
         processList = ProcessList(processes, groupSize)
-        processList.allRecipe.forEach {
-            it.drawer?.load(this) ?: return@forEach
+        drawer.load(this)
+        processes.forEach {
+            it.load(this)
         }
     }
 
-    inner class MultiCrafterBuild : TemperatureBuild() {
+    inner class MultiCrafterBuild : Building() {
         var progress = Array(processes.size) { 0f }
         var totalProgress = 0f
         var warmup = 0f
@@ -90,7 +101,6 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
         }
 
         override fun updateTile() {
-            super.updateTile()
             if (!configurable) curProcessIdx = recipeIdx()
             if (enabledRecipe && efficiency > 0f) {
                 if (canCraft()){
@@ -179,11 +189,11 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
             cont.defaults().size(40f)
 
             for ((i, recipe) in processes.withIndex()) {
-                val button = cont.button(Tex.whiteui, Styles.clearTogglei, 24f) {
+                val button = cont.button(Tex.whiteui, Styles.clearTogglei, 32f) {
                     deselect()
                 }.group(group).tooltip(recipe.recipes[0].mainOut.localizedName).get()
                 button.changed { if (i != curProcessIdx) configure(i) else configure(-1) }
-                button.style.imageUp = TextureRegionDrawable(recipe.recipes[0].mainOut.uiIcon)
+                button.style.imageUp = TextureRegionDrawable(recipe.icon())
                 button.update { button.isChecked = enabledRecipe && currentProcess.recipes[0].mainOut == recipe.recipes[0].mainOut }
             }
             val pane = ScrollPane(cont, Styles.smallPane)
@@ -207,9 +217,7 @@ class MultiCrafter(name: String) : TemperatureBlock(name) {
 
         override fun draw() {
             super.draw()
-            processList.allRecipe.forEach {
-                it.drawer?.draw(this) ?: return@forEach
-            }
+            drawer.draw(this)
         }
     }
 
