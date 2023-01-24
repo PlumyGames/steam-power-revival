@@ -1,4 +1,4 @@
-package tvakot.entities.bullet
+package steam.entities.bullets
 
 import mindustry.entities.Units
 import mindustry.entities.bullet.BasicBulletType

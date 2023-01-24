@@ -7,6 +7,8 @@ object SteamItems {
     lateinit var stone: Item
     lateinit var glass: Item
     lateinit var iron: Item
+    lateinit var bauxite: Item
+    lateinit var aluminium: Item
     lateinit var quartz: Item
     lateinit var steel: Item
     lateinit var salt: Item
@@ -33,6 +35,19 @@ object SteamItems {
         iron = Item("iron").apply {
             color = Color.valueOf("bfbfbf")
             hardness = 3
+        }
+    }
+
+    fun bauxite() {
+        bauxite = Item("bauxite").apply {
+            color = Color.valueOf("a36d64")
+            hardness = 3
+        }
+    }
+
+    fun aluminium() {
+        aluminium = Item("aluminium").apply {
+            color = Color.valueOf("afb0ba")
         }
     }
 

@@ -61,12 +61,11 @@ object OreIconGenerator {
     val bakery: IBakery = StackIconMaker(32, 32)
     val rand = Rand()
     var baseNumber = 1
-    var patchNumber = 1
     var powderNumber = 1
     var baseTextures = ArrayList<Pixmap>()
     var patchTextures = ArrayList<Pixmap>()
     var powderTextures = ArrayList<Pixmap>()
-    var alpha = 0.59f
+    var alpha = 0.48f
     fun base(index: Int) = "/sprites/template/ore-base$index.png"
     fun patch(index: Int) = "/sprites/template/ore-patch$index.png"
     fun powder(index: Int) = "/sprites/template/ore-powder$index.png"
@@ -74,8 +73,6 @@ object OreIconGenerator {
     fun load() {
         for (i in 0 until baseNumber) {
             baseTextures += loadPixmap(base(i))
-        }
-        for (i in 0 until patchNumber) {
             patchTextures += loadPixmap(patch(i))
         }
         for (i in 0 until powderNumber) {
@@ -86,8 +83,9 @@ object OreIconGenerator {
     val baseLayerProcess = PlainLayerProcessor()
     fun generate(ore: RawOre): TextureRegion {
         rand.setSeed(ore.name.hashCode().toLong())
-        val baseLayer = RawPixmapModelLayer(baseTextures[rand.random(0, baseTextures.size - 1)])
-        val patchLayer = RawPixmapModelLayer(patchTextures[rand.random(0, patchTextures.size - 1)])
+        val layer = rand.random(0, baseTextures.size - 1)
+        val baseLayer = RawPixmapModelLayer(baseTextures[layer])
+        val patchLayer = RawPixmapModelLayer(patchTextures[layer])
         baseLayer += baseLayerProcess
         patchLayer += TintBlendLayerProcessor(ore.color.cpy().a(alpha))
         val baked = bakery.bake(baseLayer, patchLayer)

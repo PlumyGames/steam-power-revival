@@ -2,6 +2,7 @@ package steam.content
 
 import arc.func.Prov
 import mindustry.content.Fx
+import mindustry.content.StatusEffects
 import mindustry.entities.abilities.MoveEffectAbility
 import mindustry.entities.abilities.RepairFieldAbility
 import mindustry.entities.bullet.BasicBulletType
@@ -16,7 +17,7 @@ import mindustry.graphics.Pal
 import mindustry.type.UnitType
 import mindustry.type.Weapon
 import steam.entities.bullets.ConeBulletType
-import tvakot.entities.bullet.VectorHomingBulletType
+import steam.entities.bullets.VectorHomingBulletType
 
 object SteamUnitTypes {
     lateinit var alphaDrone: UnitType
@@ -45,6 +46,7 @@ object SteamUnitTypes {
                     mirror = false
                     ejectEffect = Fx.casing1
                     bullet = BasicBulletType(2.5f, 9.0f).apply {
+                        buildingDamageMultiplier = 0.1f
                         width = 7f
                         height = 9f
                         lifetime = 60.0f
@@ -55,7 +57,10 @@ object SteamUnitTypes {
                     x = 0f
                     baseRotation = 180f
                     shootCone = 360f
+                    inaccuracy = 10f
                     bullet = VectorHomingBulletType().apply {
+                        buildingDamageMultiplier = 0.1f
+                        recoil = 2.5f
                         trailColor = Pal.bulletYellowBack
                         backColor = Pal.bulletYellowBack
                         frontColor = Pal.bulletYellow
@@ -65,15 +70,14 @@ object SteamUnitTypes {
                         height = 8f
                         hitSound = Sounds.explosion
                         trailLength = 5
-                        homingRange = 110f
-                        homingPower = 0.08f
+                        homingRange = 135f
                         lifetime = 120f
-                        speed = 2.85f
+                        speed = 4.85f
                         rangeOverride = 110f
 
                         hitEffect = Fx.explosion.also { despawnEffect = it; smokeEffect = it }
-                        damage = 10f
-                        splashDamage = 12f
+                        damage = 3f
+                        splashDamage = 8f
                         splashDamageRadius = 20f
 
                         sprite = "missile"
@@ -199,6 +203,7 @@ object SteamUnitTypes {
                         layer = Layer.buildBeam
                         hitEffect = Fx.none
                         length = 70f
+                        status = StatusEffects.electrified
                     }
                 },
                 Weapon().apply {
@@ -217,10 +222,10 @@ object SteamUnitTypes {
                         height = 8f
                         hitSound = Sounds.explosion
                         trailLength = 5
+                        homingPower = 0.08f
                         homingRange = 110f
-                        homingPower = 0.055f
-                        lifetime = 120f
-                        speed = 1.85f
+                        lifetime = 160f
+                        speed = 4.85f
                         healAmount = 12f
                         collidesTeam = true
                         hitSound = Sounds.none

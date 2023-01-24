@@ -28,7 +28,7 @@ object SteamFluids {
 
     fun chlorine() {
         chlorine = Liquid("chlorine").apply {
-            color = Color.valueOf("ffdf46")
+            color = Color.valueOf("deed85")
             gas = true
         }
     }

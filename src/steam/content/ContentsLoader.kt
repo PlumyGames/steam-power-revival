@@ -14,6 +14,8 @@ object ContentsLoader {
             stone()
             glass()
             iron()
+            bauxite()
+            aluminium()
             quartz()
             salt()
             sodiumHydroxide()
@@ -63,7 +65,8 @@ object ContentsLoader {
             heatAccumulator()
             pressureSource()
             pressureVoid()
-            ironOre()
+            oreIron()
+            oreBauxite()
             sulfurCrystal()
         }
         ContentsOverrider.apply {
@@ -81,6 +84,7 @@ object ContentsLoader {
             tsunami()
             mender()
             items()
+            ore()
             water()
         }
         EntityRegistry.apply {

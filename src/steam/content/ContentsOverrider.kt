@@ -1,5 +1,6 @@
 package steam.content
 
+import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.math.Angles
@@ -219,6 +220,12 @@ object ContentsOverrider {
         Items.titanium.hardness++
         Items.thorium.hardness++
         Items.sporePod.flammability = 0.7f
+    }
+
+    fun ore() {
+        SteamBlocks.oreIron.apply {
+            mapColor.set(Color.valueOf("ab8772"))
+        }
     }
 
     fun water() {

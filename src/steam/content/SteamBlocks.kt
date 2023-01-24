@@ -120,6 +120,7 @@ object SteamBlocks {
     lateinit var pressurizer: PressureProducer
     //env
     lateinit var oreIron: OreBlock
+    lateinit var oreBauxite: OreBlock
     lateinit var sulfurCrystal: TallBlock
 
     fun rifle() {
@@ -1078,15 +1079,21 @@ object SteamBlocks {
         }
     }
     //env
-    fun ironOre() {
+    fun oreIron() {
         oreIron = OreBlock(SteamItems.iron).apply {
             oreDefault = true
             oreThreshold = 0.864f
             oreScale = 24.904762f
-            mapColor = Color.valueOf("ab8772")
         }
     }
 
+    fun oreBauxite() {
+        oreBauxite = OreBlock(SteamItems.bauxite).apply {
+            oreDefault = true
+            oreThreshold = 0.87f
+            oreScale = 19.904762f
+        }
+    }
     fun sulfurCrystal() {
         sulfurCrystal = TallBlock("sulfur-crystal").apply {
             variants = 3
