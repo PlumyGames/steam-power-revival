@@ -1,6 +1,7 @@
 package steam.gen
 
 import arc.graphics.Pixmap
+import arc.graphics.Texture
 import arc.graphics.g2d.TextureRegion
 import arc.math.Rand
 import mindustry.Vars
@@ -58,7 +59,7 @@ object OreGenerator {
 
 object OreIconGenerator {
     // only generate 32x32 at present
-    val bakery: IBakery = StackIconMaker(32, 32)
+    val bakery: IBakery = StackIconBakery(32, 32)
     val rand = Rand()
     var baseNumber = 1
     var powderNumber = 1
@@ -69,7 +70,7 @@ object OreIconGenerator {
     fun base(index: Int) = "/sprites/template/ore-base$index.png"
     fun patch(index: Int) = "/sprites/template/ore-patch$index.png"
     fun powder(index: Int) = "/sprites/template/ore-powder$index.png"
-    fun loadPixmap(internalName: String) = Res.load(name = internalName).use { it.toPixmap() }
+    fun loadPixmap(internalName: String) = Res.load(name = internalName).use { it.readAsPixmap() }
     fun load() {
         for (i in 0 until baseNumber) {
             baseTextures += loadPixmap(base(i))
@@ -80,24 +81,22 @@ object OreIconGenerator {
         }
     }
 
-    val baseLayerProcess = PlainLayerProcessor()
     fun generate(ore: RawOre): TextureRegion {
         rand.setSeed(ore.name.hashCode().toLong())
         val layer = rand.random(0, baseTextures.size - 1)
-        val baseLayer = RawPixmapModelLayer(baseTextures[layer])
-        val patchLayer = RawPixmapModelLayer(patchTextures[layer])
-        baseLayer += baseLayerProcess
+        val baseLayer = Layer(baseTextures[layer].toLayerBuffer())
+        val patchLayer = Layer(patchTextures[layer].toLayerBuffer())
         patchLayer += TintBlendLayerProcessor(ore.color.cpy().a(alpha))
         val baked = bakery.bake(baseLayer, patchLayer)
-        return baked.toTextureRegion()
+        return TextureRegion(Texture(baked.createPixmap()))
     }
 
     fun generate(ore: OrePowder): TextureRegion {
         rand.setSeed(ore.name.hashCode().toLong())
-        val powderLayer = RawPixmapModelLayer(powderTextures[rand.random(0, powderTextures.size - 1)])
+        val powderLayer = Layer(powderTextures[rand.random(0, powderTextures.size - 1)].toLayerBuffer())
         powderLayer += TintBlendLayerProcessor(ore.color.cpy().a(alpha))
         val baked = bakery.bake(powderLayer)
-        return baked.toTextureRegion()
+        return TextureRegion(Texture(baked.createPixmap()))
     }
 }
 
