@@ -50,19 +50,12 @@ class PressurePipe(name: String) : PressureBlock(name) {
         val scl = tilesize * plan.animScale
 
         for (i in 0..3) {
-            val pt = Geometry.d4((4 - i) % 4).cpy().add(plan.x, plan.y)
-            if (world.build(pt.x, pt.y) is IPressureNode) {
-                drawIndex += 1 shl i
-            } else {
+            val p = Geometry.d4((4 - i) % 4).cpy().add(plan.x, plan.y)
+            if (world.build(p.x, p.y) is IPressureNode) drawIndex += 1 shl i
+            else {
                 var b = false
-                list.each { p ->
-                    if (!b && p.x == pt.x && p.y == pt.y) {
-                        b = true
-                    }
-                }
-                if (b) {
-                    drawIndex += 1 shl i
-                }
+                list.each { if (!b && it.x == p.x && it.y == p.y) b = true }
+                if (b) drawIndex += 1 shl i
             }
         }
         Draw.rect(regions[drawIndex], plan.drawx(), plan.drawy(), scl, scl)

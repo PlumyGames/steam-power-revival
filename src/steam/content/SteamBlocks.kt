@@ -279,6 +279,7 @@ object SteamBlocks {
             attribute = SteamAttribute.sporeGrow
 
             drawMulti {
+                +DrawRegion("-bottom")
                 +DrawCultivator()
                 +DrawDefault()
             }

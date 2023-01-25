@@ -18,7 +18,7 @@ private typealias OreItem = Item
 object OreGenerator {
     val all = ArrayList<Item>()
     val rawOres = HashMap<OreItem, RawOre>()
-    val powders = HashMap<OreItem, OrePowder>()
+    val crushedOres = HashMap<OreItem, OreCrushed>()
     val blacklist = HashSet<OreItem>()
     val extra = HashSet<OreItem>()
     fun generateAll() {
@@ -31,9 +31,9 @@ object OreGenerator {
             val rawOre = generateRawOre(ore)
             rawOres[ore] = rawOre
             all += rawOre
-            val powder = generatePowder(ore)
-            powders[ore] = powder
-            all += powder
+            val crushedOre = generatecrushedOre(ore)
+            crushedOres[ore] = crushedOre
+            all += crushedOre
         }
     }
 
@@ -52,8 +52,8 @@ object OreGenerator {
         return RawOre(ore)
     }
 
-    fun generatePowder(ore: OreItem): OrePowder {
-        return OrePowder(ore)
+    fun generatecrushedOre(ore: OreItem): OreCrushed {
+        return OreCrushed(ore)
     }
 }
 
@@ -64,14 +64,14 @@ object OreIconGenerator {
     }
     val rand = Rand()
     var baseNumber = 1
-    var powderNumber = 1
+    var crushedOreNumber = 1
     var baseTextures = ArrayList<Pixmap>()
     var patchTextures = ArrayList<Pixmap>()
-    var powderTextures = ArrayList<Pixmap>()
+    var crushedOreTextures = ArrayList<Pixmap>()
     var alpha = 0.48f
     fun base(index: Int) = "/sprites/template/ore-base$index.png"
     fun patch(index: Int) = "/sprites/template/ore-patch$index.png"
-    fun powder(index: Int) = "/sprites/template/ore-powder$index.png"
+    fun crushedOre(index: Int) = "/sprites/template/crushed-ore$index.png"
     fun loadPixmap(internalName: String) = Res.load(name = internalName).use { it.readAsPixmap() }
 
     fun load() {
@@ -79,8 +79,8 @@ object OreIconGenerator {
             baseTextures += loadPixmap(base(i))
             patchTextures += loadPixmap(patch(i))
         }
-        for (i in 0 until powderNumber) {
-            powderTextures += loadPixmap(powder(i))
+        for (i in 0 until crushedOreNumber) {
+            crushedOreTextures += loadPixmap(crushedOre(i))
         }
     }
 
@@ -95,12 +95,12 @@ object OreIconGenerator {
         return TextureRegion(Texture(baked.createPixmap()))
     }
 
-    fun generate(ore: OrePowder): TextureRegion {
+    fun generate(ore: OreCrushed): TextureRegion {
         rand.setSeed(ore.name.hashCode().toLong())
-        val powderLayer = Layer(powderTextures[rand.random(0, powderTextures.size - 1)].toLayerBuffer()) {
+        val crushedOreLayer = Layer(crushedOreTextures[rand.random(0, crushedOreTextures.size - 1)].toLayerBuffer()) {
             +TintBlendLayerProcessor(ore.color.cpy().a(alpha))
         }
-        val baked = bakery.bake(powderLayer)
+        val baked = bakery.bake(crushedOreLayer)
         return TextureRegion(Texture(baked.createPixmap()))
     }
 }
@@ -127,11 +127,11 @@ class RawOre(
     }
 }
 
-class OrePowder(
+class OreCrushed(
     original: Item,
-) : Item("powder-${original.name}") {
+) : Item("crushed-${original.name}-ore") {
     init {
-        localizedName = "${original.localizedName} ${"powder".steam.bundle}"
+        localizedName = "${"crushed".steam.bundle} ${original.localizedName} ${"ore".steam.bundle}"
         color = original.color
         flammability = original.flammability
         explosiveness = original.explosiveness
