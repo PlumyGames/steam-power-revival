@@ -31,7 +31,7 @@ object OreGenerator {
             val rawOre = generateRawOre(ore)
             rawOres[ore] = rawOre
             all += rawOre
-            val crushedOre = generatecrushedOre(ore)
+            val crushedOre = generateCrushedOre(ore)
             crushedOres[ore] = crushedOre
             all += crushedOre
         }
@@ -52,7 +52,7 @@ object OreGenerator {
         return RawOre(ore)
     }
 
-    fun generatecrushedOre(ore: OreItem): OreCrushed {
+    fun generateCrushedOre(ore: OreItem): OreCrushed {
         return OreCrushed(ore)
     }
 }
