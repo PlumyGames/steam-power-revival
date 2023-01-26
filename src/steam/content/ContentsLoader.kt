@@ -15,6 +15,7 @@ object ContentsLoader {
             glass()
             iron()
             bauxite()
+            alumina()
             aluminium()
             quartz()
             salt()

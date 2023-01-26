@@ -9,7 +9,6 @@ import mindustry.type.Liquid
 import plumy.dsl.bundle
 import plumy.texture.*
 import steam.Res
-import steam.SteamMod
 import steam.steam
 
 typealias FluidCapsule = Item
@@ -19,11 +18,9 @@ object FluidCapsuleGenerator {
     val blacklist = HashSet<Liquid>()
 
     fun generateAll() {
-        val steamMod = SteamMod.mod
 
         val allLiquids = Vars.content.liquids().copy().filter {
-            val mod = it.minfo.mod
-            !it.isHidden && (mod == null || mod == steamMod) && it !in blacklist
+            !it.isHidden && it !in blacklist
         }
         for (liquid in allLiquids) {
             val capsule = generateCapsule(liquid)
@@ -78,7 +75,7 @@ object FluidCapsuleIconGenerator {
             +TintBlendLayerProcessor(liquid.color.cpy().a(alpha))
         }
         val liquidLayer = Layer(FluidCapsuleIconGenerator.liquid.toLayerBuffer()) {
-            +TintBlendLayerProcessor(liquid.color)
+            +TintBlendLayerProcessor(liquid.color.cpy().a(if(liquid.gas) 0.5f else 0.7f))
         }
         val baked = bakery.bake(baseLayer, decalLayer, liquidLayer)
         return TextureRegion(Texture(baked.createPixmap()))

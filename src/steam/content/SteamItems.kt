@@ -45,6 +45,12 @@ object SteamItems {
         }
     }
 
+    fun alumina() {
+        aluminium = Item("alumina").apply {
+            color = Color.valueOf("bfbaa3")
+        }
+    }
+
     fun aluminium() {
         aluminium = Item("aluminium").apply {
             color = Color.valueOf("afb0ba")
