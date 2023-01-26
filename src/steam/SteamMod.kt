@@ -9,9 +9,7 @@ import mindustry.mod.Mods.LoadedMod
 import steam.content.ContentsLoader
 import steam.content.SteamAttribute
 import steam.content.SteamItems
-import steam.gen.DebugDialog
-import steam.gen.OreGenerator
-import steam.gen.OreIconGenerator
+import steam.gen.*
 import steam.world.fluids.UpdatableFluid
 
 class SteamMod : Mod() {
@@ -26,6 +24,7 @@ class SteamMod : Mod() {
         }
         Events.on(FileTreeInitEvent::class.java) {
             OreIconGenerator.load()
+            FluidCapsuleIconGenerator.load()
         }
         SteamAttribute.load() //attribute have to be loaded before content
     }
@@ -47,6 +46,9 @@ class SteamMod : Mod() {
             blacklist += SteamItems.bauxite
             generateAll()
             replaceAll()
+        }
+        FluidCapsuleGenerator.apply {
+            generateAll()
         }
         ContentsLoader.loadAfterOreGenerated()
         ContentsLoader.resisterEvents()
