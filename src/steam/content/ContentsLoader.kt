@@ -23,6 +23,7 @@ object ContentsLoader {
             sulfur()
             steel()
             depletedThorium()
+            circuitBroad()
         }
         SteamFluids.apply {
             steam()

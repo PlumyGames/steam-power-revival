@@ -4,6 +4,8 @@ import arc.graphics.Color
 import mindustry.type.Item
 
 object SteamItems {
+    //material
+
     lateinit var stone: Item
     lateinit var glass: Item
     lateinit var iron: Item
@@ -14,6 +16,10 @@ object SteamItems {
     lateinit var salt: Item
     lateinit var sulfur: Item
     lateinit var depletedThorium: Item
+
+    //product
+
+    lateinit var circuitBroad: Item
 
     //chemicals
 
@@ -86,6 +92,13 @@ object SteamItems {
         depletedThorium = Item("depleted-thorium").apply {
             color = Color.valueOf("6b4474")
             radioactivity = 0.25f
+        }
+    }
+
+    fun circuitBroad() {
+        circuitBroad = Item("circuit-broad").apply {
+            color = Color.valueOf("4e904f")
+            cost = 3.5f
         }
     }
 
