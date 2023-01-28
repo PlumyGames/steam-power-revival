@@ -9,15 +9,21 @@ import arc.graphics.g2d.Lines
 import arc.graphics.g2d.TextureRegion
 import arc.math.geom.Geometry
 import arc.math.geom.Point2
+import arc.struct.Seq
 import arc.util.Tmp
 import mindustry.Vars.tilesize
 import mindustry.Vars.world
+import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
 import mindustry.graphics.Layer
+import mindustry.input.Placement
 import mindustry.world.Tile
 import plumy.core.assets.EmptyTR
 import plumy.core.assets.EmptyTRs
-import plumy.dsl.*
+import plumy.dsl.PackedPos
+import plumy.dsl.castBuild
+import plumy.dsl.config
+import plumy.dsl.configNull
 import steam.DebugOnly
 import steam.utils.drawTextEasy
 import steam.utils.sheet
@@ -42,17 +48,52 @@ open class PressureBridge(name: String) : PressureBlock(name) {
         set(value) {
             field = value.coerceIn(1, 4)
         }
-    //client side, for connecting
-    var lastBuild: PressureBridgeBuild? = null
     var regions: Array<TextureRegion> = EmptyTRs
     var bridgeRegion1: TextureRegion = EmptyTR
     var bridgeRegion2: TextureRegion = EmptyTR
     var underRegion: TextureRegion = EmptyTR
+    var lastBuild: PressureBridgeBuild? = null
+
 
     init {
         configurable = true
         copyConfig = false
         buildType = Prov { PressureBridgeBuild() }
+    }
+
+    fun findLink(x: Int, y: Int): Tile? {
+        val tile = world.tile(x, y)
+        val last = lastBuild
+        return if (tile != null
+            && last != null && linkValid(tile, last.tile)
+            && last.tile != tile
+        ) last.tile
+            else null
+    }
+
+    override fun handlePlacementLine(plans: Seq<BuildPlan>) {
+        for (i in 0 until plans.size - 1) {
+            val cur = plans[i]
+            val next = plans[i + 1]
+            if (positionsValid(cur.x, cur.y, next.x, next.y))
+                cur.config = arrayOf(Point2(next.x - cur.x, next.y - cur.y), Point2(cur.x - next.x, cur.y - next.y))
+        }
+    }
+
+    override fun changePlacementPath(points: Seq<Point2>, rotation: Int) {
+        Placement.calculateNodes(
+            points, this, rotation
+        ) { point: Point2, other: Point2 ->
+            abs(point.x - other.x).coerceAtLeast(abs(point.y - other.y)) <= range
+        }
+    }
+
+    fun positionsValid(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
+        return if (x1 == x2)
+            abs(y1 - y2) <= range
+        else if (y1 == y2)
+            abs(x1 - x2) <= range
+        else false
     }
 
     override fun load() {
@@ -86,11 +127,25 @@ open class PressureBridge(name: String) : PressureBlock(name) {
         var drawIndex = 0
         var lastTileChange = -2
         override fun updateTile() {
+            super.updateTile()
             if (lastTileChange != world.tileChanges) {
                 lastTileChange = world.tileChanges
                 updateRegion()
             }
         }
+
+        override fun playerPlaced(config: Any?) {
+            super.playerPlaced(config)
+
+            val link = findLink(tile.x.toInt(), tile.y.toInt())
+            if (link != null && linkValid(tile, link)) {
+                configure(link.pos())
+                link.build.configure(tile.pos())
+            }
+
+            lastBuild = this
+        }
+
 
         override fun onConfigureBuildTapped(other: Building): Boolean {
             if (other == this) {
