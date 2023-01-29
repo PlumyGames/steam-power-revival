@@ -5,7 +5,7 @@ import io.github.liplum.mindustry.mindustryRepo
 
 plugins {
     kotlin("jvm") version "1.7.0"
-    id("io.github.liplum.mgpp") version "1.1.12"
+    id("io.github.liplum.mgpp") version "1.2.0"
 }
 
 sourceSets {
@@ -53,14 +53,14 @@ tasks.withType<Test> {
 }
 mindustry {
     dependency {
-        mindustry mirror "v141.2"
-        arc on "v141.3"
+        mindustry mirror "9762ae3"
+        arc on "v140.4"
     }
     client {
-        mindustry official "v141.3"
+        mindustry official "v140.4"
     }
     server {
-        mindustry official "v141.3"
+        mindustry official "v140.4"
     }
     deploy {
         baseName = project.name
