@@ -39,8 +39,8 @@ class CapsuleItem (
     init {
         localizedName = "${original.localizedName} ${"capsule".steam.bundle}"
         color = original.color
-        flammability = original.flammability
-        explosiveness = original.explosiveness
+        flammability = original.flammability * 1.2f
+        explosiveness = original.explosiveness * 1.2f
     }
 
     override fun loadIcon() {
@@ -75,7 +75,7 @@ object FluidCapsuleIconGenerator {
             +TintBlendLayerProcessor(liquid.color.cpy().a(alpha))
         }
         val liquidLayer = Layer(FluidCapsuleIconGenerator.liquid.toLayerBuffer()) {
-            +TintBlendLayerProcessor(liquid.color.cpy().a(if(liquid.gas) 0.5f else 0.7f))
+            +TintBlendLayerProcessor(liquid.color.cpy())
         }
         val baked = bakery.bake(baseLayer, decalLayer, liquidLayer)
         return TextureRegion(Texture(baked.createPixmap()))

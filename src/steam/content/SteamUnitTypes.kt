@@ -20,12 +20,13 @@ import steam.entities.bullets.ConeBulletType
 import steam.entities.bullets.VectorHomingBulletType
 
 object SteamUnitTypes {
-    lateinit var alphaDrone: UnitType
+    lateinit var alphaCombatDrone: UnitType
+    lateinit var alphaSupportDrone: UnitType
     lateinit var epsilon: UnitType
     lateinit var tau: UnitType
 
-    fun alphaDrone() {
-        alphaDrone = UnitType("alpha-drone").apply {
+    fun alphaCombatDrone() {
+        alphaCombatDrone = UnitType("alpha-combat-drone").apply {
             constructor = Prov { UnitEntity.create() }
             health = 75f
             speed = 3.2f
@@ -36,9 +37,11 @@ object SteamUnitTypes {
             range = 110f
             circleTarget = true
             trailLength = 7
-            rotateSpeed = 6.5f
+            rotateSpeed = 12.5f
             trailScl = 0.7f
             accel = 0.3f
+            //playerControllable = false
+            logicControllable = false
             weapons.addAll(
                 Weapon().apply {
                     reload = 13f
@@ -84,6 +87,28 @@ object SteamUnitTypes {
                     }
                 }
             )
+        }
+    }
+
+    fun alphaSupportDrone() {
+        alphaSupportDrone = UnitType("alpha-builder-drone").apply {
+            constructor = Prov { UnitEntity.create() }
+            health = 75f
+            speed = 3.2f
+            drag = 0.014f
+            flying = true
+            hitSize = 7f
+            engineOffset = 3f
+            range = 110f
+            trailLength = 7
+            rotateSpeed = 12.5f
+            trailScl = 0.7f
+            accel = 0.3f
+            mineTier = 2
+            mineSpeed = 4f
+            buildSpeed = 1.2f
+            //playerControllable = false
+            logicControllable = false
         }
     }
 
