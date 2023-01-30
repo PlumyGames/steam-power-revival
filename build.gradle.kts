@@ -5,7 +5,7 @@ import io.github.liplum.mindustry.mindustryRepo
 
 plugins {
     kotlin("jvm") version "1.7.0"
-    id("io.github.liplum.mgpp") version "1.1.12"
+    id("io.github.liplum.mgpp") version "1.2.0"
 }
 
 sourceSets {
@@ -26,16 +26,17 @@ repositories {
     mavenCentral()
     mindustryRepo()
 }
-val MKUtilsVersion :String by project
-fun DependencyHandlerScope.mkutils(vararg modules: String) {
+val mktxVersion: String by project
+fun DependencyHandlerScope.mktx(vararg modules: String) {
     for (module in modules) {
-        implementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
-        testImplementation("com.github.plumygame.mkutils:$module:$MKUtilsVersion")
+        val notation = "com.github.plumygames.mktx:$module:$mktxVersion"
+        implementation(notation)
+        testImplementation(notation)
     }
 }
 dependencies {
     importMindustry()
-    mkutils(
+    mktx(
         "core",
         "texture",
         "world",
