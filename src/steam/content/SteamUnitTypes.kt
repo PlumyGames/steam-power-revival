@@ -17,7 +17,7 @@ import mindustry.graphics.Pal
 import mindustry.type.UnitType
 import mindustry.type.Weapon
 import steam.entities.bullets.ConeBulletType
-import steam.entities.bullets.VectorHomingBulletType
+import steam.entities.bullets.SteamBaseBulletType
 
 object SteamUnitTypes {
     lateinit var alphaCombatDrone: UnitType
@@ -61,7 +61,8 @@ object SteamUnitTypes {
                     baseRotation = 180f
                     shootCone = 360f
                     inaccuracy = 10f
-                    bullet = VectorHomingBulletType().apply {
+                    bullet = SteamBaseBulletType().apply {
+                        vectorHoming = true
                         buildingDamageMultiplier = 0.1f
                         recoil = 2.5f
                         trailColor = Pal.bulletYellowBack
@@ -238,7 +239,8 @@ object SteamUnitTypes {
                     range = 110f
                     shootSound = Sounds.missile
                     reload = 15f
-                    bullet = VectorHomingBulletType().apply {
+                    bullet = SteamBaseBulletType().apply {
+                        vectorHoming = true
                         backColor = Pal.heal
                         trailColor = Pal.heal
                         shrinkY = 0f
