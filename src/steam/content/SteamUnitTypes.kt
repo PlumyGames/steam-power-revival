@@ -7,7 +7,6 @@ import mindustry.entities.abilities.MoveEffectAbility
 import mindustry.entities.abilities.RepairFieldAbility
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.entities.part.HoverPart
-import mindustry.entities.pattern.ShootSpread
 import mindustry.gen.ElevationMoveUnit
 import mindustry.gen.MechUnit
 import mindustry.gen.Sounds
@@ -16,7 +15,9 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.type.UnitType
 import mindustry.type.Weapon
+import steam.entities.abilities.UnitConstructionAbility
 import steam.entities.bullets.ConeBulletType
+import steam.entities.bullets.MiningBulletType
 import steam.entities.bullets.SteamBaseBulletType
 
 object SteamUnitTypes {
@@ -40,6 +41,7 @@ object SteamUnitTypes {
             rotateSpeed = 12.5f
             trailScl = 0.7f
             accel = 0.3f
+            useUnitCap = false
             //playerControllable = false
             logicControllable = false
             weapons.addAll(
@@ -105,11 +107,53 @@ object SteamUnitTypes {
             rotateSpeed = 12.5f
             trailScl = 0.7f
             accel = 0.3f
-            mineTier = 2
-            mineSpeed = 4f
             buildSpeed = 1.2f
+            useUnitCap = false
             //playerControllable = false
             logicControllable = false
+
+            weapons.add(
+                Weapon().apply {
+                    reload = 75f
+                    x = 0f
+                    baseRotation = 180f
+                    shootCone = 360f
+                    inaccuracy = 10f
+                    bullet = MiningBulletType().apply {
+                        mineTier = 2
+
+                        vectorHoming = true
+                        lockTarget = true
+                        buildingDamageMultiplier = 0.1f
+                        recoil = 1f
+                        trailColor = Pal.bulletYellowBack
+                        backColor = Pal.bulletYellowBack
+                        frontColor = Pal.bulletYellow
+                        shrinkY = 0f
+                        width = 8f
+                        keepVelocity = false
+                        height = 8f
+                        hitSound = Sounds.explosion
+                        trailLength = 5
+                        lifetime = 120f
+                        speed = 5f
+                        rangeOverride = 110f
+                        drag = 0.08f
+
+                        hitEffect = Fx.mineHuge
+                        despawnEffect = Fx.mineHuge
+                        hitColor = Pal.lightishGray
+                        smokeEffect = Fx.hitSquaresColor
+                        splashDamage = 4f
+                        splashDamageRadius = 20f
+
+                        collidesAir = false
+                        collidesGround = false
+
+                        sprite = "missile"
+                    }
+                }
+            )
         }
     }
 
@@ -126,48 +170,15 @@ object SteamUnitTypes {
             mineSpeed = 10f
             mineTier = 2
             itemCapacity = 35
-            legForwardScl = 2.1f
+            legMoveSpace = 1.6f
             buildSpeed = 1.2f
 
-            weapons.add(Weapon("steam-phase-gun").apply {
-                reload = 30f
-                shoot = ShootSpread(2, 5f)
-                baseRotation = -35f
-                shootCone = 360f
-                x = 23 / 4f
-                y = -6 / 4f
-                ejectEffect = Fx.casing1
-
-                bullet = BasicBulletType(4.5f, 0f).apply {
-                    keepVelocity = false
-                    width = 9f
-                    height = 12f
-                    lifetime = 30f
-                    drag = 0.1f
-                    fragBullets = 1
-                    fragRandomSpread = 0f
-                    fragVelocityMin = 1f
-                    trailLength = 7
-                    trailColor = backColor
-                    homingDelay = 27f
-                    homingRange = 60 * 5.5f
-                    homingPower = 6f
-                    buildingDamageMultiplier = 0.01f
-                    rangeOverride = 60 * 5.5f
-
-                    fragBullet = BasicBulletType(5.5f, 15f).apply {
-                        keepVelocity = false
-                        width = 9f
-                        height = 12f
-                        lifetime = 60f
-                        trailLength = 7
-                        trailColor = backColor
-                        hitColor = backColor
-                        hitEffect = Fx.hitSquaresColor
-                        buildingDamageMultiplier = 0.01f
-                    }
+            abilities.add(
+                UnitConstructionAbility().apply {
+                    constructTime = 90f
+                    spawnUnits = arrayOf(alphaCombatDrone, alphaSupportDrone)
                 }
-            })
+            )
         }
     }
 
@@ -249,7 +260,6 @@ object SteamUnitTypes {
                         height = 8f
                         hitSound = Sounds.explosion
                         trailLength = 5
-                        homingPower = 0.08f
                         homingRange = 110f
                         lifetime = 160f
                         speed = 4.85f
