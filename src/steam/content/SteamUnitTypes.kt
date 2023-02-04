@@ -1,6 +1,7 @@
 package steam.content
 
 import arc.func.Prov
+import arc.math.geom.Vec2
 import mindustry.content.Fx
 import mindustry.content.StatusEffects
 import mindustry.entities.abilities.MoveEffectAbility
@@ -15,6 +16,8 @@ import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.type.UnitType
 import mindustry.type.Weapon
+import steam.ai.DroneAI
+import steam.ai.formation.PositionFormation
 import steam.entities.abilities.UnitConstructionAbility
 import steam.entities.bullets.ConeBulletType
 import steam.entities.bullets.MiningBulletType
@@ -29,6 +32,7 @@ object SteamUnitTypes {
     fun alphaCombatDrone() {
         alphaCombatDrone = UnitType("alpha-combat-drone").apply {
             constructor = Prov { UnitEntity.create() }
+            aiController = Prov { DroneAI() }
             health = 75f
             speed = 3.2f
             drag = 0.014f
@@ -42,7 +46,7 @@ object SteamUnitTypes {
             trailScl = 0.7f
             accel = 0.3f
             useUnitCap = false
-            //playerControllable = false
+            playerControllable = false
             logicControllable = false
             weapons.addAll(
                 Weapon().apply {
@@ -96,6 +100,7 @@ object SteamUnitTypes {
     fun alphaSupportDrone() {
         alphaSupportDrone = UnitType("alpha-builder-drone").apply {
             constructor = Prov { UnitEntity.create() }
+            aiController = Prov { DroneAI() }
             health = 75f
             speed = 3.2f
             drag = 0.014f
@@ -109,7 +114,7 @@ object SteamUnitTypes {
             accel = 0.3f
             buildSpeed = 1.2f
             useUnitCap = false
-            //playerControllable = false
+            playerControllable = false
             logicControllable = false
 
             weapons.add(
@@ -177,6 +182,9 @@ object SteamUnitTypes {
                 UnitConstructionAbility().apply {
                     constructTime = 90f
                     spawnUnits = arrayOf(alphaCombatDrone, alphaSupportDrone)
+                    formation = PositionFormation().apply {
+                        positions = arrayOf(Vec2(16f, 0f), Vec2(-16f, 0f))
+                    }
                 }
             )
         }

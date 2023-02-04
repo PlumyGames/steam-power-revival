@@ -11,6 +11,7 @@ import mindustry.gen.Unit
 import mindustry.type.UnitType
 import steam.ai.DroneAI
 import steam.ai.UnitGroup
+import steam.ai.formation.Formation
 
 class UnitConstructionAbility : Ability() {
     var constructTime = 30f
@@ -19,6 +20,7 @@ class UnitConstructionAbility : Ability() {
     var spawnX = 0f
     var spawnY = 0f
     var spawnRot = 0f
+    var formation: Formation? = null
 
     protected var reload = 0f
     protected var unitGroup = UnitGroup()
@@ -34,7 +36,8 @@ class UnitConstructionAbility : Ability() {
             val x = unit.x + Angles.trnsx(unit.rotation, spawnY, spawnX)
             val y = unit.y + Angles.trnsy(unit.rotation, spawnY, spawnX)
 
-            val u = spawnUnits[units.size].create(unit.team)
+            //select missing unit
+            val u = spawnUnits.first { units.count { u -> it == u.type } < spawnUnits.count { u -> u == it } }.create(unit.team)
             u.set(x, y)
             u.rotation = unit.rotation + spawnRot
 
@@ -44,14 +47,18 @@ class UnitConstructionAbility : Ability() {
             }
             unitGroup.units.add(u)
 
-            assignAI(u)
+            assignUnit(u, unit)
             spawnEffect.at(u)
 
             reload %= constructTime
         } else reload += Time.delta
     }
 
-    fun assignAI(u: Unit) {
-        (u.controller() as? DroneAI)?.group = unitGroup
+    fun assignUnit(u: Unit, owner: Unit) {
+        val ai = u.controller() as? DroneAI ?: return
+
+        ai.owner = owner
+        ai.group = unitGroup
+        if (formation != null) ai.formation = formation
     }
 }
