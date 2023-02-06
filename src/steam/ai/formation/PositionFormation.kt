@@ -10,7 +10,7 @@ class PositionFormation : Formation() {
     override fun move(group: UnitGroup, to: Posc, rotation: Float) {
         //todo make it move to the front
         group.units.forEachIndexed { i, u ->
-            vec.set(to).sub(u).add(positions[i].x, positions[i].y)
+            vec.set(to).sub(u).add(positions[i].x, positions[i].y).limit(u.speed())
             u.moveAt(vec)
         }
     }

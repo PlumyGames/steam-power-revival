@@ -12,7 +12,7 @@ import mindustry.gen.Bullet
 import mindustry.gen.Healthc
 import mindustry.graphics.Pal
 
-class ConeBulletType : BulletType() {
+open class ConeBulletType : BulletType() {
     var color = Pal.heal
     var damageInterval = 20f
     var coneAmt = 50
@@ -40,14 +40,18 @@ class ConeBulletType : BulletType() {
         val curLen = currentLength(b)
 
         Draw.z(layer)
-        Draw.color(color)
+        drawColor(b)
 
         Fill.arc(b.x, b.y, curLen, rad / 360f, b.rotation() - rad / 2f, coneAmt)
 
         Draw.reset()
     }
 
-    fun currentLength(b: Bullet): Float {
+    open fun drawColor(b: Bullet) {
+        Draw.color(color)
+    }
+
+    open fun currentLength(b: Bullet): Float {
         return length * lengthInterp.apply(b.fslope())
     }
 
