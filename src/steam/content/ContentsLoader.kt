@@ -36,6 +36,7 @@ object ContentsLoader {
             alphaSupportDrone()
             epsilon()
             tau()
+            defender()
         }
         SteamBlocks.apply {
             rifle()

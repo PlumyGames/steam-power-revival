@@ -15,6 +15,9 @@ open class SteamBaseBulletType : BasicBulletType() {
     var lockTarget = false
     var homingMultiplier = 0.7f
 
+    var mineAmount = 3
+    var mineTier = 0
+
     override fun updateHoming(b: Bullet) {
         if(vectorHoming) b.vel.add(Tmp.v2.trns(b.angleTo(target(b)), Time.delta * homingMultiplier)).limit(b.type.speed * Time.delta)
         super.updateHoming(b)
@@ -46,6 +49,17 @@ open class SteamBaseBulletType : BasicBulletType() {
         }
         if(target == null && rally) target = owner as Teamc?
         return target
+    }
+
+    override fun despawned(b: Bullet) {
+        super.despawned(b)
+        if(mineTier > 0) {
+            val drop = b.tileOn().drop() ?: return
+            (b.owner as? Itemsc)?.run {
+                if (drop.hardness <= mineTier && acceptsItem(drop)) for (i in 0 until mineAmount.coerceAtMost(20))
+                    Time.run(i / 3f) { Call.transferItemToUnit(drop, b.aimX, b.y, this) }
+            }
+        }
     }
 
     override fun init(b: Bullet) {

@@ -1,6 +1,7 @@
 package steam.content
 
 import arc.func.Prov
+import arc.math.geom.Rect
 import arc.math.geom.Vec2
 import mindustry.content.Fx
 import mindustry.content.StatusEffects
@@ -11,24 +12,31 @@ import mindustry.entities.part.HoverPart
 import mindustry.gen.ElevationMoveUnit
 import mindustry.gen.MechUnit
 import mindustry.gen.Sounds
+import mindustry.gen.TankUnit
 import mindustry.gen.UnitEntity
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.type.UnitType
 import mindustry.type.Weapon
+import mindustry.type.unit.TankUnitType
 import steam.ai.DroneAI
 import steam.ai.formation.PositionFormation
 import steam.entities.abilities.UnitConstructionAbility
 import steam.entities.bullets.ConeBulletType
 import steam.entities.bullets.ForceFieldBulletType
-import steam.entities.bullets.MiningBulletType
 import steam.entities.bullets.SteamBaseBulletType
 
 object SteamUnitTypes {
+    //drone
     lateinit var alphaCombatDrone: UnitType
     lateinit var alphaSupportDrone: UnitType
+
+    //mech
     lateinit var epsilon: UnitType
     lateinit var tau: UnitType
+
+    //tanks
+    lateinit var defender: UnitType
 
     fun alphaCombatDrone() {
         alphaCombatDrone = UnitType("alpha-combat-drone").apply {
@@ -125,7 +133,7 @@ object SteamUnitTypes {
                     baseRotation = 180f
                     shootCone = 360f
                     inaccuracy = 10f
-                    bullet = MiningBulletType().apply {
+                    bullet = SteamBaseBulletType().apply {
                         mineTier = 2
 
                         vectorHoming = true
@@ -297,6 +305,46 @@ object SteamUnitTypes {
 
                         hitEffect = Fx.hitLaser.also { despawnEffect = it; smokeEffect = it }
                         damage = 10f
+                    }
+                }
+            )
+        }
+    }
+
+    fun defender() {
+        defender = TankUnitType("defender").apply {
+            constructor = Prov { TankUnit.create() }
+            hitSize = 18f
+            rotateSpeed = 2.4f
+            treadPullOffset = 5
+            health = 900f
+            armor = 4f
+            itemCapacity = 0
+            treadRects = arrayOf(Rect(-30f, -35f, 10f, 70f))
+            outlineColor = Pal.darkerMetal
+
+            weapons.add(
+                Weapon("steam-defender-projector").apply {
+                    x = 0f
+                    y = -1.25f
+                    shootCone = 360f
+                    shootY = 0f
+                    alwaysContinuous = true
+                    range = 65f
+                    mirror = false
+                    shootSound = Sounds.tractorbeam
+                    heatColor = Pal.accent
+                    recoil = 0f
+                    rotate = true
+                    alwaysShooting = true
+                    rotateSpeed = 12f
+
+                    bullet = ForceFieldBulletType {
+                        chargeSpeed = 1.4f
+                        maxCapacity = 80f
+                        damage = 0f
+                        length = 70f
+                        rad = 80f
                     }
                 }
             )
