@@ -17,7 +17,6 @@ import mindustry.content.Fx
 import mindustry.entities.Effect
 import mindustry.entities.units.BuildPlan
 import mindustry.gen.Building
-import mindustry.gen.Tex
 import mindustry.graphics.Pal
 import mindustry.type.Item
 import mindustry.ui.Bar
@@ -170,15 +169,10 @@ class ItemBurner(name: String) : Block(name) {
             stat.row()
             content.items().each<Item>(flammableFilter.filter) {
                 stat.addTable {
-                    background(Tex.whiteui)
-                    setColor(Pal.darkestGray)
-                    addTable {
-                        add(ItemDisplay(it, 1, toHeatingTime(it.flammability), false)).row()
-                        add("${autoFixed(toFinalHeat(it), 1)} ${bundle["unit.heatunits"]}").row()
-                        add("${autoFixed(toHeatingTime(it.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray).row()
-                        if(it.explosiveness >= explosivenessThreshold) add(bundle["stat.explode"]).color(Pal.redderDust)
-                    }.grow().pad(10f)
-                }.grow().pad(5f)
+                    add(ItemDisplay(it, 1, toHeatingTime(it.flammability), false)).padRight(8f).left()
+                    add("${autoFixed(toFinalHeat(it), 1)} ${bundle["unit.heatunits"]}").padRight(8f).left()
+                    add("${autoFixed(toHeatingTime(it.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray).left()
+                }.uniformX().left().padBottom(5f).row()
             }
         }
     }

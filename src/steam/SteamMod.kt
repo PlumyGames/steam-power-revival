@@ -8,7 +8,6 @@ import mindustry.mod.Mod
 import mindustry.mod.Mods.LoadedMod
 import steam.content.ContentsLoader
 import steam.content.SteamAttribute
-import steam.content.SteamItems
 import steam.gen.*
 import steam.world.fluids.UpdatableFluid
 
@@ -43,7 +42,6 @@ class SteamMod : Mod() {
             blacklist += Items.coal
             blacklist += Items.scrap
             blacklist += Items.sand
-            blacklist += SteamItems.bauxite
             generateAll()
             replaceAll()
         }
