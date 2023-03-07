@@ -167,12 +167,12 @@ class ItemBurner(name: String) : Block(name) {
         stats.remove(Stat.input)
         stats.add(Stat.input) { stat ->
             stat.row()
-            content.items().each<Item>(flammableFilter.filter) {
-                stat.addTable {
-                    add(ItemDisplay(it, 1, toHeatingTime(it.flammability), false)).padRight(8f).left()
-                    add("${autoFixed(toFinalHeat(it), 1)} ${bundle["unit.heatunits"]}").padRight(8f).left()
-                    add("${autoFixed(toHeatingTime(it.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray).left()
-                }.uniformX().left().padBottom(5f).row()
+            stat.addTable {
+                content.items().each<Item>(flammableFilter.filter) {
+                    add(ItemDisplay(it, 1, toHeatingTime(it.flammability), false)).padRight(15f).left()
+                    add("[red]\ue83b[] ${autoFixed(toFinalHeat(it), 1)} ${bundle["unit.heatunits"]}").padRight(15f).left()
+                    add("${autoFixed(toHeatingTime(it.flammability) / 60f, 1)} ${bundle["unit.seconds"]}").color(Color.gray).left().row()
+                }
             }
         }
     }
