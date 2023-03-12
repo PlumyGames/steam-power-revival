@@ -37,6 +37,7 @@ object ContentsLoader {
             epsilon()
             tau()
             defender()
+            sprayer()
         }
         SteamBlocks.apply {
             rifle()
@@ -53,9 +54,6 @@ object ContentsLoader {
             flowgate()
             turbine()
             pneumaticEngine()
-            well()
-            extractor()
-            atmosphereConcentrator()
             pressureCranker()
             pressurizer()
             pressureNode()
@@ -72,6 +70,8 @@ object ContentsLoader {
             oreIron()
             oreBauxite()
             sulfurCrystal()
+            groundWater()
+            groundOil()
         }
         ContentsOverrider.apply {
             mechanicalDrill()
@@ -99,6 +99,9 @@ object ContentsLoader {
     fun loadAfterOreGenerated() {
         SteamBlocks.apply {
             sporePlanter()
+            well()
+            extractor()
+            atmosphereConcentrator()
             stoneExcavator()
             blastFurnace()
             advancedFurnace()

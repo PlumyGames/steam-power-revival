@@ -33,7 +33,6 @@ import mindustry.world.blocks.power.ConsumeGenerator
 import mindustry.world.blocks.production.AttributeCrafter
 import mindustry.world.blocks.production.Pump
 import mindustry.world.blocks.production.Separator
-import mindustry.world.blocks.production.SolidPump
 import mindustry.world.blocks.storage.CoreBlock
 import mindustry.world.blocks.storage.StorageBlock
 import mindustry.world.consumers.ConsumeItemFlammable
@@ -59,11 +58,13 @@ import steam.world.drawer.DrawReservoir
 import steam.world.drawer.DrawSteamInside
 import steam.world.drawer.part.DrawBuilding
 import steam.world.effect.HeatAccumulator
+import steam.world.environment.GroundFloor
 import steam.world.heating.FluidCombustor
 import steam.world.heating.ItemBurner
 import steam.world.mech.MechPad
 import steam.world.pressure.*
 import steam.world.production.ExtractionDrill
+import steam.world.production.GroundPump
 import steam.world.recipe.CrafterRecipe
 import steam.world.recipe.RecipeConsumeFlammable
 import steam.world.recipe.RecipeConsumeFluid
@@ -122,6 +123,9 @@ object SteamBlocks {
     lateinit var oreIron: OreBlock
     lateinit var oreBauxite: OreBlock
     lateinit var sulfurCrystal: TallBlock
+    //underground env
+    lateinit var undergroundWater: GroundFloor
+    lateinit var undergroundOil: GroundFloor
 
     fun rifle() {
         rifle = ItemTurret("rifle").apply {
@@ -840,19 +844,16 @@ object SteamBlocks {
     }
 
     fun well() {
-        well = SolidPump("well").apply {
+        well = GroundPump("well").apply {
             liquidCapacity = 80f
-            pumpAmount = 0.05f
             size = 2
             health = 220
-            hasPower = false
             category = Category.production
             buildVisibility = BuildVisibility.shown
-            attribute = Attribute.water
             envRequired = envRequired or Env.groundWater
             UndebugOnly {
                 requirements = arrayOf(
-                    SteamItems.stone + 80
+                    SteamItems.stone + 40, OreGenerator.rawOres[Items.copper]!! + 20
                 )
             }
         }
@@ -1102,6 +1103,17 @@ object SteamBlocks {
             shadowOffset = -0.7f
             shadowAlpha = 0.27f
             itemDrop = SteamItems.sulfur
+        }
+    }
+
+    fun groundWater() {
+        undergroundWater = GroundFloor("underground-water").apply {
+            liquidDrop = Liquids.water
+        }
+    }
+    fun groundOil() {
+        undergroundOil = GroundFloor("underground-oil").apply {
+            liquidDrop = Liquids.oil
         }
     }
 }

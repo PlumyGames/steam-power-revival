@@ -9,11 +9,7 @@ import mindustry.entities.abilities.MoveEffectAbility
 import mindustry.entities.abilities.RepairFieldAbility
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.entities.part.HoverPart
-import mindustry.gen.ElevationMoveUnit
-import mindustry.gen.MechUnit
-import mindustry.gen.Sounds
-import mindustry.gen.TankUnit
-import mindustry.gen.UnitEntity
+import mindustry.gen.*
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.type.UnitType
@@ -25,6 +21,8 @@ import steam.entities.abilities.UnitConstructionAbility
 import steam.entities.bullets.ConeBulletType
 import steam.entities.bullets.ForceFieldBulletType
 import steam.entities.bullets.SteamBaseBulletType
+import steam.entities.units.SentryEntity
+import steam.type.SentryUnitType
 
 object SteamUnitTypes {
     //drone
@@ -37,6 +35,9 @@ object SteamUnitTypes {
 
     //tanks
     lateinit var defender: UnitType
+
+    //sentries
+    lateinit var sprayer: SentryUnitType
 
     fun alphaCombatDrone() {
         alphaCombatDrone = UnitType("alpha-combat-drone").apply {
@@ -345,6 +346,56 @@ object SteamUnitTypes {
                         damage = 0f
                         length = 70f
                         rad = 80f
+                    }
+                }
+            )
+        }
+    }
+
+    fun sprayer() {
+        sprayer = SentryUnitType("sprayer").apply {
+            constructor = Prov { SentryEntity() }
+            speed = 0f
+            rotateSpeed = 6.5f
+            armor = 2f
+            health = 120f
+            faceTarget = true
+            hitSize = 8f
+            useUnitCap = false
+            weapons.addAll(
+                Weapon().apply {
+                    reload = 3.5f
+                    range = 126f
+                    x = 1.25f
+                    y = 3f
+                    inaccuracy = 3.5f
+                    bullet = BasicBulletType(4.2f, 9f).apply {
+                        width = 7f
+                        height = 10.5f
+                        lifetime = 30f
+                        recoil = 4f
+                    }
+                },
+                Weapon().apply {
+                    controllable = false
+                    aiControllable = false
+                    x = 0f
+                    mirror = false
+                    shootOnDeath = true
+                    bullet = BasicBulletType().apply {
+                        collidesTiles = false
+                        collides = false
+                        hitSound = Sounds.explosion
+                        shootEffect = Fx.blastExplosion
+
+                        rangeOverride = 30f
+                        hitEffect = Fx.pulverize
+                        speed = 0f
+                        splashDamageRadius = 60f
+                        instantDisappear = true
+                        splashDamage = 120f
+                        hittable = false
+                        collidesAir = true
                     }
                 }
             )
