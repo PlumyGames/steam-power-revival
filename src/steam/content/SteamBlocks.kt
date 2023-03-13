@@ -104,7 +104,7 @@ object SteamBlocks {
     lateinit var turbine: Block
     lateinit var pneumaticEngine: Block
     //pressure
-    lateinit var pressureNode: Block
+    lateinit var reinforcedCopperPipe: Block
     lateinit var pressureMeter: Block
     lateinit var pressureBridge: Block
     lateinit var pressureCranker: Block
@@ -917,8 +917,8 @@ object SteamBlocks {
         }
     }
 
-    fun pressureNode() {
-        pressureNode = PressurePipe("pressure-pipe").apply {
+    fun reinforcedCopperPipe() {
+        reinforcedCopperPipe = PressurePipe("reinforced-copper-pipe").apply {
             health = 120
             category = Category.distribution
             buildVisibility = BuildVisibility.shown

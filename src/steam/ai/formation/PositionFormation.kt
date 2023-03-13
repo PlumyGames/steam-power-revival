@@ -8,10 +8,10 @@ class PositionFormation : Formation() {
     var positions = arrayOf<Vec2>()
 
     override fun move(group: UnitGroup, to: Posc, rotation: Float) {
-        //todo make it move to the front
         group.units.forEachIndexed { i, u ->
-            vec.set(to).sub(u).add(positions[i].x, positions[i].y).limit(u.speed())
+            vec.set(positions[i].x, positions[i].y).rotate(rotation).add(to).sub(u).limit(u.speed())
             u.moveAt(vec)
+            u.lookAt(rotation - 90f)
         }
     }
 }

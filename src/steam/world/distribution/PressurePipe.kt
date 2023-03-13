@@ -64,6 +64,7 @@ class PressurePipe(name: String) : PressureBlock(name) {
     inner class PressurePipeBuild : PressureBuild() {
         var drawIndex = 0
         override fun onProximityUpdate() {
+            //todo make this thing only connect to node at the back and front of it
             super.onProximityUpdate()
             drawIndex = 0
             for (i in 0 until 4) {

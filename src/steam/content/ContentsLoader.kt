@@ -56,7 +56,7 @@ object ContentsLoader {
             pneumaticEngine()
             pressureCranker()
             pressurizer()
-            pressureNode()
+            reinforcedCopperPipe()
             pressureMeter()
             pressureBridge()
             coreFragment()

@@ -197,24 +197,6 @@ object SteamUnitTypes {
                     }
                 }
             )
-
-            weapons.add(
-                Weapon().apply {
-                    x = 0f
-                    y = 3.25f
-                    shootCone = 360f
-                    shootY = 0f
-                    alwaysContinuous = true
-                    range = 65f
-                    mirror = false
-                    shootSound = Sounds.tractorbeam
-                    bullet = ForceFieldBulletType {
-                        damage = 0f
-                        length = 70f
-                        rad = 45f
-                    }
-                }
-            )
         }
     }
 
@@ -373,29 +355,7 @@ object SteamUnitTypes {
                         width = 7f
                         height = 10.5f
                         lifetime = 30f
-                        recoil = 4f
-                    }
-                },
-                Weapon().apply {
-                    controllable = false
-                    aiControllable = false
-                    x = 0f
-                    mirror = false
-                    shootOnDeath = true
-                    bullet = BasicBulletType().apply {
-                        collidesTiles = false
-                        collides = false
-                        hitSound = Sounds.explosion
-                        shootEffect = Fx.blastExplosion
-
-                        rangeOverride = 30f
-                        hitEffect = Fx.pulverize
-                        speed = 0f
-                        splashDamageRadius = 60f
-                        instantDisappear = true
-                        splashDamage = 120f
-                        hittable = false
-                        collidesAir = true
+                        recoil = 8f
                     }
                 }
             )
