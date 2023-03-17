@@ -59,6 +59,6 @@ class UnitConstructionAbility : Ability() {
 
         ai.owner = owner
         ai.group = unitGroup
-        if (formation != null) ai.formation = formation
+        ai.formation = formation
     }
 }

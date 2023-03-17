@@ -49,7 +49,7 @@ object SteamUnitTypes {
             flying = true
             hitSize = 7f
             engineOffset = 3f
-            range = 110f
+            range = 180f
             circleTarget = true
             trailLength = 7
             rotateSpeed = 12.5f
@@ -64,6 +64,7 @@ object SteamUnitTypes {
                     x = 0f
                     mirror = false
                     ejectEffect = Fx.casing1
+                    shootCone = 10f
                     bullet = BasicBulletType(2.5f, 9.0f).apply {
                         buildingDamageMultiplier = 0.1f
                         width = 7f
@@ -126,49 +127,6 @@ object SteamUnitTypes {
             useUnitCap = false
             playerControllable = false
             logicControllable = false
-
-            weapons.add(
-                Weapon().apply {
-                    reload = 75f
-                    x = 0f
-                    baseRotation = 180f
-                    shootCone = 360f
-                    inaccuracy = 10f
-                    bullet = SteamBaseBulletType().apply {
-                        mineTier = 2
-
-                        vectorHoming = true
-                        lockTarget = true
-                        buildingDamageMultiplier = 0.1f
-                        recoil = 1f
-                        trailColor = Pal.bulletYellowBack
-                        backColor = Pal.bulletYellowBack
-                        frontColor = Pal.bulletYellow
-                        shrinkY = 0f
-                        width = 8f
-                        keepVelocity = false
-                        height = 8f
-                        hitSound = Sounds.explosion
-                        trailLength = 5
-                        lifetime = 120f
-                        speed = 5f
-                        rangeOverride = 110f
-                        drag = 0.08f
-
-                        hitEffect = Fx.mineHuge
-                        despawnEffect = Fx.mineHuge
-                        hitColor = Pal.lightishGray
-                        smokeEffect = Fx.hitSquaresColor
-                        splashDamage = 4f
-                        splashDamageRadius = 20f
-
-                        collidesAir = false
-                        collidesGround = false
-
-                        sprite = "missile"
-                    }
-                }
-            )
         }
     }
 
