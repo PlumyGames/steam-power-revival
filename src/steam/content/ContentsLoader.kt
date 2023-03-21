@@ -38,6 +38,7 @@ object ContentsLoader {
             tau()
             defender()
             sprayer()
+            buster()
         }
         SteamBlocks.apply {
             rifle()

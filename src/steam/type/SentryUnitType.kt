@@ -9,9 +9,11 @@ import plumy.core.assets.EmptyTR
 import steam.entities.units.SentryEntity
 import steam.steam
 
+//todo implement multi-bullet weapon
 class SentryUnitType(name: String) : UnitType(name) {
     var supportRegion = EmptyTR
-    var dragForce = .33f
+    var dragForce = .2f
+    var baseLayer = Layer.blockUnder
 
     override fun load() {
         super.load()
@@ -22,7 +24,7 @@ class SentryUnitType(name: String) : UnitType(name) {
     override fun draw(unit: Unit) {
         super.draw(unit)
         val u = unit as SentryEntity
-        Draw.z(Layer.blockUnder)
+        Draw.z(baseLayer)
         Draw.rect(supportRegion, u.originX, u.originY)
     }
 }

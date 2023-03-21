@@ -1,4 +1,4 @@
-package steam.world.drawer.part
+package steam.entities.part
 
 import arc.struct.Seq
 import mindustry.entities.part.DrawPart

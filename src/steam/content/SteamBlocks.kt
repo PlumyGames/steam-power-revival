@@ -56,7 +56,7 @@ import steam.world.drawer.DrawLiquidWarmup
 import steam.world.drawer.DrawRecipe
 import steam.world.drawer.DrawReservoir
 import steam.world.drawer.DrawSteamInside
-import steam.world.drawer.part.DrawBuilding
+import steam.entities.part.DrawBuilding
 import steam.world.effect.HeatAccumulator
 import steam.world.environment.GroundFloor
 import steam.world.heating.FluidCombustor
@@ -143,6 +143,7 @@ object SteamBlocks {
             velocityRnd = 0.2f
             shootY = 6.75f
             size = 2
+            //todo fix this
             drawTurret {
                 regionPart("-barrel-l") {
                     moveY = -1.5f

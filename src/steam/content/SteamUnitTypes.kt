@@ -8,7 +8,9 @@ import mindustry.content.StatusEffects
 import mindustry.entities.abilities.MoveEffectAbility
 import mindustry.entities.abilities.RepairFieldAbility
 import mindustry.entities.bullet.BasicBulletType
+import mindustry.entities.part.DrawPart
 import mindustry.entities.part.HoverPart
+import mindustry.entities.part.RegionPart
 import mindustry.gen.*
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
@@ -38,6 +40,7 @@ object SteamUnitTypes {
 
     //sentries
     lateinit var sprayer: SentryUnitType
+    lateinit var buster: SentryUnitType
 
     fun alphaCombatDrone() {
         alphaCombatDrone = UnitType("alpha-combat-drone").apply {
@@ -304,16 +307,67 @@ object SteamUnitTypes {
             useUnitCap = false
             weapons.addAll(
                 Weapon().apply {
-                    reload = 3.5f
+
+                    reload = 8f
                     range = 126f
                     x = 1.25f
                     y = 3f
-                    inaccuracy = 3.5f
-                    bullet = BasicBulletType(4.2f, 9f).apply {
-                        width = 7f
+                    shoot.apply {
+                        shots = 2
+                        shotDelay = 2f
+                    }
+                    inaccuracy = 5f
+                    bullet = BasicBulletType(5.4f, 12f, "steam-sharp-shell").apply {
+                        width = 5.5f
                         height = 10.5f
-                        lifetime = 30f
+                        lifetime = 25f
                         recoil = 8f
+                        keepVelocity = false
+                    }
+                }
+            )
+        }
+    }
+
+    fun buster() {
+        buster = SentryUnitType("buster").apply {
+            constructor = Prov { SentryEntity() }
+            speed = 0f
+            rotateSpeed = 4.5f
+            armor = 4f
+            health = 180f
+            faceTarget = true
+            hitSize = 8f
+            useUnitCap = false
+            drawCell = false
+            drawBody = false
+
+            weapons.addAll(
+                Weapon("steam-buster-barrel").apply {
+                    top = false
+                    reload = 38f
+                    range = 100f
+                    x = 0f
+                    mirror = false
+                    shoot.shots = 7
+                    inaccuracy = 16f
+
+                    parts.add(RegionPart("-overlay").apply {
+                        moveY = recoil
+                        progress = DrawPart.PartProgress.recoil
+                    })
+
+                    bullet = BasicBulletType(5f, 14f).apply {
+                        width = 8f
+                        height = 10f
+                        lifetime = 20f
+                        recoil = 10f
+                        keepVelocity = false
+                        knockback = 3.2f
+                        velocityRnd = 0.15f
+                        status = StatusEffects.slow
+                        trailColor = Pal.bulletYellowBack
+                        trailLength = 4
                     }
                 }
             )

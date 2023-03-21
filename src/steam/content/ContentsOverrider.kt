@@ -30,8 +30,8 @@ import plumy.dsl.drawMulti
 import plumy.dsl.plus
 import steam.utils.hide
 import steam.world.distribution.ElectricConveyor
-import steam.world.drawer.part.DrawBuilding
-import steam.world.drawer.part.regionPart
+import steam.entities.part.DrawBuilding
+import steam.entities.part.regionPart
 import steam.world.pressure.PressureCrafter
 
 object ContentsOverrider {
