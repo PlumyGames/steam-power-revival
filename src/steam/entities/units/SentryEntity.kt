@@ -1,6 +1,7 @@
 package steam.entities.units
 
 import arc.util.Time
+import arc.util.Tmp
 import mindustry.gen.UnitEntity
 import steam.type.SentryUnitType
 
@@ -18,7 +19,8 @@ class SentryEntity : UnitEntity() {
 
     override fun update() {
         val sentry = type as? SentryUnitType ?: return super.update()
-        vel.set(originX, originY).sub(this).limit(dst(originX, originY) * sentry.dragForce * Time.delta)
+        Tmp.v1.set(originX, originY).sub(this).limit(dst(originX, originY) * sentry.dragForce * Time.delta)
+        vel.add(Tmp.v1)
         super.update()
     }
 }

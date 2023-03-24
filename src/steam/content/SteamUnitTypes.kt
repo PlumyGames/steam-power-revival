@@ -8,7 +8,6 @@ import mindustry.content.StatusEffects
 import mindustry.entities.abilities.MoveEffectAbility
 import mindustry.entities.abilities.RepairFieldAbility
 import mindustry.entities.bullet.BasicBulletType
-import mindustry.entities.part.DrawPart
 import mindustry.entities.part.HoverPart
 import mindustry.entities.part.RegionPart
 import mindustry.gen.*
@@ -41,6 +40,7 @@ object SteamUnitTypes {
     //sentries
     lateinit var sprayer: SentryUnitType
     lateinit var buster: SentryUnitType
+    lateinit var striker: SentryUnitType
 
     fun alphaCombatDrone() {
         alphaCombatDrone = UnitType("alpha-combat-drone").apply {
@@ -305,27 +305,28 @@ object SteamUnitTypes {
             faceTarget = true
             hitSize = 8f
             useUnitCap = false
-            weapons.addAll(
-                Weapon().apply {
+            drawBody = false
+            parts.add(RegionPart("-overlay"))
 
-                    reload = 8f
-                    range = 126f
-                    x = 1.25f
-                    y = 3f
-                    shoot.apply {
-                        shots = 2
-                        shotDelay = 2f
-                    }
-                    inaccuracy = 5f
-                    bullet = BasicBulletType(5.4f, 12f, "steam-sharp-shell").apply {
-                        width = 5.5f
-                        height = 10.5f
-                        lifetime = 25f
-                        recoil = 8f
-                        keepVelocity = false
-                    }
+            weapons.add(Weapon().apply {
+                flipSprite = true
+                top = false
+                reload = 3.5f
+                range = 126f
+                rotate = false
+                shootY = 1f
+                x = 1.5f
+                y = 4.5f
+                inaccuracy = 3f
+
+                bullet = BasicBulletType(5.4f, 10f, "steam-sharp-shell").apply {
+                    width = 5.5f
+                    height = 10.5f
+                    lifetime = 25f
+                    keepVelocity = false
+                    recoil = 0.22f
                 }
-            )
+            })
         }
     }
 
@@ -339,8 +340,9 @@ object SteamUnitTypes {
             faceTarget = true
             hitSize = 8f
             useUnitCap = false
-            drawCell = false
             drawBody = false
+            drawCell = false
+            parts.add(RegionPart("-overlay"))
 
             weapons.addAll(
                 Weapon("steam-buster-barrel").apply {
@@ -350,24 +352,58 @@ object SteamUnitTypes {
                     x = 0f
                     mirror = false
                     shoot.shots = 7
-                    inaccuracy = 16f
-
-                    parts.add(RegionPart("-overlay").apply {
-                        moveY = recoil
-                        progress = DrawPart.PartProgress.recoil
-                    })
+                    inaccuracy = 20f
 
                     bullet = BasicBulletType(5f, 14f).apply {
                         width = 8f
                         height = 10f
                         lifetime = 20f
-                        recoil = 10f
                         keepVelocity = false
                         knockback = 3.2f
                         velocityRnd = 0.15f
                         status = StatusEffects.slow
                         trailColor = Pal.bulletYellowBack
-                        trailLength = 4
+                        trailLength = 3
+                        recoil = 0.1f
+                    }
+                }
+            )
+        }
+    }
+
+    fun striker() {
+        striker = SentryUnitType("striker").apply {
+            constructor = Prov { SentryEntity() }
+            speed = 0f
+            rotateSpeed = 5f
+            armor = 5.5f
+            health = 260f
+            faceTarget = true
+            hitSize = 10f
+            useUnitCap = false
+            drawBody = false
+            parts.add(RegionPart("-overlay"))
+
+            weapons.addAll(
+                Weapon("steam-striker-barrel").apply {
+                    top = false
+                    reload = 60f
+                    range = 140f
+                    x = 0f
+                    mirror = false
+                    shoot.shots = 5
+                    inaccuracy = 10f
+
+                    bullet = BasicBulletType(7f, 28f).apply {
+                        width = 8f
+                        height = 12f
+                        lifetime = 20f
+                        keepVelocity = false
+                        knockback = 2f
+                        velocityRnd = 0.15f
+                        trailColor = Pal.bulletYellowBack
+                        trailLength = 5
+                        recoil = 0.2f
                     }
                 }
             )
