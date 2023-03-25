@@ -305,8 +305,6 @@ object SteamUnitTypes {
             faceTarget = true
             hitSize = 8f
             useUnitCap = false
-            drawBody = false
-            parts.add(RegionPart("-overlay"))
 
             weapons.add(Weapon().apply {
                 flipSprite = true
@@ -316,8 +314,9 @@ object SteamUnitTypes {
                 rotate = false
                 shootY = 1f
                 x = 1.5f
-                y = 4.5f
+                shootY = 4.5f
                 inaccuracy = 3f
+                ejectEffect = Fx.casing1
 
                 bullet = BasicBulletType(5.4f, 10f, "steam-sharp-shell").apply {
                     width = 5.5f
@@ -325,6 +324,8 @@ object SteamUnitTypes {
                     lifetime = 25f
                     keepVelocity = false
                     recoil = 0.22f
+                    trailLength = 2
+                    trailWidth = 1.25f
                 }
             })
         }
@@ -351,8 +352,9 @@ object SteamUnitTypes {
                     range = 100f
                     x = 0f
                     mirror = false
-                    shoot.shots = 7
+                    shoot.shots = 6
                     inaccuracy = 20f
+                    ejectEffect = Fx.casing2
 
                     bullet = BasicBulletType(5f, 14f).apply {
                         width = 8f
@@ -393,6 +395,7 @@ object SteamUnitTypes {
                     mirror = false
                     shoot.shots = 5
                     inaccuracy = 10f
+                    ejectEffect = Fx.casing2
 
                     bullet = BasicBulletType(7f, 28f).apply {
                         width = 8f
