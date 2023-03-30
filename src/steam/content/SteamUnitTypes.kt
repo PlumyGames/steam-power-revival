@@ -158,6 +158,23 @@ object SteamUnitTypes {
                     }
                 }
             )
+
+            weapons.add(Weapon().apply {
+                x = 5f
+                y = 3f
+                reload = 30f
+
+                shoot.apply {
+                    shots = 3
+                    shotDelay = 2f
+                }
+
+                bullet = BasicBulletType(4.5f, 7f).apply {
+                    lifetime = 30f
+                    width = 8f
+                    height = 12f
+                }
+            })
         }
     }
 
@@ -305,6 +322,7 @@ object SteamUnitTypes {
             faceTarget = true
             hitSize = 8f
             useUnitCap = false
+            shadowElevation = 0.1f
 
             weapons.add(Weapon().apply {
                 flipSprite = true
@@ -344,6 +362,7 @@ object SteamUnitTypes {
             drawBody = false
             drawCell = false
             parts.add(RegionPart("-overlay"))
+            shadowElevation = 0.1f
 
             weapons.addAll(
                 Weapon("steam-buster-barrel").apply {
@@ -385,6 +404,7 @@ object SteamUnitTypes {
             useUnitCap = false
             drawBody = false
             parts.add(RegionPart("-overlay"))
+            shadowElevation = 0.1f
 
             weapons.addAll(
                 Weapon("steam-striker-barrel").apply {

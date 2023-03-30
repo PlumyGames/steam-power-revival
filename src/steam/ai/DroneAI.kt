@@ -19,6 +19,7 @@ class DroneAI : AIController() {
 
     override fun updateMovement() {
         val owner = owner ?: return
+        tar.set(owner.aimX, owner.aimY)
 
         if (owner.isShooting && unit.type.canAttack) {
             if (unit.type.circleTarget) circleAttack(unit.type.range)
@@ -26,8 +27,12 @@ class DroneAI : AIController() {
                 moveTo(target, unit.type.range * 0.8f)
                 unit.lookAt(target)
             }
+        } else if (unit.canBuild() && owner.activelyBuilding()) {
+            unit.plans.clear()
+            unit.plans.addFirst(owner.buildPlan())
+            moveTo(unit.buildPlan().tile(), unit.type.buildRange - 20f)
         } else {
-            formation?.move(group, owner, owner.rotation + 90f)
+            formation?.move(unit, group.units.indexOf(unit), owner, owner.rotation + 90f)
         }
     }
 
