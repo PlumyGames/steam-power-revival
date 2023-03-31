@@ -5,9 +5,12 @@ import mindustry.gen.Unit
 
 class FollowFormation : Formation() {
     var distance = 32f
+    var smooth = 100f
 
     override fun move(unit: Unit, index: Int, to: Posc, rotation: Float) {
-        vec.set(to).sub(unit).limit(to.dst(unit) - distance)
-        unit.movePref(vec)
+        val l = ((unit.dst(to) - distance) / smooth).coerceIn(-1f, 1f)
+        vec.set(to).sub(unit).setLength(l * unit.speed())
+        if (l < 0f) vec.setZero()
+        unit.moveAt(vec)
     }
 }

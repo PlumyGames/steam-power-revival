@@ -16,7 +16,7 @@ import steam.ai.formation.Formation
 class UnitConstructionAbility : Ability() {
     var constructTime = 30f
     var spawnUnits = emptyArray<UnitType>()
-    var spawnEffect = Fx.none
+    var spawnEffect = Fx.spawn
     var spawnX = 0f
     var spawnY = 0f
     var spawnRot = 0f

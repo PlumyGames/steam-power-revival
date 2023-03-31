@@ -24,8 +24,8 @@ class DroneAI : AIController() {
         if (owner.isShooting && unit.type.canAttack) {
             if (unit.type.circleTarget) circleAttack(unit.type.range)
             else {
-                moveTo(target, unit.type.range * 0.8f)
-                unit.lookAt(target)
+                moveTo(tar, unit.type.range * 0.8f)
+                unit.lookAt(tar)
             }
         } else if (unit.canBuild() && owner.activelyBuilding()) {
             unit.plans.clear()

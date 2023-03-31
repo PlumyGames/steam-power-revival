@@ -34,6 +34,7 @@ object ContentsLoader {
         SteamUnitTypes.apply {
             alphaCombatDrone()
             alphaSupportDrone()
+            tauDrone()
             epsilon()
             tau()
             defender()

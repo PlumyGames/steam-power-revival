@@ -1,6 +1,7 @@
 package steam.content
 
 import arc.func.Prov
+import arc.graphics.Color
 import arc.math.geom.Rect
 import arc.math.geom.Vec2
 import mindustry.content.Fx
@@ -8,6 +9,7 @@ import mindustry.content.StatusEffects
 import mindustry.entities.abilities.MoveEffectAbility
 import mindustry.entities.abilities.RepairFieldAbility
 import mindustry.entities.bullet.BasicBulletType
+import mindustry.entities.bullet.LaserBoltBulletType
 import mindustry.entities.part.HoverPart
 import mindustry.entities.part.RegionPart
 import mindustry.gen.*
@@ -17,6 +19,7 @@ import mindustry.type.UnitType
 import mindustry.type.Weapon
 import mindustry.type.unit.TankUnitType
 import steam.ai.DroneAI
+import steam.ai.formation.FollowFormation
 import steam.ai.formation.PositionFormation
 import steam.entities.abilities.UnitConstructionAbility
 import steam.entities.bullets.ConeBulletType
@@ -29,6 +32,7 @@ object SteamUnitTypes {
     //drone
     lateinit var alphaCombatDrone: UnitType
     lateinit var alphaSupportDrone: UnitType
+    lateinit var tauDrone: UnitType
 
     //mech
     lateinit var epsilon: UnitType
@@ -133,6 +137,47 @@ object SteamUnitTypes {
         }
     }
 
+    fun tauDrone() {
+        tauDrone = UnitType("tau-drone").apply {
+            constructor = Prov { UnitEntity.create() }
+            aiController = Prov { DroneAI() }
+            health = 75f
+            speed = 3.2f
+            drag = 0.014f
+            flying = true
+            hitSize = 7f
+            engineOffset = 3f
+            range = 180f
+            trailLength = 8
+            rotateSpeed = 12.5f
+            trailScl = 0.7f
+            accel = 0.1f
+            useUnitCap = false
+            playerControllable = false
+            logicControllable = false
+
+            abilities.add(RepairFieldAbility(65f, 155f, 85f))
+
+            weapons.addAll(
+                Weapon().apply {
+                    reload = 20f
+                    x = 0f
+                    mirror = false
+                    shootCone = 10f
+                    bullet = LaserBoltBulletType(5.2f, 15f).apply {
+                        lifetime = 30f
+                        healAmount = 20f
+                        collidesTeam = true
+                        backColor = Pal.heal
+                        frontColor = Color.white
+                        buildingDamageMultiplier = 0f
+                    }
+                }
+            )
+        }
+    }
+
+
     fun epsilon() {
         epsilon = UnitType("epsilon").apply {
             constructor = Prov { MechUnit.create() }
@@ -148,10 +193,12 @@ object SteamUnitTypes {
             itemCapacity = 35
             legMoveSpace = 1.6f
             buildSpeed = 1.2f
+            engineSize = 0f
+            setEnginesMirror(UnitType.UnitEngine(16/4f, -20/4f, 2.5f, 315f))
 
             abilities.add(
                 UnitConstructionAbility().apply {
-                    constructTime = 90f
+                    constructTime = 180f
                     spawnUnits = arrayOf(alphaCombatDrone, alphaSupportDrone)
                     formation = PositionFormation().apply {
                         positions = arrayOf(Vec2(16f, 0f), Vec2(-16f, 0f))
@@ -200,10 +247,15 @@ object SteamUnitTypes {
             mineSpeed = 8f
             mineTier = 4
             itemCapacity = 80
+            canBoost = true
 
             abilities.add(
                 MoveEffectAbility(0f, -6.75f, Pal.heal, Fx.missileTrailShort, 3f),
-                RepairFieldAbility(65f, 155f, 85f)
+                UnitConstructionAbility().apply {
+                    constructTime = 220f
+                    spawnUnits = arrayOf(tauDrone)
+                    formation = FollowFormation()
+                }
             )
 
             parts.add(
@@ -237,35 +289,6 @@ object SteamUnitTypes {
                         hitEffect = Fx.none
                         length = 70f
                         status = StatusEffects.electrified
-                    }
-                },
-                Weapon().apply {
-                    x = 3.75f
-                    y = 5f
-                    shootY = 0f
-                    range = 110f
-                    shootSound = Sounds.missile
-                    reload = 15f
-                    bullet = SteamBaseBulletType().apply {
-                        vectorHoming = true
-                        backColor = Pal.heal
-                        trailColor = Pal.heal
-                        shrinkY = 0f
-                        width = 8f
-                        keepVelocity = false
-                        height = 8f
-                        hitSound = Sounds.explosion
-                        trailLength = 5
-                        homingRange = 110f
-                        lifetime = 160f
-                        speed = 4.85f
-                        healAmount = 12f
-                        collidesTeam = true
-                        hitSound = Sounds.none
-                        shootEffect = Fx.shootHeal
-
-                        hitEffect = Fx.hitLaser.also { despawnEffect = it; smokeEffect = it }
-                        damage = 10f
                     }
                 }
             )
