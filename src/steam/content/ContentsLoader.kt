@@ -41,6 +41,7 @@ object ContentsLoader {
             sprayer()
             buster()
             striker()
+            hauler()
         }
         SteamBlocks.apply {
             rifle()

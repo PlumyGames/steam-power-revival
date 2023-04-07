@@ -19,7 +19,6 @@ open class ConeBulletType : BulletType() {
     var rad = 20f
     var length = 65f
     var lengthInterp = Interp.linear
-
     init {
         removeAfterPierce = false
         speed = 0f

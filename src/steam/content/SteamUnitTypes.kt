@@ -8,6 +8,7 @@ import mindustry.content.Fx
 import mindustry.content.StatusEffects
 import mindustry.entities.abilities.MoveEffectAbility
 import mindustry.entities.abilities.RepairFieldAbility
+import mindustry.entities.bullet.ArtilleryBulletType
 import mindustry.entities.bullet.BasicBulletType
 import mindustry.entities.bullet.LaserBoltBulletType
 import mindustry.entities.part.HoverPart
@@ -45,6 +46,7 @@ object SteamUnitTypes {
     lateinit var sprayer: SentryUnitType
     lateinit var buster: SentryUnitType
     lateinit var striker: SentryUnitType
+    lateinit var hauler: SentryUnitType
 
     fun alphaCombatDrone() {
         alphaCombatDrone = UnitType("alpha-combat-drone").apply {
@@ -450,6 +452,49 @@ object SteamUnitTypes {
                         trailColor = Pal.bulletYellowBack
                         trailLength = 5
                         recoil = 0.2f
+                    }
+                }
+            )
+        }
+    }
+
+    fun hauler() {
+        hauler = SentryUnitType("hauler").apply {
+            constructor = Prov { SentryEntity() }
+            speed = 0f
+            rotateSpeed = 3f
+            armor = 4f
+            health = 330f
+            faceTarget = true
+            hitSize = 10f
+            useUnitCap = false
+            shadowElevation = 0.1f
+
+            weapons.addAll(
+                Weapon().apply {
+                    top = false
+                    reload = 80f
+                    range = 270f
+                    x = 0f
+                    mirror = false
+                    inaccuracy = 4f
+                    ejectEffect = Fx.casing3
+
+                    bullet = ArtilleryBulletType(5.5f, 28f).apply {
+                        width = 10f
+                        height = 15f
+                        lifetime = 50f
+                        keepVelocity = false
+                        knockback = 2f
+                        trailColor = Pal.bulletYellowBack
+                        trailMult = 0.5f
+                        recoil = 1f
+                        shrinkX *= 1.3f
+                        shrinkY *= 1.3f
+                        splashDamage = 46f
+                        splashDamageRadius = 32f
+                        hitEffect = Fx.blastExplosion
+                        despawnEffect = Fx.blastExplosion
                     }
                 }
             )
