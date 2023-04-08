@@ -479,10 +479,12 @@ object SteamUnitTypes {
                     mirror = false
                     inaccuracy = 4f
                     ejectEffect = Fx.casing3
+                    predictTarget = false
+                    targetFlags
 
                     bullet = ArtilleryBulletType(5.5f, 28f).apply {
-                        width = 10f
-                        height = 15f
+                        width = 12f
+                        height = 18f
                         lifetime = 50f
                         keepVelocity = false
                         knockback = 2f
